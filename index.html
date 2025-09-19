@@ -161,6 +161,30 @@
             box-shadow: 0 0 20px rgba(139, 115, 85, 0.2);
         }
         
+        .copy-btn {
+            background: linear-gradient(135deg, #2a1f15 0%, #1a1208 100%);
+            color: #d4c5a9;
+            padding: 10px 30px;
+            border: 1px solid #8b7355;
+            font-size: 13px;
+            font-weight: normal;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Georgia', serif;
+            border-radius: 2px;
+        }
+        
+        .copy-btn:hover {
+            background: linear-gradient(135deg, #3a2f25 0%, #2a1f15 100%);
+            border-color: #d4c5a9;
+            box-shadow: 0 0 15px rgba(139, 115, 85, 0.3);
+        }
+        
+        .copy-btn:active {
+            transform: scale(0.98);
+        }
+        
         #fileInput {
             display: none;
         }
@@ -374,6 +398,12 @@
         <!-- Data Display -->
         <div class="data-container">
             <h2>Market Intelligence Data</h2>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <span style="color: #8b7355; font-size: 12px; letter-spacing: 1px;">JSON OUTPUT</span>
+                <button id="copyBtn" class="copy-btn" style="display: none;">
+                    📋 Copy JSON Data
+                </button>
+            </div>
             <div class="data-output">
                 <div id="output">Awaiting watchlist upload to begin tactical analysis...</div>
             </div>
@@ -702,10 +732,40 @@
             document.getElementById('output').textContent = 
                 JSON.stringify(marketData, null, 2);
             
+            // Show copy button when data is available
+            document.getElementById('copyBtn').style.display = 'inline-block';
+            
             const now = new Date().toLocaleString();
             document.getElementById('updateTime').textContent = 
                 `Data collected: ${now} | ${marketData.successful}/${marketData.total_stocks} successful`;
         }
+        
+        // Copy Button Functionality
+        document.getElementById('copyBtn').addEventListener('click', async () => {
+            const output = document.getElementById('output').textContent;
+            const copyBtn = document.getElementById('copyBtn');
+            
+            try {
+                await navigator.clipboard.writeText(output);
+                
+                // Visual feedback
+                const originalText = copyBtn.textContent;
+                copyBtn.textContent = '✅ Copied!';
+                copyBtn.style.background = 'linear-gradient(135deg, #2a4a2f 0%, #1a3a1f 100%)';
+                copyBtn.style.borderColor = '#4a8a4a';
+                
+                setTimeout(() => {
+                    copyBtn.textContent = originalText;
+                    copyBtn.style.background = 'linear-gradient(135deg, #2a1f15 0%, #1a1208 100%)';
+                    copyBtn.style.borderColor = '#8b7355';
+                }, 2000);
+                
+                log('JSON data copied to clipboard', 'success');
+            } catch (error) {
+                log('Failed to copy: ' + error.message, 'error');
+                alert('Copy failed. Please select and copy manually.');
+            }
+        });
     </script>
 </body>
 </html>
