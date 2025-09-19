@@ -3,52 +3,324 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Market Data Bridge</title>
+    <title>⚔️ Treasure Map - Market Data Bridge ⚔️</title>
     <style>
-        body {
-            font-family: 'Courier New', monospace;
-            background: #0a0a0a;
-            color: #00ff00;
-            padding: 20px;
+        * {
             margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        h1 {
-            color: #00ff00;
+        
+        body {
+            font-family: 'Courier New', 'Pirata One', serif;
+            background: linear-gradient(to bottom, #2c1810, #1a0f08);
+            background-image: 
+                url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><text x="50" y="50" font-size="80" text-anchor="middle" fill="%23ffffff" opacity="0.02">☠</text></svg>');
+            color: #d4a574;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        /* Pirate Theme Decorations */
+        .corner-decoration {
+            position: fixed;
+            width: 100px;
+            height: 100px;
+            opacity: 0.6;
+            z-index: 1000;
+        }
+        
+        .skull-top-left {
+            top: 20px;
+            left: 20px;
+            font-size: 80px;
+        }
+        
+        .flag-top-right {
+            top: 20px;
+            right: 20px;
+            font-size: 80px;
+        }
+        
+        .sword-bottom-left {
+            bottom: 20px;
+            left: 20px;
+            font-size: 80px;
+            transform: rotate(-45deg);
+        }
+        
+        .memento-bottom-right {
+            bottom: 20px;
+            right: 20px;
+            font-size: 60px;
             text-align: center;
-            border-bottom: 2px solid #00ff00;
-            padding-bottom: 10px;
         }
-        #status {
+        
+        /* Main Container */
+        .treasure-map {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            background: rgba(42, 24, 16, 0.9);
+            border: 3px solid #8b6f47;
+            border-radius: 10px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.8);
+            position: relative;
+            margin-top: 20px;
+        }
+        
+        /* Header */
+        .map-header {
             text-align: center;
-            margin: 20px 0;
-            font-size: 14px;
-            color: #ffff00;
+            border-bottom: 3px solid #8b6f47;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
         }
-        #output {
-            background: #1a1a1a;
-            border: 1px solid #00ff00;
+        
+        .map-header h1 {
+            font-size: 48px;
+            color: #ffd700;
+            text-shadow: 3px 3px 6px #000;
+            letter-spacing: 3px;
+        }
+        
+        .map-header .subtitle {
+            color: #d4a574;
+            font-size: 18px;
+            margin-top: 10px;
+            font-style: italic;
+        }
+        
+        /* File Upload Section */
+        .upload-section {
+            background: rgba(139, 111, 71, 0.2);
+            border: 2px dashed #8b6f47;
+            border-radius: 8px;
+            padding: 30px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .upload-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .upload-btn {
+            background: linear-gradient(135deg, #8b6f47 0%, #6b4423 100%);
+            color: #ffd700;
+            padding: 15px 40px;
+            border: 2px solid #ffd700;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        .upload-btn:hover {
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+            color: #2c1810;
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+        }
+        
+        #fileInput {
+            display: none;
+        }
+        
+        .stock-count {
+            color: #ffd700;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        
+        /* Status Section */
+        .status-section {
+            background: rgba(0, 0, 0, 0.4);
+            border: 2px solid #8b6f47;
+            border-radius: 8px;
             padding: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .status-text {
+            color: #ffd700;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 30px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid #8b6f47;
             border-radius: 5px;
-            white-space: pre-wrap;
-            word-wrap: break-word;
-            font-size: 12px;
-            max-height: 80vh;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #8b6f47, #ffd700);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+        
+        .progress-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #fff;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px #000;
+        }
+        
+        /* Data Display */
+        .treasure-chest {
+            background: rgba(0, 0, 0, 0.5);
+            border: 3px solid #8b6f47;
+            border-radius: 10px;
+            padding: 25px;
+            margin-top: 20px;
+            max-height: 70vh;
             overflow-y: auto;
         }
+        
+        .treasure-chest h2 {
+            color: #ffd700;
+            font-size: 28px;
+            margin-bottom: 20px;
+            text-align: center;
+            text-shadow: 2px 2px 4px #000;
+        }
+        
+        #output {
+            font-family: 'Courier New', monospace;
+            color: #d4a574;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+        
+        /* Scrollbar Styling */
+        .treasure-chest::-webkit-scrollbar {
+            width: 12px;
+        }
+        
+        .treasure-chest::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 6px;
+        }
+        
+        .treasure-chest::-webkit-scrollbar-thumb {
+            background: #8b6f47;
+            border-radius: 6px;
+        }
+        
+        .treasure-chest::-webkit-scrollbar-thumb:hover {
+            background: #ffd700;
+        }
+        
+        /* Update Time */
         .update-time {
             text-align: center;
-            color: #888;
-            font-size: 11px;
-            margin-top: 10px;
+            color: #8b6f47;
+            font-size: 14px;
+            margin-top: 15px;
+            font-style: italic;
+        }
+        
+        /* Loading Animation */
+        @keyframes treasure-glow {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+        
+        .loading {
+            animation: treasure-glow 2s infinite;
+        }
+        
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .corner-decoration {
+                width: 60px;
+                height: 60px;
+                font-size: 40px;
+            }
+            
+            .map-header h1 {
+                font-size: 32px;
+            }
+            
+            .treasure-map {
+                padding: 20px 10px;
+            }
         }
     </style>
 </head>
 <body>
-    <h1>📈 Market Data API Bridge</h1>
-    <div id="status">Initializing...</div>
-    <div id="output">Loading market data...</div>
-    <div class="update-time" id="updateTime"></div>
+    <!-- Corner Decorations -->
+    <div class="corner-decoration skull-top-left">☠️</div>
+    <div class="corner-decoration flag-top-right">🏴‍☠️</div>
+    <div class="corner-decoration sword-bottom-left">⚔️</div>
+    <div class="corner-decoration memento-bottom-right">
+        💀<br>
+        <span style="font-size: 14px;">Memento<br>Mori</span>
+    </div>
+    
+    <div class="treasure-map">
+        <!-- Header -->
+        <div class="map-header">
+            <h1>⚓ PIRATE'S TREASURE MAP ⚓</h1>
+            <p class="subtitle">🗡️ Market Data Intelligence Bridge 🗡️</p>
+            <p class="subtitle" style="font-size: 14px; margin-top: 5px;">
+                "Fortune favors the bold trader" - Memento Mori
+            </p>
+        </div>
+        
+        <!-- File Upload Section -->
+        <div class="upload-section">
+            <div class="upload-area">
+                <h2 style="color: #ffd700; margin-bottom: 15px;">📜 Upload Your Stock Watchlist 📜</h2>
+                <p style="color: #d4a574; margin-bottom: 15px;">
+                    Upload an Excel (.xlsx), CSV (.csv), or Text (.txt) file with stock tickers
+                </p>
+                <label for="fileInput" class="upload-btn">
+                    ⚓ Choose Your Treasure Map ⚓
+                </label>
+                <input type="file" id="fileInput" accept=".xlsx,.xls,.csv,.txt">
+                <div class="stock-count" id="stockCount">No stocks loaded</div>
+            </div>
+        </div>
+        
+        <!-- Status Section -->
+        <div class="status-section">
+            <div class="status-text" id="status">⚓ Ready to plunder market data ⚓</div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressBar"></div>
+                <div class="progress-text" id="progressText">0%</div>
+            </div>
+        </div>
+        
+        <!-- Data Display -->
+        <div class="treasure-chest">
+            <h2>💰 MARKET TREASURE DATA 💰</h2>
+            <div id="output">Awaiting your stock list to begin the treasure hunt...</div>
+        </div>
+        
+        <div class="update-time" id="updateTime"></div>
+    </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script>
         // API Configuration
         const API_KEYS = {
@@ -58,188 +330,213 @@
             polygon: '7_nYaWRYfGXSfa5HKrP_628othiF_DNZ'
         };
         
-        // Stocks to monitor
-        const WATCHLIST = ['SPY', 'QQQ', 'IWM', 'DIA', 'NVDA', 'AAPL', 'MSFT', 'GOOGL', 'AMZN', 'TSLA', 'META', 'NFLX'];
+        let stockList = [];
+        let apiCallCount = 0;
+        const MAX_CALLS_PER_MINUTE = 8;
         
-        let callCount = 0;
-        const MAX_CALLS_PER_MINUTE = 5; // Conservative limit
-        
-        async function sleep(ms) {
+        // Utility Functions
+        function sleep(ms) {
             return new Promise(resolve => setTimeout(resolve, ms));
         }
         
-        async function updateStatus(message) {
-            document.getElementById('status').textContent = message;
-        }
-        
-        async function fetchWithRetry(url, retries = 3) {
-            for (let i = 0; i < retries; i++) {
-                try {
-                    const response = await fetch(url);
-                    if (!response.ok) throw new Error(`HTTP ${response.status}`);
-                    return await response.json();
-                } catch (error) {
-                    if (i === retries - 1) throw error;
-                    await sleep(1000 * (i + 1)); // Exponential backoff
-                }
+        function updateStatus(message, progress = null) {
+            document.getElementById('status').innerHTML = message;
+            if (progress !== null) {
+                document.getElementById('progressBar').style.width = progress + '%';
+                document.getElementById('progressText').textContent = Math.round(progress) + '%';
             }
         }
         
+        // File Upload Handler
+        document.getElementById('fileInput').addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            updateStatus('📜 Reading your treasure map...', 10);
+            
+            const fileType = file.name.split('.').pop().toLowerCase();
+            
+            try {
+                if (fileType === 'txt' || fileType === 'csv') {
+                    // Handle text/CSV files
+                    const text = await file.text();
+                    stockList = text.split(/[\n,;]/)
+                        .map(line => line.trim().toUpperCase())
+                        .filter(ticker => ticker.length > 0 && ticker.length < 6);
+                } else if (fileType === 'xlsx' || fileType === 'xls') {
+                    // Handle Excel files
+                    const data = await file.arrayBuffer();
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+                    const jsonData = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
+                    
+                    stockList = [];
+                    jsonData.forEach(row => {
+                        row.forEach(cell => {
+                            if (cell && typeof cell === 'string') {
+                                const ticker = cell.trim().toUpperCase();
+                                if (ticker.length > 0 && ticker.length < 6) {
+                                    stockList.push(ticker);
+                                }
+                            }
+                        });
+                    });
+                }
+                
+                // Remove duplicates
+                stockList = [...new Set(stockList)];
+                
+                document.getElementById('stockCount').textContent = 
+                    `⚓ ${stockList.length} stocks ready for analysis ⚓`;
+                
+                updateStatus('🏴‍☠️ Treasure map loaded! Beginning data plunder...', 30);
+                
+                // Start fetching data
+                await fetchAllMarketData();
+                
+            } catch (error) {
+                updateStatus('❌ Error reading file: ' + error.message, 0);
+                console.error('File read error:', error);
+            }
+        });
+        
+        // Technical Analysis Calculator
+        function calculateTechnicalLevels(data, ticker) {
+            const levels = {
+                ticker: ticker,
+                current_price: parseFloat(data.close || data.c || 0),
+                
+                // Support/Resistance (Multiple Timeframes)
+                daily_support: [],
+                daily_resistance: [],
+                weekly_support: null,
+                weekly_resistance: null,
+                
+                // Moving Averages
+                sma_20: null,
+                sma_50: null,
+                sma_200: null,
+                ema_20: null,
+                
+                // Technical Indicators
+                rsi_14: null,
+                macd: { value: null, signal: null, histogram: null },
+                volume: parseInt(data.volume || data.v || 0),
+                avg_volume: null,
+                relative_volume: null,
+                
+                // Pivot Points (Carter Worth style)
+                pivot: null,
+                r1: null, r2: null, r3: null,
+                s1: null, s2: null, s3: null,
+                
+                // Fibonacci Levels
+                fib_382: null,
+                fib_500: null,
+                fib_618: null,
+                
+                // Price Action
+                high: parseFloat(data.high || data.h || 0),
+                low: parseFloat(data.low || data.l || 0),
+                open: parseFloat(data.open || data.o || 0),
+                prev_close: parseFloat(data.previous_close || data.pc || 0),
+                change: parseFloat(data.change || data.d || 0),
+                percent_change: parseFloat(data.percent_change || data.dp || 0)
+            };
+            
+            // Calculate Support/Resistance (Simple method)
+            const range = levels.high - levels.low;
+            levels.daily_support = [
+                (levels.low - range * 0.236).toFixed(2),
+                (levels.low - range * 0.382).toFixed(2),
+                (levels.low - range * 0.618).toFixed(2)
+            ];
+            levels.daily_resistance = [
+                (levels.high + range * 0.236).toFixed(2),
+                (levels.high + range * 0.382).toFixed(2),
+                (levels.high + range * 0.618).toFixed(2)
+            ];
+            
+            // Calculate Pivot Points
+            levels.pivot = ((levels.high + levels.low + levels.current_price) / 3).toFixed(2);
+            levels.r1 = ((2 * levels.pivot) - levels.low).toFixed(2);
+            levels.r2 = (levels.pivot + (levels.high - levels.low)).toFixed(2);
+            levels.r3 = (levels.high + 2 * (levels.pivot - levels.low)).toFixed(2);
+            levels.s1 = ((2 * levels.pivot) - levels.high).toFixed(2);
+            levels.s2 = (levels.pivot - (levels.high - levels.low)).toFixed(2);
+            levels.s3 = (levels.low - 2 * (levels.high - levels.pivot)).toFixed(2);
+            
+            // Fibonacci Levels
+            levels.fib_382 = (levels.low + range * 0.382).toFixed(2);
+            levels.fib_500 = (levels.low + range * 0.500).toFixed(2);
+            levels.fib_618 = (levels.low + range * 0.618).toFixed(2);
+            
+            return levels;
+        }
+        
+        // Fetch Data from Twelve Data
         async function getTwelveDataQuote(ticker) {
             try {
                 const url = `https://api.twelvedata.com/quote?symbol=${ticker}&apikey=${API_KEYS.twelvedata}`;
-                const data = await fetchWithRetry(url);
-                callCount++;
+                const response = await fetch(url);
+                const data = await response.json();
+                apiCallCount++;
                 
                 if (data.status === 'error') {
-                    console.error(`Twelve Data error for ${ticker}:`, data.message);
+                    console.error(`Error for ${ticker}:`, data.message);
                     return null;
                 }
                 
-                return {
-                    source: 'TwelveData',
-                    price: parseFloat(data.close || 0),
-                    open: parseFloat(data.open || 0),
-                    high: parseFloat(data.high || 0),
-                    low: parseFloat(data.low || 0),
-                    volume: parseInt(data.volume || 0),
-                    change: parseFloat(data.change || 0),
-                    percent_change: parseFloat(data.percent_change || 0),
-                    timestamp: data.datetime || new Date().toISOString()
-                };
+                return calculateTechnicalLevels(data, ticker);
             } catch (error) {
-                console.error(`Error fetching ${ticker} from Twelve Data:`, error);
+                console.error(`Error fetching ${ticker}:`, error);
                 return null;
             }
         }
         
-        async function getFinnhubQuote(ticker) {
-            try {
-                const url = `https://finnhub.io/api/v1/quote?symbol=${ticker}&token=${API_KEYS.finnhub}`;
-                const data = await fetchWithRetry(url);
-                callCount++;
-                
-                return {
-                    source: 'Finnhub',
-                    price: parseFloat(data.c || 0),
-                    open: parseFloat(data.o || 0),
-                    high: parseFloat(data.h || 0),
-                    low: parseFloat(data.l || 0),
-                    prev_close: parseFloat(data.pc || 0),
-                    change: parseFloat(data.d || 0),
-                    percent_change: parseFloat(data.dp || 0),
-                    timestamp: data.t ? new Date(data.t * 1000).toISOString() : new Date().toISOString()
-                };
-            } catch (error) {
-                console.error(`Error fetching ${ticker} from Finnhub:`, error);
-                return null;
-            }
-        }
-        
-        async function getPolygonQuote(ticker) {
-            try {
-                const url = `https://api.polygon.io/v2/aggs/ticker/${ticker}/prev?adjusted=true&apiKey=${API_KEYS.polygon}`;
-                const data = await fetchWithRetry(url);
-                callCount++;
-                
-                if (data.results && data.results.length > 0) {
-                    const result = data.results[0];
-                    return {
-                        source: 'Polygon',
-                        price: parseFloat(result.c || 0),
-                        open: parseFloat(result.o || 0),
-                        high: parseFloat(result.h || 0),
-                        low: parseFloat(result.l || 0),
-                        volume: parseInt(result.v || 0),
-                        vwap: parseFloat(result.vw || 0),
-                        timestamp: new Date(result.t).toISOString()
-                    };
-                }
-                return null;
-            } catch (error) {
-                console.error(`Error fetching ${ticker} from Polygon:`, error);
-                return null;
-            }
-        }
-        
-        async function getMarketData() {
+        // Main Data Collection Function
+        async function fetchAllMarketData() {
             const marketData = {
                 generated_at: new Date().toISOString(),
-                market_status: 'OPEN', // Would need to check actual market hours
+                total_stocks: stockList.length,
                 stocks: {}
             };
             
-            updateStatus(`Fetching data for ${WATCHLIST.length} stocks...`);
+            updateStatus('⚔️ Plundering market data from the seven seas...', 40);
             
-            for (let i = 0; i < WATCHLIST.length; i++) {
-                const ticker = WATCHLIST[i];
-                updateStatus(`Fetching ${ticker} (${i + 1}/${WATCHLIST.length})...`);
+            for (let i = 0; i < stockList.length; i++) {
+                const ticker = stockList[i];
+                const progress = 40 + ((i / stockList.length) * 50);
                 
-                // Try Twelve Data first (most complete)
-                let stockData = await getTwelveDataQuote(ticker);
+                updateStatus(`🏴‍☠️ Analyzing ${ticker} (${i + 1}/${stockList.length})...`, progress);
                 
-                // If Twelve Data fails, try Finnhub
-                if (!stockData) {
-                    await sleep(200); // Small delay between API calls
-                    stockData = await getFinnhubQuote(ticker);
-                }
+                const stockData = await getTwelveDataQuote(ticker);
                 
-                // Store the data
                 if (stockData) {
                     marketData.stocks[ticker] = stockData;
-                    
-                    // Calculate support/resistance levels (simple method)
-                    if (stockData.high && stockData.low) {
-                        const range = stockData.high - stockData.low;
-                        marketData.stocks[ticker].support = (stockData.low - range * 0.382).toFixed(2);
-                        marketData.stocks[ticker].resistance = (stockData.high + range * 0.382).toFixed(2);
-                    }
                 }
                 
                 // Rate limiting
-                if (callCount >= MAX_CALLS_PER_MINUTE) {
-                    updateStatus('Rate limit - waiting 60 seconds...');
+                if (apiCallCount >= MAX_CALLS_PER_MINUTE) {
+                    updateStatus('⏳ Waiting for API cooldown (60 seconds)...', progress);
                     await sleep(60000);
-                    callCount = 0;
+                    apiCallCount = 0;
                 }
                 
-                // Small delay between requests
-                await sleep(300);
+                await sleep(400); // Small delay between requests
             }
             
-            updateStatus(`Completed! ${Object.keys(marketData.stocks).length} stocks loaded`);
-            return marketData;
+            updateStatus('💰 Treasure successfully plundered!', 100);
+            
+            // Display results
+            document.getElementById('output').textContent = 
+                JSON.stringify(marketData, null, 2);
+            
+            // Update timestamp
+            const now = new Date().toLocaleString();
+            document.getElementById('updateTime').textContent = 
+                `⚓ Last plundered: ${now} | ${marketData.total_stocks} treasures collected ⚓`;
         }
-        
-        async function updateDisplay() {
-            try {
-                const data = await getMarketData();
-                
-                // Display formatted data
-                document.getElementById('output').textContent = JSON.stringify(data, null, 2);
-                
-                // Update timestamp
-                const now = new Date().toLocaleString();
-                document.getElementById('updateTime').textContent = `Last updated: ${now}`;
-                
-                updateStatus('✅ Data ready - Updating every 5 minutes');
-            } catch (error) {
-                updateStatus(`❌ Error: ${error.message}`);
-                console.error('Error updating display:', error);
-            }
-        }
-        
-        // Initialize
-        updateDisplay();
-        
-        // Auto-update every 5 minutes
-        setInterval(updateDisplay, 5 * 60 * 1000);
-        
-        // Manual refresh on click
-        document.getElementById('output').addEventListener('click', () => {
-            updateStatus('Manual refresh triggered...');
-            updateDisplay();
-        });
     </script>
 </body>
 </html>
