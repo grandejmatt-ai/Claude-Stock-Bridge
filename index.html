@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>⚔️ Treasure Map - Market Data Bridge ⚔️</title>
+    <title>Market Intelligence - Tactical Trading Bridge</title>
     <style>
         * {
             margin: 0;
@@ -12,93 +12,118 @@
         }
         
         body {
-            font-family: 'Courier New', 'Pirata One', serif;
-            background: linear-gradient(to bottom, #2c1810, #1a0f08);
+            font-family: 'Georgia', 'Times New Roman', serif;
+            background: #0d0d0d;
             background-image: 
-                url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><text x="50" y="50" font-size="80" text-anchor="middle" fill="%23ffffff" opacity="0.02">☠</text></svg>');
-            color: #d4a574;
+                radial-gradient(circle at 20% 50%, rgba(40, 20, 10, 0.2) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(20, 10, 5, 0.2) 0%, transparent 50%);
+            color: #d4c5a9;
             min-height: 100vh;
             position: relative;
-            overflow-x: hidden;
         }
         
-        /* Pirate Theme Decorations */
+        /* Sophisticated Corner Elements */
         .corner-decoration {
             position: fixed;
-            width: 100px;
-            height: 100px;
-            opacity: 0.6;
-            z-index: 1000;
+            opacity: 0.15;
+            z-index: 1;
+            color: #8b7355;
+            font-family: serif;
         }
         
         .skull-top-left {
-            top: 20px;
-            left: 20px;
-            font-size: 80px;
+            top: 30px;
+            left: 30px;
+            font-size: 24px;
+            letter-spacing: 2px;
         }
         
         .flag-top-right {
-            top: 20px;
-            right: 20px;
-            font-size: 80px;
+            top: 30px;
+            right: 30px;
+            font-size: 14px;
+            text-align: right;
+            line-height: 1.4;
         }
         
         .sword-bottom-left {
-            bottom: 20px;
-            left: 20px;
-            font-size: 80px;
-            transform: rotate(-45deg);
+            bottom: 30px;
+            left: 30px;
+            font-size: 14px;
+            font-style: italic;
         }
         
         .memento-bottom-right {
-            bottom: 20px;
-            right: 20px;
-            font-size: 60px;
-            text-align: center;
+            bottom: 30px;
+            right: 30px;
+            font-size: 12px;
+            text-align: right;
+            line-height: 1.6;
+            font-style: italic;
         }
         
         /* Main Container */
-        .treasure-map {
+        .container {
             max-width: 1400px;
             margin: 0 auto;
             padding: 40px 20px;
-            background: rgba(42, 24, 16, 0.9);
-            border: 3px solid #8b6f47;
-            border-radius: 10px;
-            box-shadow: 0 0 30px rgba(0, 0, 0, 0.8);
+            background: linear-gradient(135deg, rgba(20, 15, 10, 0.95) 0%, rgba(15, 10, 5, 0.95) 100%);
+            border: 1px solid rgba(139, 115, 85, 0.3);
+            box-shadow: 
+                0 20px 60px rgba(0, 0, 0, 0.5),
+                inset 0 1px 0 rgba(255, 255, 255, 0.05);
             position: relative;
             margin-top: 20px;
+            border-radius: 2px;
         }
         
         /* Header */
-        .map-header {
+        .header {
             text-align: center;
-            border-bottom: 3px solid #8b6f47;
-            padding-bottom: 20px;
-            margin-bottom: 30px;
+            border-bottom: 1px solid rgba(139, 115, 85, 0.3);
+            padding-bottom: 30px;
+            margin-bottom: 40px;
         }
         
-        .map-header h1 {
-            font-size: 48px;
-            color: #ffd700;
-            text-shadow: 3px 3px 6px #000;
-            letter-spacing: 3px;
+        .header h1 {
+            font-size: 36px;
+            color: #d4c5a9;
+            font-weight: 300;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
         }
         
-        .map-header .subtitle {
-            color: #d4a574;
-            font-size: 18px;
-            margin-top: 10px;
+        .header .tagline {
+            color: #8b7355;
+            font-size: 14px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-weight: normal;
+        }
+        
+        .header .motto {
+            color: #6b5d4f;
+            font-size: 13px;
             font-style: italic;
+            margin-top: 15px;
         }
         
         /* File Upload Section */
         .upload-section {
-            background: rgba(139, 111, 71, 0.2);
-            border: 2px dashed #8b6f47;
-            border-radius: 8px;
-            padding: 30px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(139, 115, 85, 0.2);
+            padding: 35px;
             margin-bottom: 30px;
+        }
+        
+        .upload-section h2 {
+            color: #d4c5a9;
+            font-size: 18px;
+            font-weight: 300;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 20px;
             text-align: center;
         }
         
@@ -109,25 +134,31 @@
             gap: 20px;
         }
         
+        .upload-instructions {
+            color: #8b7355;
+            font-size: 13px;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        
         .upload-btn {
-            background: linear-gradient(135deg, #8b6f47 0%, #6b4423 100%);
-            color: #ffd700;
-            padding: 15px 40px;
-            border: 2px solid #ffd700;
-            border-radius: 8px;
-            font-size: 18px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-transform: uppercase;
+            background: linear-gradient(135deg, #2a1f15 0%, #1a1208 100%);
+            color: #d4c5a9;
+            padding: 14px 45px;
+            border: 1px solid #8b7355;
+            font-size: 14px;
+            font-weight: normal;
             letter-spacing: 2px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Georgia', serif;
         }
         
         .upload-btn:hover {
-            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
-            color: #2c1810;
-            transform: scale(1.05);
-            box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+            background: linear-gradient(135deg, #3a2f25 0%, #2a1f15 100%);
+            border-color: #d4c5a9;
+            box-shadow: 0 0 20px rgba(139, 115, 85, 0.2);
         }
         
         #fileInput {
@@ -135,40 +166,39 @@
         }
         
         .stock-count {
-            color: #ffd700;
-            font-size: 20px;
-            font-weight: bold;
+            color: #d4c5a9;
+            font-size: 16px;
+            letter-spacing: 1px;
         }
         
         /* Status Section */
         .status-section {
             background: rgba(0, 0, 0, 0.4);
-            border: 2px solid #8b6f47;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 20px;
-            text-align: center;
+            border: 1px solid rgba(139, 115, 85, 0.2);
+            padding: 25px;
+            margin-bottom: 25px;
         }
         
         .status-text {
-            color: #ffd700;
-            font-size: 16px;
-            margin-bottom: 10px;
+            color: #8b7355;
+            font-size: 13px;
+            text-align: center;
+            margin-bottom: 15px;
+            letter-spacing: 1px;
         }
         
         .progress-bar {
             width: 100%;
-            height: 30px;
-            background: rgba(0, 0, 0, 0.5);
-            border: 1px solid #8b6f47;
-            border-radius: 5px;
+            height: 24px;
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(139, 115, 85, 0.3);
             overflow: hidden;
             position: relative;
         }
         
         .progress-fill {
             height: 100%;
-            background: linear-gradient(90deg, #8b6f47, #ffd700);
+            background: linear-gradient(90deg, #3a2f25, #8b7355);
             width: 0%;
             transition: width 0.5s ease;
         }
@@ -178,133 +208,143 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            color: #fff;
-            font-weight: bold;
-            text-shadow: 2px 2px 4px #000;
+            color: #d4c5a9;
+            font-size: 12px;
+            letter-spacing: 1px;
         }
         
         /* Data Display */
-        .treasure-chest {
+        .data-container {
             background: rgba(0, 0, 0, 0.5);
-            border: 3px solid #8b6f47;
-            border-radius: 10px;
-            padding: 25px;
-            margin-top: 20px;
-            max-height: 70vh;
-            overflow-y: auto;
+            border: 1px solid rgba(139, 115, 85, 0.3);
+            padding: 30px;
+            margin-top: 25px;
         }
         
-        .treasure-chest h2 {
-            color: #ffd700;
-            font-size: 28px;
-            margin-bottom: 20px;
+        .data-container h2 {
+            color: #d4c5a9;
+            font-size: 16px;
+            font-weight: 300;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 25px;
             text-align: center;
-            text-shadow: 2px 2px 4px #000;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(139, 115, 85, 0.2);
+        }
+        
+        .data-output {
+            max-height: 65vh;
+            overflow-y: auto;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border: 1px solid rgba(139, 115, 85, 0.15);
         }
         
         #output {
-            font-family: 'Courier New', monospace;
-            color: #d4a574;
+            font-family: 'Consolas', 'Monaco', monospace;
+            color: #9b8b73;
             white-space: pre-wrap;
             word-wrap: break-word;
-            font-size: 13px;
-            line-height: 1.6;
+            font-size: 12px;
+            line-height: 1.8;
         }
         
-        /* Scrollbar Styling */
-        .treasure-chest::-webkit-scrollbar {
-            width: 12px;
+        /* Scrollbar */
+        .data-output::-webkit-scrollbar {
+            width: 10px;
         }
         
-        .treasure-chest::-webkit-scrollbar-track {
+        .data-output::-webkit-scrollbar-track {
             background: rgba(0, 0, 0, 0.5);
-            border-radius: 6px;
         }
         
-        .treasure-chest::-webkit-scrollbar-thumb {
-            background: #8b6f47;
-            border-radius: 6px;
+        .data-output::-webkit-scrollbar-thumb {
+            background: #3a2f25;
+            border: 1px solid #2a1f15;
         }
         
-        .treasure-chest::-webkit-scrollbar-thumb:hover {
-            background: #ffd700;
+        .data-output::-webkit-scrollbar-thumb:hover {
+            background: #4a3f35;
         }
         
         /* Update Time */
         .update-time {
             text-align: center;
-            color: #8b6f47;
-            font-size: 14px;
-            margin-top: 15px;
+            color: #6b5d4f;
+            font-size: 12px;
+            margin-top: 20px;
             font-style: italic;
+            letter-spacing: 1px;
         }
         
-        /* Loading Animation */
-        @keyframes treasure-glow {
-            0%, 100% { opacity: 0.6; }
-            50% { opacity: 1; }
-        }
-        
-        .loading {
-            animation: treasure-glow 2s infinite;
+        /* Divider */
+        .divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(139, 115, 85, 0.3), transparent);
+            margin: 30px 0;
         }
         
         /* Mobile Responsive */
         @media (max-width: 768px) {
-            .corner-decoration {
-                width: 60px;
-                height: 60px;
-                font-size: 40px;
-            }
-            
-            .map-header h1 {
-                font-size: 32px;
-            }
-            
-            .treasure-map {
+            .container {
                 padding: 20px 10px;
+            }
+            
+            .header h1 {
+                font-size: 24px;
+                letter-spacing: 2px;
+            }
+            
+            .corner-decoration {
+                font-size: 10px;
+                opacity: 0.1;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Corner Decorations -->
-    <div class="corner-decoration skull-top-left">☠️</div>
-    <div class="corner-decoration flag-top-right">🏴‍☠️</div>
-    <div class="corner-decoration sword-bottom-left">⚔️</div>
+    <!-- Subtle Corner Elements -->
+    <div class="corner-decoration skull-top-left">⚔ VIGILANT TRADING</div>
+    <div class="corner-decoration flag-top-right">
+        TACTICAL<br>
+        MARKET<br>
+        INTELLIGENCE
+    </div>
+    <div class="corner-decoration sword-bottom-left">Fortune favors preparation</div>
     <div class="corner-decoration memento-bottom-right">
-        💀<br>
-        <span style="font-size: 14px;">Memento<br>Mori</span>
+        MEMENTO MORI<br>
+        <span style="font-size: 10px;">Remember your mortality,<br>trade accordingly</span>
     </div>
     
-    <div class="treasure-map">
+    <div class="container">
         <!-- Header -->
-        <div class="map-header">
-            <h1>⚓ PIRATE'S TREASURE MAP ⚓</h1>
-            <p class="subtitle">🗡️ Market Data Intelligence Bridge 🗡️</p>
-            <p class="subtitle" style="font-size: 14px; margin-top: 5px;">
-                "Fortune favors the bold trader" - Memento Mori
-            </p>
+        <div class="header">
+            <h1>Market Intelligence Bridge</h1>
+            <p class="tagline">Tactical Trading Data Collection</p>
+            <p class="motto">"In markets, as in war, preparation defeats chaos"</p>
         </div>
         
         <!-- File Upload Section -->
         <div class="upload-section">
+            <h2>Stock Watchlist Import</h2>
             <div class="upload-area">
-                <h2 style="color: #ffd700; margin-bottom: 15px;">📜 Upload Your Stock Watchlist 📜</h2>
-                <p style="color: #d4a574; margin-bottom: 15px;">
-                    Upload an Excel (.xlsx), CSV (.csv), or Text (.txt) file with stock tickers
+                <p class="upload-instructions">
+                    Upload Excel (.xlsx, .xls), CSV (.csv), or Text (.txt) file containing ticker symbols
                 </p>
                 <label for="fileInput" class="upload-btn">
-                    ⚓ Choose Your Treasure Map ⚓
+                    Select Watchlist File
                 </label>
                 <input type="file" id="fileInput" accept=".xlsx,.xls,.csv,.txt">
-                <div class="stock-count" id="stockCount">No stocks loaded</div>
+                <div class="stock-count" id="stockCount">No watchlist loaded</div>
             </div>
         </div>
         
+        <div class="divider"></div>
+        
         <!-- Status Section -->
         <div class="status-section">
-            <div class="status-text" id="status">⚓ Ready to plunder market data ⚓</div>
+            <div class="status-text" id="status">Ready to commence data collection</div>
             <div class="progress-bar">
                 <div class="progress-fill" id="progressBar"></div>
                 <div class="progress-text" id="progressText">0%</div>
@@ -312,9 +352,11 @@
         </div>
         
         <!-- Data Display -->
-        <div class="treasure-chest">
-            <h2>💰 MARKET TREASURE DATA 💰</h2>
-            <div id="output">Awaiting your stock list to begin the treasure hunt...</div>
+        <div class="data-container">
+            <h2>Market Intelligence Data</h2>
+            <div class="data-output">
+                <div id="output">Awaiting watchlist upload to begin tactical analysis...</div>
+            </div>
         </div>
         
         <div class="update-time" id="updateTime"></div>
@@ -334,7 +376,6 @@
         let apiCallCount = 0;
         const MAX_CALLS_PER_MINUTE = 8;
         
-        // Utility Functions
         function sleep(ms) {
             return new Promise(resolve => setTimeout(resolve, ms));
         }
@@ -352,19 +393,17 @@
             const file = e.target.files[0];
             if (!file) return;
             
-            updateStatus('📜 Reading your treasure map...', 10);
+            updateStatus('Processing watchlist file...', 10);
             
             const fileType = file.name.split('.').pop().toLowerCase();
             
             try {
                 if (fileType === 'txt' || fileType === 'csv') {
-                    // Handle text/CSV files
                     const text = await file.text();
                     stockList = text.split(/[\n,;]/)
                         .map(line => line.trim().toUpperCase())
                         .filter(ticker => ticker.length > 0 && ticker.length < 6);
                 } else if (fileType === 'xlsx' || fileType === 'xls') {
-                    // Handle Excel files
                     const data = await file.arrayBuffer();
                     const workbook = XLSX.read(data, { type: 'array' });
                     const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
@@ -383,20 +422,18 @@
                     });
                 }
                 
-                // Remove duplicates
                 stockList = [...new Set(stockList)];
                 
                 document.getElementById('stockCount').textContent = 
-                    `⚓ ${stockList.length} stocks ready for analysis ⚓`;
+                    `${stockList.length} securities identified for analysis`;
                 
-                updateStatus('🏴‍☠️ Treasure map loaded! Beginning data plunder...', 30);
+                updateStatus('Watchlist processed. Initiating data collection...', 30);
                 
-                // Start fetching data
                 await fetchAllMarketData();
                 
             } catch (error) {
-                updateStatus('❌ Error reading file: ' + error.message, 0);
-                console.error('File read error:', error);
+                updateStatus('Error processing file: ' + error.message, 0);
+                console.error('File processing error:', error);
             }
         });
         
@@ -406,26 +443,21 @@
                 ticker: ticker,
                 current_price: parseFloat(data.close || data.c || 0),
                 
-                // Support/Resistance (Multiple Timeframes)
+                // Support/Resistance
                 daily_support: [],
                 daily_resistance: [],
-                weekly_support: null,
-                weekly_resistance: null,
                 
                 // Moving Averages
                 sma_20: null,
                 sma_50: null,
                 sma_200: null,
-                ema_20: null,
                 
                 // Technical Indicators
                 rsi_14: null,
                 macd: { value: null, signal: null, histogram: null },
                 volume: parseInt(data.volume || data.v || 0),
-                avg_volume: null,
-                relative_volume: null,
                 
-                // Pivot Points (Carter Worth style)
+                // Pivot Points
                 pivot: null,
                 r1: null, r2: null, r3: null,
                 s1: null, s2: null, s3: null,
@@ -444,7 +476,6 @@
                 percent_change: parseFloat(data.percent_change || data.dp || 0)
             };
             
-            // Calculate Support/Resistance (Simple method)
             const range = levels.high - levels.low;
             levels.daily_support = [
                 (levels.low - range * 0.236).toFixed(2),
@@ -457,7 +488,6 @@
                 (levels.high + range * 0.618).toFixed(2)
             ];
             
-            // Calculate Pivot Points
             levels.pivot = ((levels.high + levels.low + levels.current_price) / 3).toFixed(2);
             levels.r1 = ((2 * levels.pivot) - levels.low).toFixed(2);
             levels.r2 = (levels.pivot + (levels.high - levels.low)).toFixed(2);
@@ -466,7 +496,6 @@
             levels.s2 = (levels.pivot - (levels.high - levels.low)).toFixed(2);
             levels.s3 = (levels.low - 2 * (levels.high - levels.pivot)).toFixed(2);
             
-            // Fibonacci Levels
             levels.fib_382 = (levels.low + range * 0.382).toFixed(2);
             levels.fib_500 = (levels.low + range * 0.500).toFixed(2);
             levels.fib_618 = (levels.low + range * 0.618).toFixed(2);
@@ -474,7 +503,6 @@
             return levels;
         }
         
-        // Fetch Data from Twelve Data
         async function getTwelveDataQuote(ticker) {
             try {
                 const url = `https://api.twelvedata.com/quote?symbol=${ticker}&apikey=${API_KEYS.twelvedata}`;
@@ -494,7 +522,6 @@
             }
         }
         
-        // Main Data Collection Function
         async function fetchAllMarketData() {
             const marketData = {
                 generated_at: new Date().toISOString(),
@@ -502,13 +529,13 @@
                 stocks: {}
             };
             
-            updateStatus('⚔️ Plundering market data from the seven seas...', 40);
+            updateStatus('Collecting market intelligence data...', 40);
             
             for (let i = 0; i < stockList.length; i++) {
                 const ticker = stockList[i];
                 const progress = 40 + ((i / stockList.length) * 50);
                 
-                updateStatus(`🏴‍☠️ Analyzing ${ticker} (${i + 1}/${stockList.length})...`, progress);
+                updateStatus(`Analyzing ${ticker} (${i + 1}/${stockList.length})`, progress);
                 
                 const stockData = await getTwelveDataQuote(ticker);
                 
@@ -516,26 +543,23 @@
                     marketData.stocks[ticker] = stockData;
                 }
                 
-                // Rate limiting
                 if (apiCallCount >= MAX_CALLS_PER_MINUTE) {
-                    updateStatus('⏳ Waiting for API cooldown (60 seconds)...', progress);
+                    updateStatus('API rate limit - pausing for 60 seconds...', progress);
                     await sleep(60000);
                     apiCallCount = 0;
                 }
                 
-                await sleep(400); // Small delay between requests
+                await sleep(400);
             }
             
-            updateStatus('💰 Treasure successfully plundered!', 100);
+            updateStatus('Data collection complete', 100);
             
-            // Display results
             document.getElementById('output').textContent = 
                 JSON.stringify(marketData, null, 2);
             
-            // Update timestamp
             const now = new Date().toLocaleString();
             document.getElementById('updateTime').textContent = 
-                `⚓ Last plundered: ${now} | ${marketData.total_stocks} treasures collected ⚓`;
+                `Data collected: ${now} | ${marketData.total_stocks} securities analyzed`;
         }
     </script>
 </body>
