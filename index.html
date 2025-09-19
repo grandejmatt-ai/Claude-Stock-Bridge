@@ -213,6 +213,19 @@
             letter-spacing: 1px;
         }
         
+        /* Debug Log */
+        .debug-section {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(139, 115, 85, 0.15);
+            padding: 15px;
+            margin-bottom: 20px;
+            max-height: 150px;
+            overflow-y: auto;
+            font-family: 'Consolas', monospace;
+            font-size: 11px;
+            color: #6b5d4f;
+        }
+        
         /* Data Display */
         .data-container {
             background: rgba(0, 0, 0, 0.5);
@@ -251,20 +264,24 @@
         }
         
         /* Scrollbar */
-        .data-output::-webkit-scrollbar {
+        .data-output::-webkit-scrollbar,
+        .debug-section::-webkit-scrollbar {
             width: 10px;
         }
         
-        .data-output::-webkit-scrollbar-track {
+        .data-output::-webkit-scrollbar-track,
+        .debug-section::-webkit-scrollbar-track {
             background: rgba(0, 0, 0, 0.5);
         }
         
-        .data-output::-webkit-scrollbar-thumb {
+        .data-output::-webkit-scrollbar-thumb,
+        .debug-section::-webkit-scrollbar-thumb {
             background: #3a2f25;
             border: 1px solid #2a1f15;
         }
         
-        .data-output::-webkit-scrollbar-thumb:hover {
+        .data-output::-webkit-scrollbar-thumb:hover,
+        .debug-section::-webkit-scrollbar-thumb:hover {
             background: #4a3f35;
         }
         
@@ -351,6 +368,9 @@
             </div>
         </div>
         
+        <!-- Debug Log -->
+        <div class="debug-section" id="debugLog">Debug log will appear here...</div>
+        
         <!-- Data Display -->
         <div class="data-container">
             <h2>Market Intelligence Data</h2>
@@ -373,11 +393,34 @@
         };
         
         let stockList = [];
-        let apiCallCount = 0;
-        const MAX_CALLS_PER_MINUTE = 8;
+        let apiCallCounts = {
+            twelvedata: 0,
+            finnhub: 0,
+            polygon: 0
+        };
+        
+        const API_LIMITS = {
+            twelvedata: { perMinute: 8, perDay: 800 },
+            finnhub: { perMinute: 60, perDay: Infinity },
+            polygon: { perMinute: 5, perDay: Infinity }
+        };
+        
+        let debugMessages = [];
         
         function sleep(ms) {
             return new Promise(resolve => setTimeout(resolve, ms));
+        }
+        
+        function log(message, level = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const logMessage = `[${timestamp}] ${level.toUpperCase()}: ${message}`;
+            debugMessages.push(logMessage);
+            
+            const debugLog = document.getElementById('debugLog');
+            debugLog.innerHTML = debugMessages.slice(-20).join('\n');
+            debugLog.scrollTop = debugLog.scrollHeight;
+            
+            console.log(logMessage);
         }
         
         function updateStatus(message, progress = null) {
@@ -388,12 +431,43 @@
             }
         }
         
+        // ROBUST RETRY LOGIC
+        async function fetchWithRetry(url, retries = 3, delay = 1000) {
+            for (let i = 0; i < retries; i++) {
+                try {
+                    log(`Attempt ${i + 1}/${retries} for ${url.split('?')[0]}`);
+                    const response = await fetch(url);
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+                    
+                    const data = await response.json();
+                    log(`Success on attempt ${i + 1}`, 'success');
+                    return data;
+                } catch (error) {
+                    log(`Failed attempt ${i + 1}: ${error.message}`, 'error');
+                    
+                    if (i === retries - 1) {
+                        throw error;
+                    }
+                    
+                    // Exponential backoff
+                    const backoffDelay = delay * Math.pow(2, i);
+                    log(`Waiting ${backoffDelay}ms before retry...`, 'warn');
+                    await sleep(backoffDelay);
+                }
+            }
+        }
+        
         // File Upload Handler
         document.getElementById('fileInput').addEventListener('change', async (e) => {
             const file = e.target.files[0];
             if (!file) return;
             
+            debugMessages = []; // Clear debug log
             updateStatus('Processing watchlist file...', 10);
+            log('File upload initiated: ' + file.name);
             
             const fileType = file.name.split('.').pop().toLowerCase();
             
@@ -402,7 +476,9 @@
                     const text = await file.text();
                     stockList = text.split(/[\n,;]/)
                         .map(line => line.trim().toUpperCase())
-                        .filter(ticker => ticker.length > 0 && ticker.length < 6);
+                        .filter(ticker => ticker.length > 0 && ticker.length < 6 && /^[A-Z]+$/.test(ticker));
+                    
+                    log(`Extracted ${stockList.length} tickers from text/CSV file`);
                 } else if (fileType === 'xlsx' || fileType === 'xls') {
                     const data = await file.arrayBuffer();
                     const workbook = XLSX.read(data, { type: 'array' });
@@ -414,15 +490,19 @@
                         row.forEach(cell => {
                             if (cell && typeof cell === 'string') {
                                 const ticker = cell.trim().toUpperCase();
-                                if (ticker.length > 0 && ticker.length < 6) {
+                                if (ticker.length > 0 && ticker.length < 6 && /^[A-Z]+$/.test(ticker)) {
                                     stockList.push(ticker);
                                 }
                             }
                         });
                     });
+                    
+                    log(`Extracted ${stockList.length} tickers from Excel file`);
                 }
                 
                 stockList = [...new Set(stockList)];
+                log(`Final unique ticker count: ${stockList.length}`);
+                log(`Tickers: ${stockList.join(', ')}`);
                 
                 document.getElementById('stockCount').textContent = 
                     `${stockList.length} securities identified for analysis`;
@@ -433,133 +513,198 @@
                 
             } catch (error) {
                 updateStatus('Error processing file: ' + error.message, 0);
+                log('File processing error: ' + error.message, 'error');
                 console.error('File processing error:', error);
             }
         });
         
         // Technical Analysis Calculator
-        function calculateTechnicalLevels(data, ticker) {
+        function calculateTechnicalLevels(data, ticker, source) {
+            // Normalize data from different API sources
+            const price = parseFloat(data.close || data.c || data.price || data.regularMarketPrice || 0);
+            const high = parseFloat(data.high || data.h || data.dayHigh || 0);
+            const low = parseFloat(data.low || data.l || data.dayLow || 0);
+            const open = parseFloat(data.open || data.o || data.regularMarketOpen || 0);
+            const volume = parseInt(data.volume || data.v || 0);
+            const prevClose = parseFloat(data.previous_close || data.pc || data.previousClose || price);
+            const change = parseFloat(data.change || data.d || (price - prevClose));
+            const percentChange = parseFloat(data.percent_change || data.dp || ((price - prevClose) / prevClose * 100));
+            
+            if (!price || !high || !low) {
+                log(`Invalid data for ${ticker} from ${source}`, 'warn');
+                return null;
+            }
+            
+            const range = high - low;
+            
             const levels = {
                 ticker: ticker,
-                current_price: parseFloat(data.close || data.c || 0),
+                source: source,
+                current_price: price.toFixed(2),
                 
                 // Support/Resistance
-                daily_support: [],
-                daily_resistance: [],
+                daily_support: [
+                    (low - range * 0.236).toFixed(2),
+                    (low - range * 0.382).toFixed(2),
+                    (low - range * 0.618).toFixed(2)
+                ],
+                daily_resistance: [
+                    (high + range * 0.236).toFixed(2),
+                    (high + range * 0.382).toFixed(2),
+                    (high + range * 0.618).toFixed(2)
+                ],
                 
-                // Moving Averages
-                sma_20: null,
-                sma_50: null,
-                sma_200: null,
-                
-                // Technical Indicators
-                rsi_14: null,
-                macd: { value: null, signal: null, histogram: null },
-                volume: parseInt(data.volume || data.v || 0),
-                
-                // Pivot Points
+                // Pivot Points (Carter Worth style)
                 pivot: null,
                 r1: null, r2: null, r3: null,
                 s1: null, s2: null, s3: null,
                 
                 // Fibonacci Levels
-                fib_382: null,
-                fib_500: null,
-                fib_618: null,
+                fib_382: (low + range * 0.382).toFixed(2),
+                fib_500: (low + range * 0.500).toFixed(2),
+                fib_618: (low + range * 0.618).toFixed(2),
                 
                 // Price Action
-                high: parseFloat(data.high || data.h || 0),
-                low: parseFloat(data.low || data.l || 0),
-                open: parseFloat(data.open || data.o || 0),
-                prev_close: parseFloat(data.previous_close || data.pc || 0),
-                change: parseFloat(data.change || data.d || 0),
-                percent_change: parseFloat(data.percent_change || data.dp || 0)
+                high: high.toFixed(2),
+                low: low.toFixed(2),
+                open: open.toFixed(2),
+                prev_close: prevClose.toFixed(2),
+                volume: volume,
+                change: change.toFixed(2),
+                percent_change: percentChange.toFixed(2)
             };
             
-            const range = levels.high - levels.low;
-            levels.daily_support = [
-                (levels.low - range * 0.236).toFixed(2),
-                (levels.low - range * 0.382).toFixed(2),
-                (levels.low - range * 0.618).toFixed(2)
-            ];
-            levels.daily_resistance = [
-                (levels.high + range * 0.236).toFixed(2),
-                (levels.high + range * 0.382).toFixed(2),
-                (levels.high + range * 0.618).toFixed(2)
-            ];
-            
-            levels.pivot = ((levels.high + levels.low + levels.current_price) / 3).toFixed(2);
-            levels.r1 = ((2 * levels.pivot) - levels.low).toFixed(2);
-            levels.r2 = (levels.pivot + (levels.high - levels.low)).toFixed(2);
-            levels.r3 = (levels.high + 2 * (levels.pivot - levels.low)).toFixed(2);
-            levels.s1 = ((2 * levels.pivot) - levels.high).toFixed(2);
-            levels.s2 = (levels.pivot - (levels.high - levels.low)).toFixed(2);
-            levels.s3 = (levels.low - 2 * (levels.high - levels.pivot)).toFixed(2);
-            
-            levels.fib_382 = (levels.low + range * 0.382).toFixed(2);
-            levels.fib_500 = (levels.low + range * 0.500).toFixed(2);
-            levels.fib_618 = (levels.low + range * 0.618).toFixed(2);
+            // Calculate Pivot Points
+            const pivot = (high + low + price) / 3;
+            levels.pivot = pivot.toFixed(2);
+            levels.r1 = ((2 * pivot) - low).toFixed(2);
+            levels.r2 = (pivot + (high - low)).toFixed(2);
+            levels.r3 = (high + 2 * (pivot - low)).toFixed(2);
+            levels.s1 = ((2 * pivot) - high).toFixed(2);
+            levels.s2 = (pivot - (high - low)).toFixed(2);
+            levels.s3 = (low - 2 * (high - pivot)).toFixed(2);
             
             return levels;
         }
         
-        async function getTwelveDataQuote(ticker) {
-            try {
-                const url = `https://api.twelvedata.com/quote?symbol=${ticker}&apikey=${API_KEYS.twelvedata}`;
-                const response = await fetch(url);
-                const data = await response.json();
-                apiCallCount++;
-                
-                if (data.status === 'error') {
-                    console.error(`Error for ${ticker}:`, data.message);
-                    return null;
+        // API FALLBACK SYSTEM - Try multiple APIs
+        async function getStockData(ticker) {
+            const apis = [
+                { name: 'twelvedata', fn: getTwelveDataQuote },
+                { name: 'finnhub', fn: getFinnhubQuote },
+                { name: 'polygon', fn: getPolygonQuote }
+            ];
+            
+            for (const api of apis) {
+                try {
+                    log(`Trying ${api.name} for ${ticker}`);
+                    const data = await api.fn(ticker);
+                    
+                    if (data) {
+                        log(`Success with ${api.name} for ${ticker}`, 'success');
+                        return data;
+                    }
+                } catch (error) {
+                    log(`${api.name} failed for ${ticker}: ${error.message}`, 'error');
                 }
                 
-                return calculateTechnicalLevels(data, ticker);
-            } catch (error) {
-                console.error(`Error fetching ${ticker}:`, error);
-                return null;
+                await sleep(200); // Small delay between API attempts
             }
+            
+            log(`All APIs failed for ${ticker}`, 'error');
+            return null;
+        }
+        
+        async function getTwelveDataQuote(ticker) {
+            const url = `https://api.twelvedata.com/quote?symbol=${ticker}&apikey=${API_KEYS.twelvedata}`;
+            const data = await fetchWithRetry(url, 2, 500);
+            apiCallCounts.twelvedata++;
+            
+            if (data.status === 'error' || !data.close) {
+                throw new Error(data.message || 'No price data');
+            }
+            
+            return calculateTechnicalLevels(data, ticker, 'TwelveData');
+        }
+        
+        async function getFinnhubQuote(ticker) {
+            const url = `https://finnhub.io/api/v1/quote?symbol=${ticker}&token=${API_KEYS.finnhub}`;
+            const data = await fetchWithRetry(url, 2, 500);
+            apiCallCounts.finnhub++;
+            
+            if (!data.c || data.c === 0) {
+                throw new Error('No price data');
+            }
+            
+            return calculateTechnicalLevels(data, ticker, 'Finnhub');
+        }
+        
+        async function getPolygonQuote(ticker) {
+            const url = `https://api.polygon.io/v2/aggs/ticker/${ticker}/prev?adjusted=true&apiKey=${API_KEYS.polygon}`;
+            const data = await fetchWithRetry(url, 2, 500);
+            apiCallCounts.polygon++;
+            
+            if (!data.results || data.results.length === 0) {
+                throw new Error('No data available');
+            }
+            
+            return calculateTechnicalLevels(data.results[0], ticker, 'Polygon');
         }
         
         async function fetchAllMarketData() {
             const marketData = {
                 generated_at: new Date().toISOString(),
                 total_stocks: stockList.length,
+                successful: 0,
+                failed: 0,
                 stocks: {}
             };
             
             updateStatus('Collecting market intelligence data...', 40);
+            log('Starting data collection for all stocks');
             
             for (let i = 0; i < stockList.length; i++) {
                 const ticker = stockList[i];
-                const progress = 40 + ((i / stockList.length) * 50);
+                const progress = 40 + ((i / stockList.length) * 55);
                 
                 updateStatus(`Analyzing ${ticker} (${i + 1}/${stockList.length})`, progress);
+                log(`Processing ${ticker}`);
                 
-                const stockData = await getTwelveDataQuote(ticker);
-                
-                if (stockData) {
-                    marketData.stocks[ticker] = stockData;
+                try {
+                    const stockData = await getStockData(ticker);
+                    
+                    if (stockData) {
+                        marketData.stocks[ticker] = stockData;
+                        marketData.successful++;
+                        log(`Successfully collected data for ${ticker}`, 'success');
+                    } else {
+                        marketData.failed++;
+                        log(`Failed to collect data for ${ticker}`, 'error');
+                    }
+                } catch (error) {
+                    marketData.failed++;
+                    log(`Exception for ${ticker}: ${error.message}`, 'error');
                 }
                 
-                if (apiCallCount >= MAX_CALLS_PER_MINUTE) {
-                    updateStatus('API rate limit - pausing for 60 seconds...', progress);
-                    await sleep(60000);
-                    apiCallCount = 0;
+                // Smart rate limiting
+                if (apiCallCounts.twelvedata >= 6) {
+                    log('TwelveData approaching limit, pausing...', 'warn');
+                    await sleep(10000); // 10 second pause
+                    apiCallCounts.twelvedata = 0;
                 }
                 
-                await sleep(400);
+                await sleep(500); // Delay between stocks
             }
             
-            updateStatus('Data collection complete', 100);
+            updateStatus(`Data collection complete: ${marketData.successful} succeeded, ${marketData.failed} failed`, 100);
+            log(`Collection complete. Success: ${marketData.successful}, Failed: ${marketData.failed}`, 'success');
             
             document.getElementById('output').textContent = 
                 JSON.stringify(marketData, null, 2);
             
             const now = new Date().toLocaleString();
             document.getElementById('updateTime').textContent = 
-                `Data collected: ${now} | ${marketData.total_stocks} securities analyzed`;
+                `Data collected: ${now} | ${marketData.successful}/${marketData.total_stocks} successful`;
         }
     </script>
 </body>
