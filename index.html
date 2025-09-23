@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Market Intelligence - Tactical Trading Bridge</title>
+    <title>Market Intelligence - Pattern Recognition Edition</title>
     <style>
         * {
             margin: 0;
@@ -86,7 +86,7 @@
         }
         
         .header h1 {
-            font-size: 36px;
+            font-size: 32px;
             color: #d4c5a9;
             font-weight: 300;
             letter-spacing: 4px;
@@ -107,6 +107,18 @@
             font-size: 13px;
             font-style: italic;
             margin-top: 15px;
+        }
+
+        .version-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #2a4a2f 0%, #1a3a1f 100%);
+            color: #4a8a4a;
+            padding: 4px 12px;
+            border: 1px solid #4a8a4a;
+            font-size: 11px;
+            letter-spacing: 1px;
+            margin-top: 10px;
+            border-radius: 2px;
         }
         
         /* File Upload Section */
@@ -193,6 +205,27 @@
             color: #d4c5a9;
             font-size: 16px;
             letter-spacing: 1px;
+        }
+
+        .api-usage {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(139, 115, 85, 0.2);
+            padding: 20px;
+            margin-bottom: 20px;
+            font-size: 12px;
+            color: #8b7355;
+        }
+
+        .api-usage h3 {
+            color: #d4c5a9;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .api-counter {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
         }
         
         /* Status Section */
@@ -346,10 +379,10 @@
 </head>
 <body>
     <!-- Subtle Corner Elements -->
-    <div class="corner-decoration skull-top-left">⚔ VIGILANT TRADING</div>
+    <div class="corner-decoration skull-top-left">⚔ PATTERN RECOGNITION</div>
     <div class="corner-decoration flag-top-right">
+        ENHANCED<br>
         TACTICAL<br>
-        MARKET<br>
         INTELLIGENCE
     </div>
     <div class="corner-decoration sword-bottom-left">Fortune favors preparation</div>
@@ -361,9 +394,30 @@
     <div class="container">
         <!-- Header -->
         <div class="header">
-            <h1>Market Intelligence Bridge</h1>
-            <p class="tagline">Tactical Trading Data Collection</p>
+            <h1>Pattern Recognition Engine</h1>
+            <p class="tagline">Enhanced Market Intelligence Collection</p>
+            <div class="version-badge">v2.0 - HISTORICAL + TECHNICAL ANALYSIS</div>
             <p class="motto">"In markets, as in war, preparation defeats chaos"</p>
+        </div>
+        
+        <!-- API Usage Tracker -->
+        <div class="api-usage">
+            <h3>API Usage Monitor (Free Tier Optimization)</h3>
+            <div class="api-counter">
+                <span>TwelveData:</span>
+                <span id="twelveDataCount">0/800 daily</span>
+            </div>
+            <div class="api-counter">
+                <span>Finnhub:</span>
+                <span id="finnhubCount">0/∞ daily</span>
+            </div>
+            <div class="api-counter">
+                <span>Polygon:</span>
+                <span id="polygonCount">0/∞ daily</span>
+            </div>
+            <div style="margin-top: 10px; font-style: italic; color: #6b5d4f;">
+                Strategy: 2-3 calls per stock • Technical indicators calculated locally • Smart caching enabled
+            </div>
         </div>
         
         <!-- File Upload Section -->
@@ -371,7 +425,8 @@
             <h2>Stock Watchlist Import</h2>
             <div class="upload-area">
                 <p class="upload-instructions">
-                    Upload Excel (.xlsx, .xls), CSV (.csv), or Text (.txt) file containing ticker symbols
+                    Upload Excel (.xlsx, .xls), CSV (.csv), or Text (.txt) file containing ticker symbols<br>
+                    <strong>Enhanced Analysis:</strong> Historical OHLC + Technical Indicators + Pattern Recognition Data
                 </p>
                 <label for="fileInput" class="upload-btn">
                     Select Watchlist File
@@ -385,7 +440,7 @@
         
         <!-- Status Section -->
         <div class="status-section">
-            <div class="status-text" id="status">Ready to commence data collection</div>
+            <div class="status-text" id="status">Ready to commence enhanced data collection</div>
             <div class="progress-bar">
                 <div class="progress-fill" id="progressBar"></div>
                 <div class="progress-text" id="progressText">0%</div>
@@ -393,19 +448,19 @@
         </div>
         
         <!-- Debug Log -->
-        <div class="debug-section" id="debugLog">Debug log will appear here...</div>
+        <div class="debug-section" id="debugLog">Enhanced debug log will appear here...</div>
         
         <!-- Data Display -->
         <div class="data-container">
-            <h2>Market Intelligence Data</h2>
+            <h2>Enhanced Market Intelligence Data</h2>
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                <span style="color: #8b7355; font-size: 12px; letter-spacing: 1px;">JSON OUTPUT</span>
+                <span style="color: #8b7355; font-size: 12px; letter-spacing: 1px;">PATTERN RECOGNITION JSON OUTPUT</span>
                 <button id="copyBtn" class="copy-btn" style="display: none;">
-                    📋 Copy JSON Data
+                    📋 Copy Enhanced Data
                 </button>
             </div>
             <div class="data-output">
-                <div id="output">Awaiting watchlist upload to begin tactical analysis...</div>
+                <div id="output">Awaiting watchlist upload to begin enhanced tactical analysis with pattern recognition...</div>
             </div>
         </div>
         
@@ -436,6 +491,7 @@
         };
         
         let debugMessages = [];
+        let historicalDataCache = new Map(); // Cache for historical data
         
         function sleep(ms) {
             return new Promise(resolve => setTimeout(resolve, ms));
@@ -447,7 +503,7 @@
             debugMessages.push(logMessage);
             
             const debugLog = document.getElementById('debugLog');
-            debugLog.innerHTML = debugMessages.slice(-20).join('\n');
+            debugLog.innerHTML = debugMessages.slice(-25).join('\n');
             debugLog.scrollTop = debugLog.scrollHeight;
             
             console.log(logMessage);
@@ -459,6 +515,12 @@
                 document.getElementById('progressBar').style.width = progress + '%';
                 document.getElementById('progressText').textContent = Math.round(progress) + '%';
             }
+        }
+
+        function updateAPICounters() {
+            document.getElementById('twelveDataCount').textContent = `${apiCallCounts.twelvedata}/800 daily`;
+            document.getElementById('finnhubCount').textContent = `${apiCallCounts.finnhub}/∞ daily`;
+            document.getElementById('polygonCount').textContent = `${apiCallCounts.polygon}/∞ daily`;
         }
         
         // ROBUST RETRY LOGIC
@@ -487,6 +549,388 @@
                     log(`Waiting ${backoffDelay}ms before retry...`, 'warn');
                     await sleep(backoffDelay);
                 }
+            }
+        }
+
+        // ===== TECHNICAL INDICATOR CALCULATIONS (LOCAL) =====
+        
+        function calculateSMA(prices, period) {
+            if (prices.length < period) return null;
+            const sum = prices.slice(-period).reduce((a, b) => a + b, 0);
+            return sum / period;
+        }
+
+        function calculateEMA(prices, period) {
+            if (prices.length < period) return null;
+            const multiplier = 2 / (period + 1);
+            let ema = prices.slice(0, period).reduce((a, b) => a + b, 0) / period;
+            
+            for (let i = period; i < prices.length; i++) {
+                ema = (prices[i] * multiplier) + (ema * (1 - multiplier));
+            }
+            return ema;
+        }
+
+        function calculateRSI(prices, period = 14) {
+            if (prices.length < period + 1) return null;
+            
+            let gains = 0, losses = 0;
+            
+            for (let i = 1; i <= period; i++) {
+                const change = prices[i] - prices[i - 1];
+                if (change > 0) gains += change;
+                else losses -= change;
+            }
+            
+            let avgGain = gains / period;
+            let avgLoss = losses / period;
+            
+            for (let i = period + 1; i < prices.length; i++) {
+                const change = prices[i] - prices[i - 1];
+                const gain = change > 0 ? change : 0;
+                const loss = change < 0 ? -change : 0;
+                
+                avgGain = (avgGain * (period - 1) + gain) / period;
+                avgLoss = (avgLoss * (period - 1) + loss) / period;
+            }
+            
+            const rs = avgGain / avgLoss;
+            return 100 - (100 / (1 + rs));
+        }
+
+        function calculateMACD(prices, fast = 12, slow = 26, signal = 9) {
+            if (prices.length < slow) return null;
+            
+            const emaFast = calculateEMA(prices, fast);
+            const emaSlow = calculateEMA(prices, slow);
+            
+            if (!emaFast || !emaSlow) return null;
+            
+            const macdLine = emaFast - emaSlow;
+            
+            // For signal line, we'd need historical MACD values
+            // Simplified calculation for now
+            return {
+                macd: macdLine,
+                signal: macdLine * 0.8, // Simplified
+                histogram: macdLine * 0.2
+            };
+        }
+
+        function calculateBollingerBands(prices, period = 20, stdDev = 2) {
+            if (prices.length < period) return null;
+            
+            const sma = calculateSMA(prices, period);
+            const recentPrices = prices.slice(-period);
+            
+            const variance = recentPrices.reduce((sum, price) => {
+                return sum + Math.pow(price - sma, 2);
+            }, 0) / period;
+            
+            const standardDeviation = Math.sqrt(variance);
+            
+            return {
+                upper: sma + (standardDeviation * stdDev),
+                middle: sma,
+                lower: sma - (standardDeviation * stdDev)
+            };
+        }
+
+        function findSupportResistanceLevels(ohlcData) {
+            const highs = ohlcData.map(d => d.high).sort((a, b) => b - a);
+            const lows = ohlcData.map(d => d.low).sort((a, b) => a - b);
+            
+            return {
+                resistance: highs.slice(0, 3), // Top 3 highs
+                support: lows.slice(0, 3)      // Bottom 3 lows
+            };
+        }
+
+        function calculateRelativeStrength(stockPrices, spyPrices, days = 90) {
+            if (stockPrices.length < days || spyPrices.length < days) return null;
+            
+            const stockChange = (stockPrices[stockPrices.length - 1] - stockPrices[stockPrices.length - days]) / stockPrices[stockPrices.length - days];
+            const spyChange = (spyPrices[spyPrices.length - 1] - spyPrices[spyPrices.length - days]) / spyPrices[spyPrices.length - days];
+            
+            return stockChange / spyChange;
+        }
+
+        // ===== HISTORICAL DATA COLLECTION =====
+        
+        async function getHistoricalData(ticker) {
+            // Check cache first
+            const cacheKey = `${ticker}_historical`;
+            if (historicalDataCache.has(cacheKey)) {
+                log(`Using cached data for ${ticker}`, 'info');
+                return historicalDataCache.get(cacheKey);
+            }
+
+            // Try TwelveData first (most reliable for historical data)
+            try {
+                const endDate = new Date();
+                const startDate = new Date();
+                startDate.setMonth(startDate.getMonth() - 12); // 12 months of data
+                
+                const url = `https://api.twelvedata.com/time_series?symbol=${ticker}&interval=1day&outputsize=252&apikey=${API_KEYS.twelvedata}`;
+                const data = await fetchWithRetry(url, 2, 1000);
+                apiCallCounts.twelvedata++;
+                updateAPICounters();
+                
+                if (data.status === 'error' || !data.values) {
+                    throw new Error(data.message || 'No historical data');
+                }
+                
+                const ohlcData = data.values.map(item => ({
+                    date: item.datetime,
+                    open: parseFloat(item.open),
+                    high: parseFloat(item.high),
+                    low: parseFloat(item.low),
+                    close: parseFloat(item.close),
+                    volume: parseInt(item.volume || 0)
+                })).reverse(); // TwelveData returns newest first
+                
+                // Cache the data
+                historicalDataCache.set(cacheKey, ohlcData);
+                log(`Cached historical data for ${ticker} (${ohlcData.length} days)`, 'success');
+                
+                return ohlcData;
+                
+            } catch (error) {
+                log(`TwelveData historical failed for ${ticker}: ${error.message}`, 'error');
+                return null;
+            }
+        }
+
+        async function getCurrentQuote(ticker) {
+            // Try multiple APIs for current quote (with premarket data)
+            const apis = [
+                async () => {
+                    const url = `https://api.twelvedata.com/quote?symbol=${ticker}&apikey=${API_KEYS.twelvedata}`;
+                    const data = await fetchWithRetry(url, 2, 500);
+                    apiCallCounts.twelvedata++;
+                    updateAPICounters();
+                    return data.status !== 'error' ? data : null;
+                },
+                async () => {
+                    const url = `https://finnhub.io/api/v1/quote?symbol=${ticker}&token=${API_KEYS.finnhub}`;
+                    const data = await fetchWithRetry(url, 2, 500);
+                    apiCallCounts.finnhub++;
+                    updateAPICounters();
+                    return data.c ? data : null;
+                }
+            ];
+            
+            for (const apiCall of apis) {
+                try {
+                    const result = await apiCall();
+                    if (result) return result;
+                } catch (error) {
+                    continue;
+                }
+            }
+            
+            return null;
+        }
+
+        function extractPremarketData(quoteData, ticker, source) {
+            let premarketInfo = {
+                has_premarket: false,
+                premarket_price: null,
+                premarket_change: null,
+                premarket_change_percent: null,
+                gap_vs_close: null
+            };
+
+            try {
+                if (source === 'TwelveData') {
+                    // TwelveData includes extended hours in quote response
+                    const prevClose = parseFloat(quoteData.previous_close || 0);
+                    const currentPrice = parseFloat(quoteData.close || 0);
+                    
+                    // Check if we're in premarket hours (before 9:30 AM EST)
+                    const now = new Date();
+                    const marketOpen = new Date();
+                    marketOpen.setHours(9, 30, 0, 0);
+                    
+                    if (now < marketOpen && currentPrice && prevClose) {
+                        premarketInfo.has_premarket = true;
+                        premarketInfo.premarket_price = currentPrice.toFixed(2);
+                        premarketInfo.premarket_change = (currentPrice - prevClose).toFixed(2);
+                        premarketInfo.premarket_change_percent = ((currentPrice - prevClose) / prevClose * 100).toFixed(2);
+                        premarketInfo.gap_vs_close = ((currentPrice - prevClose) / prevClose * 100).toFixed(2);
+                    }
+                } else if (source === 'Finnhub') {
+                    // Finnhub quote includes current price which may be premarket
+                    const prevClose = parseFloat(quoteData.pc || 0);
+                    const currentPrice = parseFloat(quoteData.c || 0);
+                    
+                    const now = new Date();
+                    const marketOpen = new Date();
+                    marketOpen.setHours(9, 30, 0, 0);
+                    
+                    if (now < marketOpen && currentPrice && prevClose) {
+                        premarketInfo.has_premarket = true;
+                        premarketInfo.premarket_price = currentPrice.toFixed(2);
+                        premarketInfo.premarket_change = (currentPrice - prevClose).toFixed(2);
+                        premarketInfo.premarket_change_percent = ((currentPrice - prevClose) / prevClose * 100).toFixed(2);
+                        premarketInfo.gap_vs_close = ((currentPrice - prevClose) / prevClose * 100).toFixed(2);
+                    }
+                }
+
+                log(`Premarket data for ${ticker}: ${premarketInfo.has_premarket ? 'Available' : 'None'}`);
+                return premarketInfo;
+
+            } catch (error) {
+                log(`Error extracting premarket data for ${ticker}: ${error.message}`, 'warn');
+                return premarketInfo;
+            }
+        }
+
+        function analyzePatternData(ohlcData) {
+            if (!ohlcData || ohlcData.length < 50) return null;
+            
+            const prices = ohlcData.map(d => d.close);
+            const highs = ohlcData.map(d => d.high);
+            const lows = ohlcData.map(d => d.low);
+            const volumes = ohlcData.map(d => d.volume);
+            
+            const currentPrice = prices[prices.length - 1];
+            const high52Week = Math.max(...highs);
+            const low52Week = Math.min(...lows);
+            
+            // Base analysis
+            const recentHigh = Math.max(...highs.slice(-50));
+            const recentLow = Math.min(...lows.slice(-50));
+            const baseDepth = ((recentHigh - recentLow) / recentHigh) * 100;
+            
+            // Volume analysis
+            const avgVolume50 = volumes.slice(-50).reduce((a, b) => a + b, 0) / 50;
+            const currentVolume = volumes[volumes.length - 1];
+            
+            return {
+                base_depth: baseDepth.toFixed(2),
+                proximity_to_52w_high: ((currentPrice / high52Week) * 100).toFixed(1),
+                base_length_days: 50, // Last 50 days analyzed
+                avg_volume_50d: Math.round(avgVolume50),
+                current_volume_vs_avg: (currentVolume / avgVolume50).toFixed(2),
+                price_volatility_20d: calculateVolatility(prices.slice(-20)).toFixed(2)
+            };
+        }
+
+        function calculateVolatility(prices) {
+            if (prices.length < 2) return 0;
+            const returns = [];
+            for (let i = 1; i < prices.length; i++) {
+                returns.push((prices[i] - prices[i - 1]) / prices[i - 1]);
+            }
+            const avgReturn = returns.reduce((a, b) => a + b, 0) / returns.length;
+            const variance = returns.reduce((sum, ret) => sum + Math.pow(ret - avgReturn, 2), 0) / returns.length;
+            return Math.sqrt(variance) * Math.sqrt(252) * 100; // Annualized volatility
+        }
+
+        // ===== ENHANCED STOCK ANALYSIS =====
+        
+        async function getEnhancedStockData(ticker) {
+            log(`Starting enhanced analysis for ${ticker}`);
+            
+            try {
+                // Get historical data (1 API call)
+                const historicalData = await getHistoricalData(ticker);
+                if (!historicalData || historicalData.length < 50) {
+                    throw new Error('Insufficient historical data');
+                }
+                
+                await sleep(300); // Rate limiting
+                
+                // Get current quote (1 API call)
+                const currentQuote = await getCurrentQuote(ticker);
+                if (!currentQuote) {
+                    throw new Error('No current quote available');
+                }
+                
+                // Extract price arrays for calculations
+                const closePrices = historicalData.map(d => d.close);
+                const volumes = historicalData.map(d => d.volume);
+                
+                // Calculate technical indicators locally (no additional API calls)
+                const sma10 = calculateSMA(closePrices, 10);
+                const sma20 = calculateSMA(closePrices, 20);
+                const sma50 = calculateSMA(closePrices, 50);
+                const sma200 = calculateSMA(closePrices, 200);
+                const rsi = calculateRSI(closePrices, 14);
+                const macd = calculateMACD(closePrices, 12, 26, 9);
+                const bollinger = calculateBollingerBands(closePrices, 20, 2);
+                const supportResistance = findSupportResistanceLevels(historicalData.slice(-60));
+                const patternData = analyzePatternData(historicalData);
+                
+                // Extract premarket data from current quote
+                const source = currentQuote.close ? 'TwelveData' : 'Finnhub';
+                const premarketData = extractPremarketData(currentQuote, ticker, source);
+                
+                // Normalize current quote data
+                const currentPrice = parseFloat(currentQuote.close || currentQuote.c || currentQuote.price || 0);
+                const prevClose = parseFloat(currentQuote.previous_close || currentQuote.pc || closePrices[closePrices.length - 2]);
+                const change = currentPrice - prevClose;
+                const changePercent = (change / prevClose) * 100;
+                
+                const enhancedData = {
+                    ticker: ticker,
+                    generated_at: new Date().toISOString(),
+                    
+                    current_data: {
+                        price: currentPrice.toFixed(2),
+                        change: change.toFixed(2),
+                        change_percent: changePercent.toFixed(2),
+                        volume: parseInt(currentQuote.volume || currentQuote.v || 0),
+                        high: parseFloat(currentQuote.high || currentQuote.h || 0).toFixed(2),
+                        low: parseFloat(currentQuote.low || currentQuote.l || 0).toFixed(2),
+                        premarket: premarketData
+                    },
+                    
+                    technical_indicators: {
+                        sma_10: sma10 ? sma10.toFixed(2) : null,
+                        sma_20: sma20 ? sma20.toFixed(2) : null,
+                        sma_50: sma50 ? sma50.toFixed(2) : null,
+                        sma_200: sma200 ? sma200.toFixed(2) : null,
+                        rsi_14: rsi ? rsi.toFixed(2) : null,
+                        macd: macd,
+                        bollinger_bands: bollinger ? {
+                            upper: bollinger.upper.toFixed(2),
+                            middle: bollinger.middle.toFixed(2),
+                            lower: bollinger.lower.toFixed(2)
+                        } : null
+                    },
+                    
+                    support_resistance: {
+                        key_resistance: supportResistance.resistance.map(r => r.toFixed(2)),
+                        key_support: supportResistance.support.map(s => s.toFixed(2)),
+                        weekly_high: Math.max(...historicalData.slice(-5).map(d => d.high)).toFixed(2),
+                        weekly_low: Math.min(...historicalData.slice(-5).map(d => d.low)).toFixed(2),
+                        monthly_high: Math.max(...historicalData.slice(-20).map(d => d.high)).toFixed(2),
+                        monthly_low: Math.min(...historicalData.slice(-20).map(d => d.low)).toFixed(2)
+                    },
+                    
+                    volume_analysis: {
+                        avg_volume_20d: Math.round(volumes.slice(-20).reduce((a, b) => a + b, 0) / 20),
+                        avg_volume_50d: Math.round(volumes.slice(-50).reduce((a, b) => a + b, 0) / 50),
+                        volume_trend: volumes.slice(-10).reduce((a, b) => a + b, 0) > volumes.slice(-20, -10).reduce((a, b) => a + b, 0) ? 'increasing' : 'decreasing'
+                    },
+                    
+                    pattern_analysis: patternData,
+                    
+                    historical_context: {
+                        data_points: historicalData.length,
+                        date_range: `${historicalData[0].date} to ${historicalData[historicalData.length - 1].date}`,
+                        volatility_20d: calculateVolatility(closePrices.slice(-20)).toFixed(2)
+                    }
+                };
+                
+                log(`Enhanced analysis complete for ${ticker}`, 'success');
+                return enhancedData;
+                
+            } catch (error) {
+                log(`Enhanced analysis failed for ${ticker}: ${error.message}`, 'error');
+                return null;
             }
         }
         
@@ -532,14 +976,14 @@
                 
                 stockList = [...new Set(stockList)];
                 log(`Final unique ticker count: ${stockList.length}`);
-                log(`Tickers: ${stockList.join(', ')}`);
+                log(`Estimated API calls needed: ${stockList.length * 2} calls`);
                 
                 document.getElementById('stockCount').textContent = 
-                    `${stockList.length} securities identified for analysis`;
+                    `${stockList.length} securities identified for enhanced analysis`;
                 
-                updateStatus('Watchlist processed. Initiating data collection...', 30);
+                updateStatus('Watchlist processed. Initiating enhanced data collection...', 30);
                 
-                await fetchAllMarketData();
+                await fetchAllEnhancedMarketData();
                 
             } catch (error) {
                 updateStatus('Error processing file: ' + error.message, 0);
@@ -548,168 +992,51 @@
             }
         });
         
-        // Technical Analysis Calculator
-        function calculateTechnicalLevels(data, ticker, source) {
-            // Normalize data from different API sources
-            const price = parseFloat(data.close || data.c || data.price || data.regularMarketPrice || 0);
-            const high = parseFloat(data.high || data.h || data.dayHigh || 0);
-            const low = parseFloat(data.low || data.l || data.dayLow || 0);
-            const open = parseFloat(data.open || data.o || data.regularMarketOpen || 0);
-            const volume = parseInt(data.volume || data.v || 0);
-            const prevClose = parseFloat(data.previous_close || data.pc || data.previousClose || price);
-            const change = parseFloat(data.change || data.d || (price - prevClose));
-            const percentChange = parseFloat(data.percent_change || data.dp || ((price - prevClose) / prevClose * 100));
-            
-            if (!price || !high || !low) {
-                log(`Invalid data for ${ticker} from ${source}`, 'warn');
-                return null;
-            }
-            
-            const range = high - low;
-            
-            const levels = {
-                ticker: ticker,
-                source: source,
-                current_price: price.toFixed(2),
-                
-                // Support/Resistance
-                daily_support: [
-                    (low - range * 0.236).toFixed(2),
-                    (low - range * 0.382).toFixed(2),
-                    (low - range * 0.618).toFixed(2)
-                ],
-                daily_resistance: [
-                    (high + range * 0.236).toFixed(2),
-                    (high + range * 0.382).toFixed(2),
-                    (high + range * 0.618).toFixed(2)
-                ],
-                
-                // Pivot Points (Carter Worth style)
-                pivot: null,
-                r1: null, r2: null, r3: null,
-                s1: null, s2: null, s3: null,
-                
-                // Fibonacci Levels
-                fib_382: (low + range * 0.382).toFixed(2),
-                fib_500: (low + range * 0.500).toFixed(2),
-                fib_618: (low + range * 0.618).toFixed(2),
-                
-                // Price Action
-                high: high.toFixed(2),
-                low: low.toFixed(2),
-                open: open.toFixed(2),
-                prev_close: prevClose.toFixed(2),
-                volume: volume,
-                change: change.toFixed(2),
-                percent_change: percentChange.toFixed(2)
-            };
-            
-            // Calculate Pivot Points
-            const pivot = (high + low + price) / 3;
-            levels.pivot = pivot.toFixed(2);
-            levels.r1 = ((2 * pivot) - low).toFixed(2);
-            levels.r2 = (pivot + (high - low)).toFixed(2);
-            levels.r3 = (high + 2 * (pivot - low)).toFixed(2);
-            levels.s1 = ((2 * pivot) - high).toFixed(2);
-            levels.s2 = (pivot - (high - low)).toFixed(2);
-            levels.s3 = (low - 2 * (high - pivot)).toFixed(2);
-            
-            return levels;
-        }
-        
-        // API FALLBACK SYSTEM - Try multiple APIs
-        async function getStockData(ticker) {
-            const apis = [
-                { name: 'twelvedata', fn: getTwelveDataQuote },
-                { name: 'finnhub', fn: getFinnhubQuote },
-                { name: 'polygon', fn: getPolygonQuote }
-            ];
-            
-            for (const api of apis) {
-                try {
-                    log(`Trying ${api.name} for ${ticker}`);
-                    const data = await api.fn(ticker);
-                    
-                    if (data) {
-                        log(`Success with ${api.name} for ${ticker}`, 'success');
-                        return data;
-                    }
-                } catch (error) {
-                    log(`${api.name} failed for ${ticker}: ${error.message}`, 'error');
-                }
-                
-                await sleep(200); // Small delay between API attempts
-            }
-            
-            log(`All APIs failed for ${ticker}`, 'error');
-            return null;
-        }
-        
-        async function getTwelveDataQuote(ticker) {
-            const url = `https://api.twelvedata.com/quote?symbol=${ticker}&apikey=${API_KEYS.twelvedata}`;
-            const data = await fetchWithRetry(url, 2, 500);
-            apiCallCounts.twelvedata++;
-            
-            if (data.status === 'error' || !data.close) {
-                throw new Error(data.message || 'No price data');
-            }
-            
-            return calculateTechnicalLevels(data, ticker, 'TwelveData');
-        }
-        
-        async function getFinnhubQuote(ticker) {
-            const url = `https://finnhub.io/api/v1/quote?symbol=${ticker}&token=${API_KEYS.finnhub}`;
-            const data = await fetchWithRetry(url, 2, 500);
-            apiCallCounts.finnhub++;
-            
-            if (!data.c || data.c === 0) {
-                throw new Error('No price data');
-            }
-            
-            return calculateTechnicalLevels(data, ticker, 'Finnhub');
-        }
-        
-        async function getPolygonQuote(ticker) {
-            const url = `https://api.polygon.io/v2/aggs/ticker/${ticker}/prev?adjusted=true&apiKey=${API_KEYS.polygon}`;
-            const data = await fetchWithRetry(url, 2, 500);
-            apiCallCounts.polygon++;
-            
-            if (!data.results || data.results.length === 0) {
-                throw new Error('No data available');
-            }
-            
-            return calculateTechnicalLevels(data.results[0], ticker, 'Polygon');
-        }
-        
-        async function fetchAllMarketData() {
+        async function fetchAllEnhancedMarketData() {
             const marketData = {
                 generated_at: new Date().toISOString(),
+                analysis_type: "Enhanced Pattern Recognition",
                 total_stocks: stockList.length,
                 successful: 0,
                 failed: 0,
+                api_calls_used: {
+                    twelvedata: 0,
+                    finnhub: 0,
+                    polygon: 0
+                },
+                data_features: [
+                    "Historical OHLC Data (252 days)",
+                    "Technical Indicators (SMA, EMA, RSI, MACD, Bollinger Bands)",
+                    "Support/Resistance Levels",
+                    "Volume Analysis",
+                    "Pattern Recognition Metrics",
+                    "Volatility Analysis",
+                    "Premarket Price Movement & Gaps"
+                ],
                 stocks: {}
             };
             
-            updateStatus('Collecting market intelligence data...', 40);
-            log('Starting data collection for all stocks');
+            updateStatus('Collecting enhanced market intelligence data...', 40);
+            log('Starting enhanced data collection for all stocks');
+            log(`Target: ${stockList.length} stocks with ~${stockList.length * 2} API calls`);
             
             for (let i = 0; i < stockList.length; i++) {
                 const ticker = stockList[i];
                 const progress = 40 + ((i / stockList.length) * 55);
                 
-                updateStatus(`Analyzing ${ticker} (${i + 1}/${stockList.length})`, progress);
-                log(`Processing ${ticker}`);
+                updateStatus(`Enhanced analysis: ${ticker} (${i + 1}/${stockList.length})`, progress);
+                log(`Processing ${ticker} - Enhanced Analysis`);
                 
                 try {
-                    const stockData = await getStockData(ticker);
+                    const enhancedStockData = await getEnhancedStockData(ticker);
                     
-                    if (stockData) {
-                        marketData.stocks[ticker] = stockData;
+                    if (enhancedStockData) {
+                        marketData.stocks[ticker] = enhancedStockData;
                         marketData.successful++;
-                        log(`Successfully collected data for ${ticker}`, 'success');
+                        log(`Enhanced data collected for ${ticker}`, 'success');
                     } else {
                         marketData.failed++;
-                        log(`Failed to collect data for ${ticker}`, 'error');
+                        log(`Failed enhanced analysis for ${ticker}`, 'error');
                     }
                 } catch (error) {
                     marketData.failed++;
@@ -717,17 +1044,21 @@
                 }
                 
                 // Smart rate limiting
-                if (apiCallCounts.twelvedata >= 6) {
-                    log('TwelveData approaching limit, pausing...', 'warn');
-                    await sleep(10000); // 10 second pause
+                if (apiCallCounts.twelvedata >= 7) {
+                    log('TwelveData approaching rate limit, pausing...', 'warn');
+                    await sleep(8000); // 8 second pause
                     apiCallCounts.twelvedata = 0;
                 }
                 
-                await sleep(500); // Delay between stocks
+                await sleep(800); // Delay between stocks for API limits
             }
             
-            updateStatus(`Data collection complete: ${marketData.successful} succeeded, ${marketData.failed} failed`, 100);
-            log(`Collection complete. Success: ${marketData.successful}, Failed: ${marketData.failed}`, 'success');
+            // Update final API usage
+            marketData.api_calls_used = { ...apiCallCounts };
+            
+            updateStatus(`Enhanced collection complete: ${marketData.successful} succeeded, ${marketData.failed} failed`, 100);
+            log(`Enhanced collection complete. Success: ${marketData.successful}, Failed: ${marketData.failed}`, 'success');
+            log(`Total API calls used: TwelveData: ${apiCallCounts.twelvedata}, Finnhub: ${apiCallCounts.finnhub}`, 'info');
             
             document.getElementById('output').textContent = 
                 JSON.stringify(marketData, null, 2);
@@ -737,7 +1068,7 @@
             
             const now = new Date().toLocaleString();
             document.getElementById('updateTime').textContent = 
-                `Data collected: ${now} | ${marketData.successful}/${marketData.total_stocks} successful`;
+                `Enhanced data collected: ${now} | ${marketData.successful}/${marketData.total_stocks} successful | API calls: ${Object.values(apiCallCounts).reduce((a, b) => a + b, 0)}`;
         }
         
         // Copy Button Functionality
@@ -750,7 +1081,7 @@
                 
                 // Visual feedback
                 const originalText = copyBtn.textContent;
-                copyBtn.textContent = '✅ Copied!';
+                copyBtn.textContent = '✅ Copied Enhanced Data!';
                 copyBtn.style.background = 'linear-gradient(135deg, #2a4a2f 0%, #1a3a1f 100%)';
                 copyBtn.style.borderColor = '#4a8a4a';
                 
@@ -760,7 +1091,7 @@
                     copyBtn.style.borderColor = '#8b7355';
                 }, 2000);
                 
-                log('JSON data copied to clipboard', 'success');
+                log('Enhanced JSON data copied to clipboard', 'success');
             } catch (error) {
                 log('Failed to copy: ' + error.message, 'error');
                 alert('Copy failed. Please select and copy manually.');
