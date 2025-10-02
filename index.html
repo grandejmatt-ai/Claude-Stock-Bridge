@@ -420,8 +420,8 @@
         <div class="header">
             <h1>Pattern Recognition Engine</h1>
             <p class="tagline">Enhanced Reliability & Persistent Caching</p>
-            <div class="version-badge">v3.0 - PRODUCTION STABLE</div>
-            <p class="motto">"Cache what you can, fetch what you must"</p>
+            <div class="version-badge">v3.0 - PRODUCTION STABLE (RATE LIMITED)</div>
+            <p class="motto">"Patience with rate limits yields complete intelligence"</p>
         </div>
 
         <div class="cache-stats">
@@ -1281,6 +1281,7 @@
                 successful: 0,
                 failed: 0,
                 cached: 0,
+                failed_tickers: {},
                 api_calls_used: {
                     twelvedata: 0,
                     finnhub: 0,
@@ -1301,10 +1302,9 @@
                 stocks: {}
             };
             
-            // Estimate time based on cached vs non-cached stocks
             const cachedCount = stockList.filter(t => getCachedData(`${t}_historical`)).length;
             const nonCachedCount = stockList.length - cachedCount;
-            const estimatedMinutes = Math.ceil((nonCachedCount * 2 * 8) / 60); // 2 calls per stock × 8 seconds
+            const estimatedMinutes = Math.ceil((nonCachedCount * 2 * 8) / 60);
             
             updateStatus(`Collecting market intelligence data... Est. time: ${estimatedMinutes}m for ${nonCachedCount} new stocks`, 40);
             log(`Starting data collection: ${cachedCount} cached, ${nonCachedCount} new (est. ${estimatedMinutes}m)`);
@@ -1315,7 +1315,6 @@
                 
                 const wasCached = getCachedData(`${ticker}_historical`) !== null;
                 
-                // Calculate remaining time
                 const elapsed = Math.floor((Date.now() - startTime) / 1000);
                 const stocksRemaining = stockList.length - i;
                 const avgTimePerStock = elapsed / (i + 1);
@@ -1340,10 +1339,12 @@
                         log(`Data collected for ${ticker}`, 'success');
                     } else {
                         marketData.failed++;
-                        log(`Failed analysis for ${ticker}`, 'error');
+                        marketData.failed_tickers[ticker] = "No data returned from API - possibly invalid ticker or not supported";
+                        log(`Failed analysis for ${ticker} - No data returned`, 'error');
                     }
                 } catch (error) {
                     marketData.failed++;
+                    marketData.failed_tickers[ticker] = error.message;
                     log(`Exception for ${ticker}: ${error.message}`, 'error');
                     
                     if (error.message === 'DAILY_LIMIT_REACHED') {
@@ -1358,6 +1359,16 @@
             
             marketData.api_calls_used = { ...apiCallCounts };
             marketData.processing_time = `${timeDisplay}`;
+            
+            // Show detailed failure summary if there were failures
+            if (marketData.failed > 0) {
+                log('=== FAILURE SUMMARY ===', 'error');
+                log(`${marketData.failed} stocks failed to collect:`, 'error');
+                Object.entries(marketData.failed_tickers).forEach(([ticker, reason]) => {
+                    log(`  ${ticker}: ${reason}`, 'error');
+                });
+                log('======================', 'error');
+            }
             
             updateStatus(
                 `Collection complete: ${marketData.successful} succeeded (${marketData.cached} cached), ${marketData.failed} failed | Time: ${timeDisplay}`, 
