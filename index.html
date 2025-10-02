@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Market Intelligence - Pattern Recognition Edition</title>
+    <title>Market Intelligence - Enhanced Reliability Edition</title>
     <style>
         * {
             margin: 0;
@@ -22,7 +22,6 @@
             position: relative;
         }
         
-        /* Sophisticated Corner Elements */
         .corner-decoration {
             position: fixed;
             opacity: 0.15;
@@ -62,7 +61,6 @@
             font-style: italic;
         }
         
-        /* Main Container */
         .container {
             max-width: 1400px;
             margin: 0 auto;
@@ -77,7 +75,6 @@
             border-radius: 2px;
         }
         
-        /* Header */
         .header {
             text-align: center;
             border-bottom: 1px solid rgba(139, 115, 85, 0.3);
@@ -121,7 +118,6 @@
             border-radius: 2px;
         }
         
-        /* File Upload Section */
         .upload-section {
             background: rgba(0, 0, 0, 0.3);
             border: 1px solid rgba(139, 115, 85, 0.2);
@@ -153,7 +149,7 @@
             margin-bottom: 10px;
         }
         
-        .upload-btn {
+        .upload-btn, .cache-btn {
             background: linear-gradient(135deg, #2a1f15 0%, #1a1208 100%);
             color: #d4c5a9;
             padding: 14px 45px;
@@ -167,7 +163,7 @@
             font-family: 'Georgia', serif;
         }
         
-        .upload-btn:hover {
+        .upload-btn:hover, .cache-btn:hover {
             background: linear-gradient(135deg, #3a2f25 0%, #2a1f15 100%);
             border-color: #d4c5a9;
             box-shadow: 0 0 20px rgba(139, 115, 85, 0.2);
@@ -227,8 +223,37 @@
             justify-content: space-between;
             margin-bottom: 5px;
         }
+
+        .cache-stats {
+            background: rgba(42, 58, 42, 0.3);
+            border: 1px solid rgba(74, 138, 74, 0.3);
+            padding: 15px;
+            margin-bottom: 20px;
+            font-size: 12px;
+            color: #8b7355;
+        }
+
+        .cache-stats h3 {
+            color: #4a8a4a;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .warning-box {
+            background: rgba(58, 42, 20, 0.4);
+            border: 1px solid rgba(139, 115, 85, 0.4);
+            padding: 15px;
+            margin-bottom: 20px;
+            font-size: 12px;
+            color: #d4a574;
+        }
+
+        .warning-box.error {
+            background: rgba(58, 20, 20, 0.4);
+            border-color: rgba(180, 80, 80, 0.4);
+            color: #d47474;
+        }
         
-        /* Status Section */
         .status-section {
             background: rgba(0, 0, 0, 0.4);
             border: 1px solid rgba(139, 115, 85, 0.2);
@@ -270,7 +295,6 @@
             letter-spacing: 1px;
         }
         
-        /* Debug Log */
         .debug-section {
             background: rgba(0, 0, 0, 0.3);
             border: 1px solid rgba(139, 115, 85, 0.15);
@@ -283,7 +307,6 @@
             color: #6b5d4f;
         }
         
-        /* Data Display */
         .data-container {
             background: rgba(0, 0, 0, 0.5);
             border: 1px solid rgba(139, 115, 85, 0.3);
@@ -320,7 +343,6 @@
             line-height: 1.8;
         }
         
-        /* Scrollbar */
         .data-output::-webkit-scrollbar,
         .debug-section::-webkit-scrollbar {
             width: 10px;
@@ -342,7 +364,6 @@
             background: #4a3f35;
         }
         
-        /* Update Time */
         .update-time {
             text-align: center;
             color: #6b5d4f;
@@ -352,14 +373,19 @@
             letter-spacing: 1px;
         }
         
-        /* Divider */
         .divider {
             height: 1px;
             background: linear-gradient(90deg, transparent, rgba(139, 115, 85, 0.3), transparent);
             margin: 30px 0;
         }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
         
-        /* Mobile Responsive */
         @media (max-width: 768px) {
             .container {
                 padding: 20px 10px;
@@ -378,55 +404,79 @@
     </style>
 </head>
 <body>
-    <!-- Subtle Corner Elements -->
-    <div class="corner-decoration skull-top-left">⚔ PATTERN RECOGNITION</div>
+    <div class="corner-decoration skull-top-left">⚔ ENHANCED RELIABILITY</div>
     <div class="corner-decoration flag-top-right">
-        ENHANCED<br>
-        TACTICAL<br>
-        INTELLIGENCE
+        PERSISTENT<br>
+        CACHING<br>
+        ENABLED
     </div>
-    <div class="corner-decoration sword-bottom-left">Fortune favors preparation</div>
+    <div class="corner-decoration sword-bottom-left">Resilience through redundancy</div>
     <div class="corner-decoration memento-bottom-right">
         MEMENTO MORI<br>
-        <span style="font-size: 10px;">Remember your mortality,<br>trade accordingly</span>
+        <span style="font-size: 10px;">Markets are unforgiving,<br>preparation is everything</span>
     </div>
     
     <div class="container">
-        <!-- Header -->
         <div class="header">
             <h1>Pattern Recognition Engine</h1>
-            <p class="tagline">Enhanced Market Intelligence Collection</p>
-            <div class="version-badge">v2.0 - HISTORICAL + TECHNICAL ANALYSIS</div>
-            <p class="motto">"In markets, as in war, preparation defeats chaos"</p>
+            <p class="tagline">Enhanced Reliability & Persistent Caching</p>
+            <div class="version-badge">v3.0 - PRODUCTION STABLE</div>
+            <p class="motto">"Cache what you can, fetch what you must"</p>
         </div>
-        
-        <!-- API Usage Tracker -->
-        <div class="api-usage">
-            <h3>API Usage Monitor (Free Tier Optimization)</h3>
+
+        <div class="cache-stats">
+            <h3>Cache Status (Persistent Storage)</h3>
             <div class="api-counter">
-                <span>TwelveData:</span>
-                <span id="twelveDataCount">0/800 daily</span>
+                <span>Cached stocks:</span>
+                <span id="cacheCount">0</span>
             </div>
             <div class="api-counter">
-                <span>Finnhub:</span>
-                <span id="finnhubCount">0/∞ daily</span>
+                <span>Cache age:</span>
+                <span id="cacheAge">N/A</span>
             </div>
             <div class="api-counter">
-                <span>Polygon:</span>
-                <span id="polygonCount">0/∞ daily</span>
+                <span>Last reset:</span>
+                <span id="lastReset">Never</span>
+            </div>
+            <div style="margin-top: 10px;">
+                <button id="clearCacheBtn" class="cache-btn" style="padding: 8px 20px; font-size: 12px;">
+                    Clear Cache
+                </button>
             </div>
             <div style="margin-top: 10px; font-style: italic; color: #6b5d4f;">
-                Strategy: 2-3 calls per stock • Technical indicators calculated locally • Smart caching enabled
+                Cache expires: 4 hours per stock | Survives page reloads
             </div>
         </div>
         
-        <!-- File Upload Section -->
+        <div class="api-usage">
+            <h3>API Usage Monitor (Session + Daily Tracking)</h3>
+            <div class="api-counter">
+                <span>TwelveData (Session):</span>
+                <span id="twelveDataCount">0</span>
+            </div>
+            <div class="api-counter">
+                <span>TwelveData (Today):</span>
+                <span id="twelveDataDaily">0/800</span>
+            </div>
+            <div class="api-counter">
+                <span>Finnhub (Session):</span>
+                <span id="finnhubCount">0</span>
+            </div>
+            <div class="api-counter">
+                <span>Polygon (Session):</span>
+                <span id="polygonCount">0</span>
+            </div>
+            <div style="margin-top: 10px; font-style: italic; color: #6b5d4f;">
+                Smart fallback: Auto-switches APIs when limits approached | 8s minimum between TwelveData calls
+            </div>
+        </div>
+        
         <div class="upload-section">
             <h2>Stock Watchlist Import</h2>
             <div class="upload-area">
                 <p class="upload-instructions">
                     Upload Excel (.xlsx, .xls), CSV (.csv), or Text (.txt) file containing ticker symbols<br>
-                    <strong>Enhanced Analysis:</strong> Historical OHLC + Technical Indicators + Pattern Recognition Data
+                    <strong>v3.0 Features:</strong> Persistent caching • Smart rate limiting • Multi-API fallback
                 </p>
                 <label for="fileInput" class="upload-btn">
                     Select Watchlist File
@@ -438,7 +488,6 @@
         
         <div class="divider"></div>
         
-        <!-- Status Section -->
         <div class="status-section">
             <div class="status-text" id="status">Ready to commence enhanced data collection</div>
             <div class="progress-bar">
@@ -447,20 +496,20 @@
             </div>
         </div>
         
-        <!-- Debug Log -->
+        <div id="warningBox" class="warning-box" style="display: none;"></div>
+        
         <div class="debug-section" id="debugLog">Enhanced debug log will appear here...</div>
         
-        <!-- Data Display -->
         <div class="data-container">
             <h2>Enhanced Market Intelligence Data</h2>
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
                 <span style="color: #8b7355; font-size: 12px; letter-spacing: 1px;">PATTERN RECOGNITION JSON OUTPUT</span>
                 <button id="copyBtn" class="copy-btn" style="display: none;">
-                    📋 Copy Enhanced Data
+                    Copy Enhanced Data
                 </button>
             </div>
             <div class="data-output">
-                <div id="output">Awaiting watchlist upload to begin enhanced tactical analysis with pattern recognition...</div>
+                <div id="output">Awaiting watchlist upload to begin enhanced tactical analysis...</div>
             </div>
         </div>
         
@@ -469,7 +518,6 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script>
-        // API Configuration
         const API_KEYS = {
             alphavantage: 'OYNGCKHH1IWF3J4G',
             twelvedata: '744f65b6561047d0bbdc2ecb601445ca',
@@ -490,8 +538,192 @@
             polygon: { perMinute: 5, perDay: Infinity }
         };
         
+        const CACHE_DURATION = 4 * 60 * 60 * 1000; // 4 hours
+        const RATE_LIMIT_WINDOW = 60000; // 60 seconds
         let debugMessages = [];
-        let historicalDataCache = new Map(); // Cache for historical data
+        
+        // Track API call timestamps for per-minute rate limiting
+        let apiCallTimestamps = {
+            twelvedata: [],
+            finnhub: [],
+            polygon: []
+        };
+        
+        // PERSISTENT STORAGE FUNCTIONS
+        function initDailyTracking() {
+            const today = new Date().toDateString();
+            const tracking = JSON.parse(localStorage.getItem('api_daily_tracking') || '{}');
+            
+            if (tracking.date !== today) {
+                tracking.date = today;
+                tracking.twelvedata = 0;
+                tracking.finnhub = 0;
+                tracking.polygon = 0;
+                localStorage.setItem('api_daily_tracking', JSON.stringify(tracking));
+                log('Daily API tracking reset for new day', 'info');
+            }
+            
+            return tracking;
+        }
+
+        function incrementDailyCount(api) {
+            const tracking = JSON.parse(localStorage.getItem('api_daily_tracking') || '{}');
+            tracking[api] = (tracking[api] || 0) + 1;
+            localStorage.setItem('api_daily_tracking', JSON.stringify(tracking));
+            updateAPICounters();
+        }
+
+        function getDailyCount(api) {
+            const tracking = initDailyTracking();
+            return tracking[api] || 0;
+        }
+
+        // RATE LIMITING FUNCTIONS
+        function cleanOldTimestamps(api) {
+            const now = Date.now();
+            apiCallTimestamps[api] = apiCallTimestamps[api].filter(
+                timestamp => (now - timestamp) < RATE_LIMIT_WINDOW
+            );
+        }
+
+        function getCallsInLastMinute(api) {
+            cleanOldTimestamps(api);
+            return apiCallTimestamps[api].length;
+        }
+
+        function recordAPICall(api) {
+            apiCallTimestamps[api].push(Date.now());
+            apiCallCounts[api]++;
+            incrementDailyCount(api);
+            updateAPICounters();
+        }
+
+        async function waitForRateLimit(api) {
+            cleanOldTimestamps(api);
+            const callsInLastMinute = apiCallTimestamps[api].length;
+            const limit = API_LIMITS[api].perMinute;
+            
+            if (callsInLastMinute >= limit) {
+                // Find the oldest call timestamp
+                const oldestCall = Math.min(...apiCallTimestamps[api]);
+                const timeSinceOldest = Date.now() - oldestCall;
+                const waitTime = RATE_LIMIT_WINDOW - timeSinceOldest + 1000; // Add 1s buffer
+                
+                if (waitTime > 0) {
+                    log(`${api} rate limit reached (${callsInLastMinute}/${limit}). Waiting ${Math.ceil(waitTime/1000)}s...`, 'warn');
+                    updateStatus(`Rate limit: waiting ${Math.ceil(waitTime/1000)}s for ${api}...`);
+                    await sleep(waitTime);
+                }
+            } else if (callsInLastMinute > 0) {
+                // Calculate minimum delay to stay under limit
+                const minDelay = Math.ceil(RATE_LIMIT_WINDOW / limit);
+                const lastCall = Math.max(...apiCallTimestamps[api]);
+                const timeSinceLastCall = Date.now() - lastCall;
+                const remainingDelay = minDelay - timeSinceLastCall;
+                
+                if (remainingDelay > 0) {
+                    log(`Enforcing ${api} rate limit: ${Math.ceil(remainingDelay/1000)}s delay`, 'info');
+                    await sleep(remainingDelay);
+                }
+            }
+        }
+
+        function getCachedData(key) {
+            try {
+                const cached = localStorage.getItem(`stock_cache_${key}`);
+                if (!cached) return null;
+                
+                const data = JSON.parse(cached);
+                const age = Date.now() - data.timestamp;
+                
+                if (age > CACHE_DURATION) {
+                    localStorage.removeItem(`stock_cache_${key}`);
+                    log(`Cache expired for ${key}`, 'info');
+                    return null;
+                }
+                
+                const ageMinutes = Math.floor(age / 60000);
+                log(`Cache HIT for ${key} (age: ${ageMinutes}m)`, 'success');
+                return data.value;
+            } catch (e) {
+                log(`Cache read error for ${key}: ${e.message}`, 'error');
+                return null;
+            }
+        }
+
+        function setCachedData(key, value) {
+            try {
+                const data = {
+                    value: value,
+                    timestamp: Date.now()
+                };
+                localStorage.setItem(`stock_cache_${key}`, JSON.stringify(data));
+                updateCacheStats();
+            } catch (e) {
+                log(`Cache write error for ${key}: ${e.message}`, 'error');
+                if (e.name === 'QuotaExceededError') {
+                    log('Storage quota exceeded, clearing old cache...', 'warn');
+                    clearOldestCache();
+                }
+            }
+        }
+
+        function clearOldestCache() {
+            const cacheKeys = Object.keys(localStorage).filter(k => k.startsWith('stock_cache_'));
+            if (cacheKeys.length === 0) return;
+            
+            let oldestKey = null;
+            let oldestTime = Date.now();
+            
+            cacheKeys.forEach(key => {
+                try {
+                    const data = JSON.parse(localStorage.getItem(key));
+                    if (data.timestamp < oldestTime) {
+                        oldestTime = data.timestamp;
+                        oldestKey = key;
+                    }
+                } catch (e) {}
+            });
+            
+            if (oldestKey) {
+                localStorage.removeItem(oldestKey);
+                log(`Cleared oldest cache: ${oldestKey}`, 'info');
+            }
+        }
+
+        function updateCacheStats() {
+            const cacheKeys = Object.keys(localStorage).filter(k => k.startsWith('stock_cache_'));
+            document.getElementById('cacheCount').textContent = cacheKeys.length;
+            
+            if (cacheKeys.length > 0) {
+                let oldestTime = Date.now();
+                cacheKeys.forEach(key => {
+                    try {
+                        const data = JSON.parse(localStorage.getItem(key));
+                        if (data.timestamp < oldestTime) {
+                            oldestTime = data.timestamp;
+                        }
+                    } catch (e) {}
+                });
+                
+                const ageMinutes = Math.floor((Date.now() - oldestTime) / 60000);
+                document.getElementById('cacheAge').textContent = 
+                    ageMinutes < 60 ? `${ageMinutes}m` : `${Math.floor(ageMinutes/60)}h ${ageMinutes%60}m`;
+            }
+            
+            const tracking = JSON.parse(localStorage.getItem('api_daily_tracking') || '{}');
+            if (tracking.date) {
+                document.getElementById('lastReset').textContent = tracking.date;
+            }
+        }
+
+        function clearAllCache() {
+            const cacheKeys = Object.keys(localStorage).filter(k => k.startsWith('stock_cache_'));
+            cacheKeys.forEach(key => localStorage.removeItem(key));
+            updateCacheStats();
+            log(`Cleared ${cacheKeys.length} cached items`, 'info');
+            showWarning(`Cache cleared: ${cacheKeys.length} items removed`, 'info');
+        }
         
         function sleep(ms) {
             return new Promise(resolve => setTimeout(resolve, ms));
@@ -503,7 +735,7 @@
             debugMessages.push(logMessage);
             
             const debugLog = document.getElementById('debugLog');
-            debugLog.innerHTML = debugMessages.slice(-25).join('\n');
+            debugLog.innerHTML = debugMessages.slice(-30).join('\n');
             debugLog.scrollTop = debugLog.scrollHeight;
             
             console.log(logMessage);
@@ -518,33 +750,68 @@
         }
 
         function updateAPICounters() {
-            document.getElementById('twelveDataCount').textContent = `${apiCallCounts.twelvedata}/800 daily`;
-            document.getElementById('finnhubCount').textContent = `${apiCallCounts.finnhub}/∞ daily`;
-            document.getElementById('polygonCount').textContent = `${apiCallCounts.polygon}/∞ daily`;
+            document.getElementById('twelveDataCount').textContent = apiCallCounts.twelvedata;
+            document.getElementById('finnhubCount').textContent = apiCallCounts.finnhub;
+            document.getElementById('polygonCount').textContent = apiCallCounts.polygon;
+            
+            const dailyCount = getDailyCount('twelvedata');
+            document.getElementById('twelveDataDaily').textContent = `${dailyCount}/800`;
+            
+            if (dailyCount > 700) {
+                showWarning('TwelveData approaching daily limit (700+/800). Consider waiting until tomorrow.', 'error');
+            } else if (dailyCount > 600) {
+                showWarning('TwelveData usage high (600+/800). Using aggressive caching.', 'warning');
+            }
+        }
+
+        function showWarning(message, type = 'warning') {
+            const warningBox = document.getElementById('warningBox');
+            warningBox.textContent = message;
+            warningBox.className = 'warning-box' + (type === 'error' ? ' error' : '');
+            warningBox.style.display = 'block';
+            
+            if (type !== 'error') {
+                setTimeout(() => {
+                    warningBox.style.display = 'none';
+                }, 10000);
+            }
         }
         
-        // ROBUST RETRY LOGIC
         async function fetchWithRetry(url, retries = 3, delay = 1000) {
             for (let i = 0; i < retries; i++) {
                 try {
-                    log(`Attempt ${i + 1}/${retries} for ${url.split('?')[0]}`);
+                    log(`Attempt ${i + 1}/${retries} for ${url.substring(0, 50)}...`);
                     const response = await fetch(url);
+                    
+                    if (response.status === 429) {
+                        log('Rate limit hit (HTTP 429)', 'error');
+                        throw new Error('RATE_LIMIT');
+                    }
                     
                     if (!response.ok) {
                         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
                     }
                     
                     const data = await response.json();
+                    
+                    if (data.status === 'error' && data.code === 429) {
+                        log('API rate limit error', 'error');
+                        throw new Error('RATE_LIMIT');
+                    }
+                    
                     log(`Success on attempt ${i + 1}`, 'success');
                     return data;
                 } catch (error) {
                     log(`Failed attempt ${i + 1}: ${error.message}`, 'error');
                     
+                    if (error.message === 'RATE_LIMIT') {
+                        throw error;
+                    }
+                    
                     if (i === retries - 1) {
                         throw error;
                     }
                     
-                    // Exponential backoff
                     const backoffDelay = delay * Math.pow(2, i);
                     log(`Waiting ${backoffDelay}ms before retry...`, 'warn');
                     await sleep(backoffDelay);
@@ -552,8 +819,7 @@
             }
         }
 
-        // ===== TECHNICAL INDICATOR CALCULATIONS (LOCAL) =====
-        
+        // TECHNICAL INDICATORS
         function calculateSMA(prices, period) {
             if (prices.length < period) return null;
             const sum = prices.slice(-period).reduce((a, b) => a + b, 0);
@@ -608,11 +874,9 @@
             
             const macdLine = emaFast - emaSlow;
             
-            // For signal line, we'd need historical MACD values
-            // Simplified calculation for now
             return {
                 macd: macdLine,
-                signal: macdLine * 0.8, // Simplified
+                signal: macdLine * 0.8,
                 histogram: macdLine * 0.2
             };
         }
@@ -641,40 +905,72 @@
             const lows = ohlcData.map(d => d.low).sort((a, b) => a - b);
             
             return {
-                resistance: highs.slice(0, 3), // Top 3 highs
-                support: lows.slice(0, 3)      // Bottom 3 lows
+                resistance: highs.slice(0, 3),
+                support: lows.slice(0, 3)
             };
         }
 
-        function calculateRelativeStrength(stockPrices, spyPrices, days = 90) {
-            if (stockPrices.length < days || spyPrices.length < days) return null;
+        function analyzePatternData(ohlcData) {
+            if (!ohlcData || ohlcData.length < 50) return null;
             
-            const stockChange = (stockPrices[stockPrices.length - 1] - stockPrices[stockPrices.length - days]) / stockPrices[stockPrices.length - days];
-            const spyChange = (spyPrices[spyPrices.length - 1] - spyPrices[spyPrices.length - days]) / spyPrices[spyPrices.length - days];
+            const prices = ohlcData.map(d => d.close);
+            const highs = ohlcData.map(d => d.high);
+            const lows = ohlcData.map(d => d.low);
+            const volumes = ohlcData.map(d => d.volume);
             
-            return stockChange / spyChange;
+            const currentPrice = prices[prices.length - 1];
+            const high52Week = Math.max(...highs);
+            const low52Week = Math.min(...lows);
+            
+            const recentHigh = Math.max(...highs.slice(-50));
+            const recentLow = Math.min(...lows.slice(-50));
+            const baseDepth = ((recentHigh - recentLow) / recentHigh) * 100;
+            
+            const avgVolume50 = volumes.slice(-50).reduce((a, b) => a + b, 0) / 50;
+            const currentVolume = volumes[volumes.length - 1];
+            
+            return {
+                base_depth: baseDepth.toFixed(2),
+                proximity_to_52w_high: ((currentPrice / high52Week) * 100).toFixed(1),
+                base_length_days: 50,
+                avg_volume_50d: Math.round(avgVolume50),
+                current_volume_vs_avg: (currentVolume / avgVolume50).toFixed(2),
+                price_volatility_20d: calculateVolatility(prices.slice(-20)).toFixed(2)
+            };
         }
 
-        // ===== HISTORICAL DATA COLLECTION =====
-        
+        function calculateVolatility(prices) {
+            if (prices.length < 2) return 0;
+            const returns = [];
+            for (let i = 1; i < prices.length; i++) {
+                returns.push((prices[i] - prices[i - 1]) / prices[i - 1]);
+            }
+            const avgReturn = returns.reduce((a, b) => a + b, 0) / returns.length;
+            const variance = returns.reduce((sum, ret) => sum + Math.pow(ret - avgReturn, 2), 0) / returns.length;
+            return Math.sqrt(variance) * Math.sqrt(252) * 100;
+        }
+
+        // HISTORICAL DATA WITH CACHING
         async function getHistoricalData(ticker) {
-            // Check cache first
             const cacheKey = `${ticker}_historical`;
-            if (historicalDataCache.has(cacheKey)) {
-                log(`Using cached data for ${ticker}`, 'info');
-                return historicalDataCache.get(cacheKey);
+            const cached = getCachedData(cacheKey);
+            if (cached) return cached;
+            
+            const dailyCount = getDailyCount('twelvedata');
+            if (dailyCount >= 800) {
+                log(`TwelveData daily limit reached (${dailyCount}/800)`, 'error');
+                throw new Error('DAILY_LIMIT_REACHED');
             }
 
-            // Try TwelveData first (most reliable for historical data)
             try {
-                const endDate = new Date();
-                const startDate = new Date();
-                startDate.setMonth(startDate.getMonth() - 12); // 12 months of data
+                // Wait for rate limit before making call
+                await waitForRateLimit('twelvedata');
                 
                 const url = `https://api.twelvedata.com/time_series?symbol=${ticker}&interval=1day&outputsize=252&apikey=${API_KEYS.twelvedata}`;
                 const data = await fetchWithRetry(url, 2, 1000);
-                apiCallCounts.twelvedata++;
-                updateAPICounters();
+                
+                // Record the API call
+                recordAPICall('twelvedata');
                 
                 if (data.status === 'error' || !data.values) {
                     throw new Error(data.message || 'No historical data');
@@ -687,44 +983,77 @@
                     low: parseFloat(item.low),
                     close: parseFloat(item.close),
                     volume: parseInt(item.volume || 0)
-                })).reverse(); // TwelveData returns newest first
+                })).reverse();
                 
-                // Cache the data
-                historicalDataCache.set(cacheKey, ohlcData);
-                log(`Cached historical data for ${ticker} (${ohlcData.length} days)`, 'success');
+                setCachedData(cacheKey, ohlcData);
+                log(`Historical data cached for ${ticker} (${ohlcData.length} days)`, 'success');
                 
                 return ohlcData;
                 
             } catch (error) {
                 log(`TwelveData historical failed for ${ticker}: ${error.message}`, 'error');
+                
+                if (error.message === 'RATE_LIMIT') {
+                    throw error;
+                }
+                
                 return null;
             }
         }
 
         async function getCurrentQuote(ticker) {
-            // Try multiple APIs for current quote (with premarket data)
+            const cacheKey = `${ticker}_quote`;
+            const cached = getCachedData(cacheKey);
+            if (cached) return cached;
+            
             const apis = [
-                async () => {
-                    const url = `https://api.twelvedata.com/quote?symbol=${ticker}&apikey=${API_KEYS.twelvedata}`;
-                    const data = await fetchWithRetry(url, 2, 500);
-                    apiCallCounts.twelvedata++;
-                    updateAPICounters();
-                    return data.status !== 'error' ? data : null;
+                {
+                    name: 'TwelveData',
+                    call: async () => {
+                        const dailyCount = getDailyCount('twelvedata');
+                        if (dailyCount >= 750) {
+                            log('TwelveData near daily limit, skipping', 'warn');
+                            return null;
+                        }
+                        
+                        // Wait for rate limit before making call
+                        await waitForRateLimit('twelvedata');
+                        
+                        const url = `https://api.twelvedata.com/quote?symbol=${ticker}&apikey=${API_KEYS.twelvedata}`;
+                        const data = await fetchWithRetry(url, 2, 500);
+                        
+                        // Record the API call
+                        recordAPICall('twelvedata');
+                        
+                        return data.status !== 'error' ? { data, source: 'TwelveData' } : null;
+                    }
                 },
-                async () => {
-                    const url = `https://finnhub.io/api/v1/quote?symbol=${ticker}&token=${API_KEYS.finnhub}`;
-                    const data = await fetchWithRetry(url, 2, 500);
-                    apiCallCounts.finnhub++;
-                    updateAPICounters();
-                    return data.c ? data : null;
+                {
+                    name: 'Finnhub',
+                    call: async () => {
+                        // Wait for rate limit before making call
+                        await waitForRateLimit('finnhub');
+                        
+                        const url = `https://finnhub.io/api/v1/quote?symbol=${ticker}&token=${API_KEYS.finnhub}`;
+                        const data = await fetchWithRetry(url, 2, 500);
+                        
+                        // Record the API call
+                        recordAPICall('finnhub');
+                        
+                        return data.c ? { data, source: 'Finnhub' } : null;
+                    }
                 }
             ];
             
-            for (const apiCall of apis) {
+            for (const api of apis) {
                 try {
-                    const result = await apiCall();
-                    if (result) return result;
+                    const result = await api.call();
+                    if (result) {
+                        setCachedData(cacheKey, result);
+                        return result;
+                    }
                 } catch (error) {
+                    log(`${api.name} failed for ${ticker}: ${error.message}`, 'warn');
                     continue;
                 }
             }
@@ -743,11 +1072,9 @@
 
             try {
                 if (source === 'TwelveData') {
-                    // TwelveData includes extended hours in quote response
                     const prevClose = parseFloat(quoteData.previous_close || 0);
                     const currentPrice = parseFloat(quoteData.close || 0);
                     
-                    // Check if we're in premarket hours (before 9:30 AM EST)
                     const now = new Date();
                     const marketOpen = new Date();
                     marketOpen.setHours(9, 30, 0, 0);
@@ -760,7 +1087,6 @@
                         premarketInfo.gap_vs_close = ((currentPrice - prevClose) / prevClose * 100).toFixed(2);
                     }
                 } else if (source === 'Finnhub') {
-                    // Finnhub quote includes current price which may be premarket
                     const prevClose = parseFloat(quoteData.pc || 0);
                     const currentPrice = parseFloat(quoteData.c || 0);
                     
@@ -777,7 +1103,6 @@
                     }
                 }
 
-                log(`Premarket data for ${ticker}: ${premarketInfo.has_premarket ? 'Available' : 'None'}`);
                 return premarketInfo;
 
             } catch (error) {
@@ -786,73 +1111,27 @@
             }
         }
 
-        function analyzePatternData(ohlcData) {
-            if (!ohlcData || ohlcData.length < 50) return null;
-            
-            const prices = ohlcData.map(d => d.close);
-            const highs = ohlcData.map(d => d.high);
-            const lows = ohlcData.map(d => d.low);
-            const volumes = ohlcData.map(d => d.volume);
-            
-            const currentPrice = prices[prices.length - 1];
-            const high52Week = Math.max(...highs);
-            const low52Week = Math.min(...lows);
-            
-            // Base analysis
-            const recentHigh = Math.max(...highs.slice(-50));
-            const recentLow = Math.min(...lows.slice(-50));
-            const baseDepth = ((recentHigh - recentLow) / recentHigh) * 100;
-            
-            // Volume analysis
-            const avgVolume50 = volumes.slice(-50).reduce((a, b) => a + b, 0) / 50;
-            const currentVolume = volumes[volumes.length - 1];
-            
-            return {
-                base_depth: baseDepth.toFixed(2),
-                proximity_to_52w_high: ((currentPrice / high52Week) * 100).toFixed(1),
-                base_length_days: 50, // Last 50 days analyzed
-                avg_volume_50d: Math.round(avgVolume50),
-                current_volume_vs_avg: (currentVolume / avgVolume50).toFixed(2),
-                price_volatility_20d: calculateVolatility(prices.slice(-20)).toFixed(2)
-            };
-        }
-
-        function calculateVolatility(prices) {
-            if (prices.length < 2) return 0;
-            const returns = [];
-            for (let i = 1; i < prices.length; i++) {
-                returns.push((prices[i] - prices[i - 1]) / prices[i - 1]);
-            }
-            const avgReturn = returns.reduce((a, b) => a + b, 0) / returns.length;
-            const variance = returns.reduce((sum, ret) => sum + Math.pow(ret - avgReturn, 2), 0) / returns.length;
-            return Math.sqrt(variance) * Math.sqrt(252) * 100; // Annualized volatility
-        }
-
-        // ===== ENHANCED STOCK ANALYSIS =====
-        
         async function getEnhancedStockData(ticker) {
             log(`Starting enhanced analysis for ${ticker}`);
             
             try {
-                // Get historical data (1 API call)
                 const historicalData = await getHistoricalData(ticker);
                 if (!historicalData || historicalData.length < 50) {
                     throw new Error('Insufficient historical data');
                 }
                 
-                await sleep(300); // Rate limiting
-                
-                // Get current quote (1 API call)
-                const currentQuote = await getCurrentQuote(ticker);
-                if (!currentQuote) {
+                // Rate limiting is now handled in getCurrentQuote
+                const quoteResult = await getCurrentQuote(ticker);
+                if (!quoteResult) {
                     throw new Error('No current quote available');
                 }
                 
-                // Extract price arrays for calculations
+                const currentQuote = quoteResult.data;
+                const source = quoteResult.source;
+                
                 const closePrices = historicalData.map(d => d.close);
                 const volumes = historicalData.map(d => d.volume);
                 
-                // Calculate technical indicators locally (no additional API calls)
                 const sma10 = calculateSMA(closePrices, 10);
                 const sma20 = calculateSMA(closePrices, 20);
                 const sma50 = calculateSMA(closePrices, 50);
@@ -863,11 +1142,8 @@
                 const supportResistance = findSupportResistanceLevels(historicalData.slice(-60));
                 const patternData = analyzePatternData(historicalData);
                 
-                // Extract premarket data from current quote
-                const source = currentQuote.close ? 'TwelveData' : 'Finnhub';
                 const premarketData = extractPremarketData(currentQuote, ticker, source);
                 
-                // Normalize current quote data
                 const currentPrice = parseFloat(currentQuote.close || currentQuote.c || currentQuote.price || 0);
                 const prevClose = parseFloat(currentQuote.previous_close || currentQuote.pc || closePrices[closePrices.length - 2]);
                 const change = currentPrice - prevClose;
@@ -876,6 +1152,7 @@
                 const enhancedData = {
                     ticker: ticker,
                     generated_at: new Date().toISOString(),
+                    data_source: source,
                     
                     current_data: {
                         price: currentPrice.toFixed(2),
@@ -934,12 +1211,11 @@
             }
         }
         
-        // File Upload Handler
         document.getElementById('fileInput').addEventListener('change', async (e) => {
             const file = e.target.files[0];
             if (!file) return;
             
-            debugMessages = []; // Clear debug log
+            debugMessages = [];
             updateStatus('Processing watchlist file...', 10);
             log('File upload initiated: ' + file.name);
             
@@ -976,12 +1252,15 @@
                 
                 stockList = [...new Set(stockList)];
                 log(`Final unique ticker count: ${stockList.length}`);
-                log(`Estimated API calls needed: ${stockList.length * 2} calls`);
+                
+                const cachedCount = stockList.filter(t => getCachedData(`${t}_historical`)).length;
+                log(`Cached stocks: ${cachedCount}/${stockList.length}`, 'info');
+                log(`New API calls needed: ~${(stockList.length - cachedCount) * 2}`, 'info');
                 
                 document.getElementById('stockCount').textContent = 
-                    `${stockList.length} securities identified for enhanced analysis`;
+                    `${stockList.length} securities (${cachedCount} cached)`;
                 
-                updateStatus('Watchlist processed. Initiating enhanced data collection...', 30);
+                updateStatus('Watchlist processed. Initiating data collection...', 30);
                 
                 await fetchAllEnhancedMarketData();
                 
@@ -993,39 +1272,63 @@
         });
         
         async function fetchAllEnhancedMarketData() {
+            const startTime = Date.now();
+            
             const marketData = {
                 generated_at: new Date().toISOString(),
-                analysis_type: "Enhanced Pattern Recognition",
+                analysis_type: "Enhanced Pattern Recognition v3.0 - Rate Limited",
                 total_stocks: stockList.length,
                 successful: 0,
                 failed: 0,
+                cached: 0,
                 api_calls_used: {
                     twelvedata: 0,
                     finnhub: 0,
                     polygon: 0
                 },
                 data_features: [
+                    "Persistent 4-hour caching",
+                    "Intelligent per-minute rate limiting (8 calls/min TwelveData)",
                     "Historical OHLC Data (252 days)",
                     "Technical Indicators (SMA, EMA, RSI, MACD, Bollinger Bands)",
                     "Support/Resistance Levels",
                     "Volume Analysis",
                     "Pattern Recognition Metrics",
                     "Volatility Analysis",
-                    "Premarket Price Movement & Gaps"
+                    "Premarket Price Movement & Gaps",
+                    "Smart API fallback"
                 ],
                 stocks: {}
             };
             
-            updateStatus('Collecting enhanced market intelligence data...', 40);
-            log('Starting enhanced data collection for all stocks');
-            log(`Target: ${stockList.length} stocks with ~${stockList.length * 2} API calls`);
+            // Estimate time based on cached vs non-cached stocks
+            const cachedCount = stockList.filter(t => getCachedData(`${t}_historical`)).length;
+            const nonCachedCount = stockList.length - cachedCount;
+            const estimatedMinutes = Math.ceil((nonCachedCount * 2 * 8) / 60); // 2 calls per stock × 8 seconds
+            
+            updateStatus(`Collecting market intelligence data... Est. time: ${estimatedMinutes}m for ${nonCachedCount} new stocks`, 40);
+            log(`Starting data collection: ${cachedCount} cached, ${nonCachedCount} new (est. ${estimatedMinutes}m)`);
             
             for (let i = 0; i < stockList.length; i++) {
                 const ticker = stockList[i];
                 const progress = 40 + ((i / stockList.length) * 55);
                 
-                updateStatus(`Enhanced analysis: ${ticker} (${i + 1}/${stockList.length})`, progress);
-                log(`Processing ${ticker} - Enhanced Analysis`);
+                const wasCached = getCachedData(`${ticker}_historical`) !== null;
+                
+                // Calculate remaining time
+                const elapsed = Math.floor((Date.now() - startTime) / 1000);
+                const stocksRemaining = stockList.length - i;
+                const avgTimePerStock = elapsed / (i + 1);
+                const estimatedSecondsLeft = Math.ceil(stocksRemaining * avgTimePerStock);
+                const timeDisplay = estimatedSecondsLeft > 60 
+                    ? `${Math.floor(estimatedSecondsLeft/60)}m ${estimatedSecondsLeft%60}s` 
+                    : `${estimatedSecondsLeft}s`;
+                
+                updateStatus(
+                    `Analyzing: ${ticker} (${i + 1}/${stockList.length})${wasCached ? ' [CACHED]' : ''} | Est. remaining: ${timeDisplay}`, 
+                    progress
+                );
+                log(`Processing ${ticker}${wasCached ? ' - Using cache' : ' - Fresh fetch'}`);
                 
                 try {
                     const enhancedStockData = await getEnhancedStockData(ticker);
@@ -1033,45 +1336,47 @@
                     if (enhancedStockData) {
                         marketData.stocks[ticker] = enhancedStockData;
                         marketData.successful++;
-                        log(`Enhanced data collected for ${ticker}`, 'success');
+                        if (wasCached) marketData.cached++;
+                        log(`Data collected for ${ticker}`, 'success');
                     } else {
                         marketData.failed++;
-                        log(`Failed enhanced analysis for ${ticker}`, 'error');
+                        log(`Failed analysis for ${ticker}`, 'error');
                     }
                 } catch (error) {
                     marketData.failed++;
                     log(`Exception for ${ticker}: ${error.message}`, 'error');
+                    
+                    if (error.message === 'DAILY_LIMIT_REACHED') {
+                        showWarning('TwelveData daily limit reached. Stopping collection.', 'error');
+                        break;
+                    }
                 }
-                
-                // Smart rate limiting
-                if (apiCallCounts.twelvedata >= 7) {
-                    log('TwelveData approaching rate limit, pausing...', 'warn');
-                    await sleep(8000); // 8 second pause
-                    apiCallCounts.twelvedata = 0;
-                }
-                
-                await sleep(800); // Delay between stocks for API limits
             }
             
-            // Update final API usage
-            marketData.api_calls_used = { ...apiCallCounts };
+            const totalTime = Math.floor((Date.now() - startTime) / 1000);
+            const timeDisplay = totalTime > 60 ? `${Math.floor(totalTime/60)}m ${totalTime%60}s` : `${totalTime}s`;
             
-            updateStatus(`Enhanced collection complete: ${marketData.successful} succeeded, ${marketData.failed} failed`, 100);
-            log(`Enhanced collection complete. Success: ${marketData.successful}, Failed: ${marketData.failed}`, 'success');
-            log(`Total API calls used: TwelveData: ${apiCallCounts.twelvedata}, Finnhub: ${apiCallCounts.finnhub}`, 'info');
+            marketData.api_calls_used = { ...apiCallCounts };
+            marketData.processing_time = `${timeDisplay}`;
+            
+            updateStatus(
+                `Collection complete: ${marketData.successful} succeeded (${marketData.cached} cached), ${marketData.failed} failed | Time: ${timeDisplay}`, 
+                100
+            );
+            log(`Collection complete in ${timeDisplay}. Success: ${marketData.successful}, Cached: ${marketData.cached}, Failed: ${marketData.failed}`, 'success');
+            log(`Session API calls: TwelveData: ${apiCallCounts.twelvedata}, Finnhub: ${apiCallCounts.finnhub}`, 'info');
+            log(`Daily TwelveData usage: ${getDailyCount('twelvedata')}/800`, 'info');
             
             document.getElementById('output').textContent = 
                 JSON.stringify(marketData, null, 2);
             
-            // Show copy button when data is available
             document.getElementById('copyBtn').style.display = 'inline-block';
             
             const now = new Date().toLocaleString();
             document.getElementById('updateTime').textContent = 
-                `Enhanced data collected: ${now} | ${marketData.successful}/${marketData.total_stocks} successful | API calls: ${Object.values(apiCallCounts).reduce((a, b) => a + b, 0)}`;
+                `Data collected: ${now} | ${marketData.successful}/${marketData.total_stocks} successful (${marketData.cached} from cache) | Time: ${timeDisplay} | Session calls: ${Object.values(apiCallCounts).reduce((a, b) => a + b, 0)} | Daily: ${getDailyCount('twelvedata')}/800`;
         }
         
-        // Copy Button Functionality
         document.getElementById('copyBtn').addEventListener('click', async () => {
             const output = document.getElementById('output').textContent;
             const copyBtn = document.getElementById('copyBtn');
@@ -1079,9 +1384,8 @@
             try {
                 await navigator.clipboard.writeText(output);
                 
-                // Visual feedback
                 const originalText = copyBtn.textContent;
-                copyBtn.textContent = '✅ Copied Enhanced Data!';
+                copyBtn.textContent = 'Copied!';
                 copyBtn.style.background = 'linear-gradient(135deg, #2a4a2f 0%, #1a3a1f 100%)';
                 copyBtn.style.borderColor = '#4a8a4a';
                 
@@ -1091,12 +1395,26 @@
                     copyBtn.style.borderColor = '#8b7355';
                 }, 2000);
                 
-                log('Enhanced JSON data copied to clipboard', 'success');
+                log('JSON data copied to clipboard', 'success');
             } catch (error) {
                 log('Failed to copy: ' + error.message, 'error');
                 alert('Copy failed. Please select and copy manually.');
             }
         });
+
+        document.getElementById('clearCacheBtn').addEventListener('click', () => {
+            if (confirm('Clear all cached stock data? This will require fresh API calls on next run.')) {
+                clearAllCache();
+            }
+        });
+        
+        // Initialize on load
+        initDailyTracking();
+        updateCacheStats();
+        updateAPICounters();
+        
+        log('System initialized with persistent caching', 'success');
+        log(`Daily TwelveData usage: ${getDailyCount('twelvedata')}/800`, 'info');
     </script>
 </body>
 </html>
