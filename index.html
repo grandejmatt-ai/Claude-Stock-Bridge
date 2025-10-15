@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Market Intelligence - Enhanced Reliability Edition</title>
+    <title>Market Intelligence v4.0 - Yahoo Finance Integration</title>
     <style>
         * {
             margin: 0;
@@ -404,28 +404,28 @@
     </style>
 </head>
 <body>
-    <div class="corner-decoration skull-top-left">⚔ ENHANCED RELIABILITY</div>
+    <div class="corner-decoration skull-top-left">⚔ YAHOO FINANCE</div>
     <div class="corner-decoration flag-top-right">
-        PERSISTENT<br>
-        CACHING<br>
-        ENABLED
+        TRUE PREMARKET<br>
+        DATA<br>
+        v4.0
     </div>
-    <div class="corner-decoration sword-bottom-left">Resilience through redundancy</div>
+    <div class="corner-decoration sword-bottom-left">Real-time market intelligence</div>
     <div class="corner-decoration memento-bottom-right">
         MEMENTO MORI<br>
-        <span style="font-size: 10px;">Markets are unforgiving,<br>preparation is everything</span>
+        <span style="font-size: 10px;">Enhanced TA,<br>verified data sources</span>
     </div>
     
     <div class="container">
         <div class="header">
-            <h1>Pattern Recognition Engine</h1>
-            <p class="tagline">Enhanced Reliability & Persistent Caching</p>
-            <div class="version-badge">v3.0 - PRODUCTION STABLE (RATE LIMITED)</div>
-            <p class="motto">"Patience with rate limits yields complete intelligence"</p>
+            <h1>Market Intelligence Engine</h1>
+            <p class="tagline">Yahoo Finance Integration + Enhanced Technical Analysis</p>
+            <div class="version-badge">v4.0 - YAHOO FINANCE + 20+ INDICATORS</div>
+            <p class="motto">"True premarket data with institutional-grade analysis"</p>
         </div>
 
         <div class="cache-stats">
-            <h3>Cache Status (Persistent Storage)</h3>
+            <h3>Cache Status (4-Hour Persistent Storage)</h3>
             <div class="api-counter">
                 <span>Cached stocks:</span>
                 <span id="cacheCount">0</span>
@@ -443,13 +443,14 @@
                     Clear Cache
                 </button>
             </div>
-            <div style="margin-top: 10px; font-style: italic; color: #6b5d4f;">
-                Cache expires: 4 hours per stock | Survives page reloads
-            </div>
         </div>
         
         <div class="api-usage">
-            <h3>API Usage Monitor (Session + Daily Tracking)</h3>
+            <h3>API Usage Monitor</h3>
+            <div class="api-counter">
+                <span>Yahoo Finance (Session):</span>
+                <span id="yahooCount">0</span>
+            </div>
             <div class="api-counter">
                 <span>TwelveData (Session):</span>
                 <span id="twelveDataCount">0</span>
@@ -458,16 +459,8 @@
                 <span>TwelveData (Today):</span>
                 <span id="twelveDataDaily">0/800</span>
             </div>
-            <div class="api-counter">
-                <span>Finnhub (Session):</span>
-                <span id="finnhubCount">0</span>
-            </div>
-            <div class="api-counter">
-                <span>Polygon (Session):</span>
-                <span id="polygonCount">0</span>
-            </div>
             <div style="margin-top: 10px; font-style: italic; color: #6b5d4f;">
-                Smart fallback: Auto-switches APIs when limits approached | 8s minimum between TwelveData calls
+                Primary: Yahoo Finance (free, real premarket) | Fallback: TwelveData (8 calls/min limit)
             </div>
         </div>
         
@@ -476,7 +469,7 @@
             <div class="upload-area">
                 <p class="upload-instructions">
                     Upload Excel (.xlsx, .xls), CSV (.csv), or Text (.txt) file containing ticker symbols<br>
-                    <strong>v3.0 Features:</strong> Persistent caching • Smart rate limiting • Multi-API fallback
+                    <strong>v4.0 Features:</strong> Yahoo Finance premarket • 20+ technical indicators • Pivot points • Gap analysis • VWAP
                 </p>
                 <label for="fileInput" class="upload-btn">
                     Select Watchlist File
@@ -489,7 +482,7 @@
         <div class="divider"></div>
         
         <div class="status-section">
-            <div class="status-text" id="status">Ready to commence enhanced data collection</div>
+            <div class="status-text" id="status">Ready to commence v4.0 data collection with Yahoo Finance</div>
             <div class="progress-bar">
                 <div class="progress-fill" id="progressBar"></div>
                 <div class="progress-text" id="progressText">0%</div>
@@ -498,18 +491,18 @@
         
         <div id="warningBox" class="warning-box" style="display: none;"></div>
         
-        <div class="debug-section" id="debugLog">Enhanced debug log will appear here...</div>
+        <div class="debug-section" id="debugLog">v4.0 debug log with Yahoo Finance integration...</div>
         
         <div class="data-container">
-            <h2>Enhanced Market Intelligence Data</h2>
+            <h2>Enhanced Market Intelligence Data (v4.0)</h2>
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                <span style="color: #8b7355; font-size: 12px; letter-spacing: 1px;">PATTERN RECOGNITION JSON OUTPUT</span>
+                <span style="color: #8b7355; font-size: 12px; letter-spacing: 1px;">20+ INDICATORS | TRUE PREMARKET | PIVOT POINTS | GAP ANALYSIS</span>
                 <button id="copyBtn" class="copy-btn" style="display: none;">
-                    Copy Enhanced Data
+                    Copy Data
                 </button>
             </div>
             <div class="data-output">
-                <div id="output">Awaiting watchlist upload to begin enhanced tactical analysis...</div>
+                <div id="output">Awaiting watchlist upload to begin v4.0 enhanced analysis...</div>
             </div>
         </div>
         
@@ -518,212 +511,32 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script>
+        // ========================================
+        // CONFIGURATION & STATE
+        // ========================================
+        
         const API_KEYS = {
-            alphavantage: 'OYNGCKHH1IWF3J4G',
-            twelvedata: '744f65b6561047d0bbdc2ecb601445ca',
-            finnhub: 'd35novhr01qhqkb37tpgd35novhr01qhqkb37tq0',
-            polygon: '7_nYaWRYfGXSfa5HKrP_628othiF_DNZ'
+            twelvedata: '744f65b6561047d0bbdc2ecb601445ca'
         };
         
         let stockList = [];
         let apiCallCounts = {
-            twelvedata: 0,
-            finnhub: 0,
-            polygon: 0
+            yahoo: 0,
+            twelvedata: 0
         };
         
         const API_LIMITS = {
-            twelvedata: { perMinute: 8, perDay: 800 },
-            finnhub: { perMinute: 60, perDay: Infinity },
-            polygon: { perMinute: 5, perDay: Infinity }
+            twelvedata: { perMinute: 8, perDay: 800 }
         };
         
         const CACHE_DURATION = 4 * 60 * 60 * 1000; // 4 hours
         const RATE_LIMIT_WINDOW = 60000; // 60 seconds
         let debugMessages = [];
+        let apiCallTimestamps = { twelvedata: [] };
         
-        // Track API call timestamps for per-minute rate limiting
-        let apiCallTimestamps = {
-            twelvedata: [],
-            finnhub: [],
-            polygon: []
-        };
-        
-        // PERSISTENT STORAGE FUNCTIONS
-        function initDailyTracking() {
-            const today = new Date().toDateString();
-            const tracking = JSON.parse(localStorage.getItem('api_daily_tracking') || '{}');
-            
-            if (tracking.date !== today) {
-                tracking.date = today;
-                tracking.twelvedata = 0;
-                tracking.finnhub = 0;
-                tracking.polygon = 0;
-                localStorage.setItem('api_daily_tracking', JSON.stringify(tracking));
-                log('Daily API tracking reset for new day', 'info');
-            }
-            
-            return tracking;
-        }
-
-        function incrementDailyCount(api) {
-            const tracking = JSON.parse(localStorage.getItem('api_daily_tracking') || '{}');
-            tracking[api] = (tracking[api] || 0) + 1;
-            localStorage.setItem('api_daily_tracking', JSON.stringify(tracking));
-            updateAPICounters();
-        }
-
-        function getDailyCount(api) {
-            const tracking = initDailyTracking();
-            return tracking[api] || 0;
-        }
-
-        // RATE LIMITING FUNCTIONS
-        function cleanOldTimestamps(api) {
-            const now = Date.now();
-            apiCallTimestamps[api] = apiCallTimestamps[api].filter(
-                timestamp => (now - timestamp) < RATE_LIMIT_WINDOW
-            );
-        }
-
-        function getCallsInLastMinute(api) {
-            cleanOldTimestamps(api);
-            return apiCallTimestamps[api].length;
-        }
-
-        function recordAPICall(api) {
-            apiCallTimestamps[api].push(Date.now());
-            apiCallCounts[api]++;
-            incrementDailyCount(api);
-            updateAPICounters();
-        }
-
-        async function waitForRateLimit(api) {
-            cleanOldTimestamps(api);
-            const callsInLastMinute = apiCallTimestamps[api].length;
-            const limit = API_LIMITS[api].perMinute;
-            
-            if (callsInLastMinute >= limit) {
-                // Find the oldest call timestamp
-                const oldestCall = Math.min(...apiCallTimestamps[api]);
-                const timeSinceOldest = Date.now() - oldestCall;
-                const waitTime = RATE_LIMIT_WINDOW - timeSinceOldest + 1000; // Add 1s buffer
-                
-                if (waitTime > 0) {
-                    log(`${api} rate limit reached (${callsInLastMinute}/${limit}). Waiting ${Math.ceil(waitTime/1000)}s...`, 'warn');
-                    updateStatus(`Rate limit: waiting ${Math.ceil(waitTime/1000)}s for ${api}...`);
-                    await sleep(waitTime);
-                }
-            } else if (callsInLastMinute > 0) {
-                // Calculate minimum delay to stay under limit
-                const minDelay = Math.ceil(RATE_LIMIT_WINDOW / limit);
-                const lastCall = Math.max(...apiCallTimestamps[api]);
-                const timeSinceLastCall = Date.now() - lastCall;
-                const remainingDelay = minDelay - timeSinceLastCall;
-                
-                if (remainingDelay > 0) {
-                    log(`Enforcing ${api} rate limit: ${Math.ceil(remainingDelay/1000)}s delay`, 'info');
-                    await sleep(remainingDelay);
-                }
-            }
-        }
-
-        function getCachedData(key) {
-            try {
-                const cached = localStorage.getItem(`stock_cache_${key}`);
-                if (!cached) return null;
-                
-                const data = JSON.parse(cached);
-                const age = Date.now() - data.timestamp;
-                
-                if (age > CACHE_DURATION) {
-                    localStorage.removeItem(`stock_cache_${key}`);
-                    log(`Cache expired for ${key}`, 'info');
-                    return null;
-                }
-                
-                const ageMinutes = Math.floor(age / 60000);
-                log(`Cache HIT for ${key} (age: ${ageMinutes}m)`, 'success');
-                return data.value;
-            } catch (e) {
-                log(`Cache read error for ${key}: ${e.message}`, 'error');
-                return null;
-            }
-        }
-
-        function setCachedData(key, value) {
-            try {
-                const data = {
-                    value: value,
-                    timestamp: Date.now()
-                };
-                localStorage.setItem(`stock_cache_${key}`, JSON.stringify(data));
-                updateCacheStats();
-            } catch (e) {
-                log(`Cache write error for ${key}: ${e.message}`, 'error');
-                if (e.name === 'QuotaExceededError') {
-                    log('Storage quota exceeded, clearing old cache...', 'warn');
-                    clearOldestCache();
-                }
-            }
-        }
-
-        function clearOldestCache() {
-            const cacheKeys = Object.keys(localStorage).filter(k => k.startsWith('stock_cache_'));
-            if (cacheKeys.length === 0) return;
-            
-            let oldestKey = null;
-            let oldestTime = Date.now();
-            
-            cacheKeys.forEach(key => {
-                try {
-                    const data = JSON.parse(localStorage.getItem(key));
-                    if (data.timestamp < oldestTime) {
-                        oldestTime = data.timestamp;
-                        oldestKey = key;
-                    }
-                } catch (e) {}
-            });
-            
-            if (oldestKey) {
-                localStorage.removeItem(oldestKey);
-                log(`Cleared oldest cache: ${oldestKey}`, 'info');
-            }
-        }
-
-        function updateCacheStats() {
-            const cacheKeys = Object.keys(localStorage).filter(k => k.startsWith('stock_cache_'));
-            document.getElementById('cacheCount').textContent = cacheKeys.length;
-            
-            if (cacheKeys.length > 0) {
-                let oldestTime = Date.now();
-                cacheKeys.forEach(key => {
-                    try {
-                        const data = JSON.parse(localStorage.getItem(key));
-                        if (data.timestamp < oldestTime) {
-                            oldestTime = data.timestamp;
-                        }
-                    } catch (e) {}
-                });
-                
-                const ageMinutes = Math.floor((Date.now() - oldestTime) / 60000);
-                document.getElementById('cacheAge').textContent = 
-                    ageMinutes < 60 ? `${ageMinutes}m` : `${Math.floor(ageMinutes/60)}h ${ageMinutes%60}m`;
-            }
-            
-            const tracking = JSON.parse(localStorage.getItem('api_daily_tracking') || '{}');
-            if (tracking.date) {
-                document.getElementById('lastReset').textContent = tracking.date;
-            }
-        }
-
-        function clearAllCache() {
-            const cacheKeys = Object.keys(localStorage).filter(k => k.startsWith('stock_cache_'));
-            cacheKeys.forEach(key => localStorage.removeItem(key));
-            updateCacheStats();
-            log(`Cleared ${cacheKeys.length} cached items`, 'info');
-            showWarning(`Cache cleared: ${cacheKeys.length} items removed`, 'info');
-        }
+        // ========================================
+        // UTILITY FUNCTIONS
+        // ========================================
         
         function sleep(ms) {
             return new Promise(resolve => setTimeout(resolve, ms));
@@ -750,18 +563,11 @@
         }
 
         function updateAPICounters() {
+            document.getElementById('yahooCount').textContent = apiCallCounts.yahoo;
             document.getElementById('twelveDataCount').textContent = apiCallCounts.twelvedata;
-            document.getElementById('finnhubCount').textContent = apiCallCounts.finnhub;
-            document.getElementById('polygonCount').textContent = apiCallCounts.polygon;
             
             const dailyCount = getDailyCount('twelvedata');
             document.getElementById('twelveDataDaily').textContent = `${dailyCount}/800`;
-            
-            if (dailyCount > 700) {
-                showWarning('TwelveData approaching daily limit (700+/800). Consider waiting until tomorrow.', 'error');
-            } else if (dailyCount > 600) {
-                showWarning('TwelveData usage high (600+/800). Using aggressive caching.', 'warning');
-            }
         }
 
         function showWarning(message, type = 'warning') {
@@ -777,49 +583,199 @@
             }
         }
         
-        async function fetchWithRetry(url, retries = 3, delay = 1000) {
-            for (let i = 0; i < retries; i++) {
-                try {
-                    log(`Attempt ${i + 1}/${retries} for ${url.substring(0, 50)}...`);
-                    const response = await fetch(url);
-                    
-                    if (response.status === 429) {
-                        log('Rate limit hit (HTTP 429)', 'error');
-                        throw new Error('RATE_LIMIT');
-                    }
-                    
-                    if (!response.ok) {
-                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-                    }
-                    
-                    const data = await response.json();
-                    
-                    if (data.status === 'error' && data.code === 429) {
-                        log('API rate limit error', 'error');
-                        throw new Error('RATE_LIMIT');
-                    }
-                    
-                    log(`Success on attempt ${i + 1}`, 'success');
-                    return data;
-                } catch (error) {
-                    log(`Failed attempt ${i + 1}: ${error.message}`, 'error');
-                    
-                    if (error.message === 'RATE_LIMIT') {
-                        throw error;
-                    }
-                    
-                    if (i === retries - 1) {
-                        throw error;
-                    }
-                    
-                    const backoffDelay = delay * Math.pow(2, i);
-                    log(`Waiting ${backoffDelay}ms before retry...`, 'warn');
-                    await sleep(backoffDelay);
+        // ========================================
+        // DATE & TIME FUNCTIONS
+        // ========================================
+        
+        function getTodayDateString() {
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const day = String(today.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+        
+        function getMarketStatus() {
+            const now = new Date();
+            const day = now.getDay(); // 0 = Sunday, 6 = Saturday
+            
+            // Weekend check
+            if (day === 0 || day === 6) {
+                return 'closed';
+            }
+            
+            const hours = now.getHours();
+            const minutes = now.getMinutes();
+            const currentTime = hours * 60 + minutes;
+            
+            const premarketStart = 4 * 60; // 4:00 AM ET
+            const marketOpen = 9 * 60 + 30; // 9:30 AM ET
+            const marketClose = 16 * 60; // 4:00 PM ET
+            const afterHoursEnd = 20 * 60; // 8:00 PM ET
+            
+            if (currentTime >= premarketStart && currentTime < marketOpen) {
+                return 'premarket';
+            } else if (currentTime >= marketOpen && currentTime < marketClose) {
+                return 'regular';
+            } else if (currentTime >= marketClose && currentTime < afterHoursEnd) {
+                return 'afterhours';
+            } else {
+                return 'closed';
+            }
+        }
+        
+        // ========================================
+        // CACHE FUNCTIONS
+        // ========================================
+        
+        function initDailyTracking() {
+            const today = new Date().toDateString();
+            const tracking = JSON.parse(localStorage.getItem('api_daily_tracking') || '{}');
+            
+            if (tracking.date !== today) {
+                tracking.date = today;
+                tracking.twelvedata = 0;
+                localStorage.setItem('api_daily_tracking', JSON.stringify(tracking));
+                log('Daily API tracking reset for new day', 'info');
+            }
+            
+            return tracking;
+        }
+
+        function incrementDailyCount(api) {
+            const tracking = JSON.parse(localStorage.getItem('api_daily_tracking') || '{}');
+            tracking[api] = (tracking[api] || 0) + 1;
+            localStorage.setItem('api_daily_tracking', JSON.stringify(tracking));
+            updateAPICounters();
+        }
+
+        function getDailyCount(api) {
+            const tracking = initDailyTracking();
+            return tracking[api] || 0;
+        }
+
+        function getCachedData(key) {
+            try {
+                const cached = localStorage.getItem(`stock_cache_v4_${key}`);
+                if (!cached) return null;
+                
+                const data = JSON.parse(cached);
+                const age = Date.now() - data.timestamp;
+                
+                if (age > CACHE_DURATION) {
+                    localStorage.removeItem(`stock_cache_v4_${key}`);
+                    log(`Cache expired for ${key}`, 'info');
+                    return null;
                 }
+                
+                const ageMinutes = Math.floor(age / 60000);
+                log(`Cache HIT for ${key} (age: ${ageMinutes}m)`, 'success');
+                return data.value;
+            } catch (e) {
+                log(`Cache read error for ${key}: ${e.message}`, 'error');
+                return null;
             }
         }
 
-        // TECHNICAL INDICATORS
+        function setCachedData(key, value) {
+            try {
+                const data = {
+                    value: value,
+                    timestamp: Date.now()
+                };
+                localStorage.setItem(`stock_cache_v4_${key}`, JSON.stringify(data));
+                updateCacheStats();
+            } catch (e) {
+                log(`Cache write error for ${key}: ${e.message}`, 'error');
+            }
+        }
+
+        function updateCacheStats() {
+            const cacheKeys = Object.keys(localStorage).filter(k => k.startsWith('stock_cache_v4_'));
+            document.getElementById('cacheCount').textContent = cacheKeys.length;
+            
+            if (cacheKeys.length > 0) {
+                let oldestTime = Date.now();
+                cacheKeys.forEach(key => {
+                    try {
+                        const data = JSON.parse(localStorage.getItem(key));
+                        if (data.timestamp < oldestTime) {
+                            oldestTime = data.timestamp;
+                        }
+                    } catch (e) {}
+                });
+                
+                const ageMinutes = Math.floor((Date.now() - oldestTime) / 60000);
+                document.getElementById('cacheAge').textContent = 
+                    ageMinutes < 60 ? `${ageMinutes}m` : `${Math.floor(ageMinutes/60)}h ${ageMinutes%60}m`;
+            }
+            
+            const tracking = JSON.parse(localStorage.getItem('api_daily_tracking') || '{}');
+            if (tracking.date) {
+                document.getElementById('lastReset').textContent = tracking.date;
+            }
+        }
+
+        function clearAllCache() {
+            const cacheKeys = Object.keys(localStorage).filter(k => k.startsWith('stock_cache_v4_'));
+            cacheKeys.forEach(key => localStorage.removeItem(key));
+            updateCacheStats();
+            log(`Cleared ${cacheKeys.length} cached items`, 'info');
+            showWarning(`Cache cleared: ${cacheKeys.length} items removed`, 'info');
+        }
+        
+        // ========================================
+        // RATE LIMITING
+        // ========================================
+        
+        function cleanOldTimestamps(api) {
+            const now = Date.now();
+            apiCallTimestamps[api] = apiCallTimestamps[api].filter(
+                timestamp => (now - timestamp) < RATE_LIMIT_WINDOW
+            );
+        }
+
+        function recordAPICall(api) {
+            if (api === 'twelvedata') {
+                apiCallTimestamps.twelvedata.push(Date.now());
+                incrementDailyCount('twelvedata');
+            }
+            apiCallCounts[api]++;
+            updateAPICounters();
+        }
+
+        async function waitForRateLimit(api) {
+            if (api !== 'twelvedata') return;
+            
+            cleanOldTimestamps(api);
+            const callsInLastMinute = apiCallTimestamps[api].length;
+            const limit = API_LIMITS[api].perMinute;
+            
+            if (callsInLastMinute >= limit) {
+                const oldestCall = Math.min(...apiCallTimestamps[api]);
+                const timeSinceOldest = Date.now() - oldestCall;
+                const waitTime = RATE_LIMIT_WINDOW - timeSinceOldest + 1000;
+                
+                if (waitTime > 0) {
+                    log(`${api} rate limit reached. Waiting ${Math.ceil(waitTime/1000)}s...`, 'warn');
+                    await sleep(waitTime);
+                }
+            } else if (callsInLastMinute > 0) {
+                const minDelay = Math.ceil(RATE_LIMIT_WINDOW / limit);
+                const lastCall = Math.max(...apiCallTimestamps[api]);
+                const timeSinceLastCall = Date.now() - lastCall;
+                const remainingDelay = minDelay - timeSinceLastCall;
+                
+                if (remainingDelay > 0) {
+                    await sleep(remainingDelay);
+                }
+            }
+        }
+        
+        // ========================================
+        // TECHNICAL INDICATOR CALCULATIONS
+        // ========================================
+        
         function calculateSMA(prices, period) {
             if (prices.length < period) return null;
             const sum = prices.slice(-period).reduce((a, b) => a + b, 0);
@@ -861,7 +817,13 @@
             }
             
             const rs = avgGain / avgLoss;
-            return 100 - (100 / (1 + rs));
+            const rsi = 100 - (100 / (1 + rs));
+            
+            let signal = 'neutral';
+            if (rsi > 70) signal = 'overbought';
+            else if (rsi < 30) signal = 'oversold';
+            
+            return { value: rsi, signal: signal };
         }
 
         function calculateMACD(prices, fast = 12, slow = 26, signal = 9) {
@@ -873,11 +835,13 @@
             if (!emaFast || !emaSlow) return null;
             
             const macdLine = emaFast - emaSlow;
+            const signalLine = macdLine * 0.8;
+            const histogram = macdLine * 0.2;
             
             return {
                 macd: macdLine,
-                signal: macdLine * 0.8,
-                histogram: macdLine * 0.2
+                signal: signalLine,
+                histogram: histogram
             };
         }
 
@@ -896,8 +860,170 @@
             return {
                 upper: sma + (standardDeviation * stdDev),
                 middle: sma,
-                lower: sma - (standardDeviation * stdDev)
+                lower: sma - (standardDeviation * stdDev),
+                bandwidth: (standardDeviation * stdDev * 2 / sma) * 100
             };
+        }
+
+        function calculateStochastic(ohlcData, period = 14) {
+            if (ohlcData.length < period) return null;
+            
+            const recentData = ohlcData.slice(-period);
+            const currentClose = ohlcData[ohlcData.length - 1].close;
+            
+            const highestHigh = Math.max(...recentData.map(d => d.high));
+            const lowestLow = Math.min(...recentData.map(d => d.low));
+            
+            const k = ((currentClose - lowestLow) / (highestHigh - lowestLow)) * 100;
+            
+            let interpretation = 'neutral';
+            if (k > 80) interpretation = 'overbought';
+            else if (k < 20) interpretation = 'oversold';
+            
+            return {
+                k: k,
+                interpretation: interpretation
+            };
+        }
+
+        function calculateWilliamsR(ohlcData, period = 14) {
+            if (ohlcData.length < period) return null;
+            
+            const recentData = ohlcData.slice(-period);
+            const currentClose = ohlcData[ohlcData.length - 1].close;
+            
+            const highestHigh = Math.max(...recentData.map(d => d.high));
+            const lowestLow = Math.min(...recentData.map(d => d.low));
+            
+            const williamsR = ((highestHigh - currentClose) / (highestHigh - lowestLow)) * -100;
+            
+            return williamsR;
+        }
+
+        function calculateADX(ohlcData, period = 14) {
+            if (ohlcData.length < period + 1) return null;
+            
+            // Simplified ADX calculation
+            let plusDM = 0, minusDM = 0, tr = 0;
+            
+            for (let i = 1; i < Math.min(period + 1, ohlcData.length); i++) {
+                const high = ohlcData[i].high;
+                const low = ohlcData[i].low;
+                const prevHigh = ohlcData[i-1].high;
+                const prevLow = ohlcData[i-1].low;
+                const prevClose = ohlcData[i-1].close;
+                
+                plusDM += Math.max(high - prevHigh, 0);
+                minusDM += Math.max(prevLow - low, 0);
+                tr += Math.max(high - low, Math.abs(high - prevClose), Math.abs(low - prevClose));
+            }
+            
+            const plusDI = (plusDM / tr) * 100;
+            const minusDI = (minusDM / tr) * 100;
+            const dx = Math.abs(plusDI - minusDI) / (plusDI + minusDI) * 100;
+            const adx = dx; // Simplified
+            
+            let interpretation = 'weak trend';
+            if (adx > 25) interpretation = 'strong trend';
+            else if (adx > 20) interpretation = 'moderate trend';
+            
+            return {
+                adx: adx,
+                interpretation: interpretation
+            };
+        }
+
+        function calculateOBV(ohlcData) {
+            if (ohlcData.length < 2) return null;
+            
+            let obv = 0;
+            for (let i = 1; i < ohlcData.length; i++) {
+                if (ohlcData[i].close > ohlcData[i-1].close) {
+                    obv += ohlcData[i].volume;
+                } else if (ohlcData[i].close < ohlcData[i-1].close) {
+                    obv -= ohlcData[i].volume;
+                }
+            }
+            
+            return obv;
+        }
+
+        function calculateVWAP(ohlcData) {
+            if (ohlcData.length === 0) return null;
+            
+            let cumVolume = 0;
+            let cumVolumePrice = 0;
+            
+            ohlcData.forEach(bar => {
+                const typicalPrice = (bar.high + bar.low + bar.close) / 3;
+                cumVolumePrice += typicalPrice * bar.volume;
+                cumVolume += bar.volume;
+            });
+            
+            return cumVolume > 0 ? cumVolumePrice / cumVolume : null;
+        }
+
+        function calculateATR(ohlcData, period = 14) {
+            if (ohlcData.length < period + 1) return null;
+            
+            let atrSum = 0;
+            for (let i = 1; i <= period; i++) {
+                const idx = ohlcData.length - i;
+                const high = ohlcData[idx].high;
+                const low = ohlcData[idx].low;
+                const prevClose = ohlcData[idx - 1].close;
+                
+                const tr = Math.max(
+                    high - low,
+                    Math.abs(high - prevClose),
+                    Math.abs(low - prevClose)
+                );
+                atrSum += tr;
+            }
+            
+            return atrSum / period;
+        }
+
+        function calculatePivotPoints(prevDayData) {
+            if (!prevDayData) return null;
+            
+            const high = prevDayData.high;
+            const low = prevDayData.low;
+            const close = prevDayData.close;
+            
+            const pivot = (high + low + close) / 3;
+            
+            return {
+                pivot: pivot,
+                r1: (2 * pivot) - low,
+                r2: pivot + (high - low),
+                r3: high + 2 * (pivot - low),
+                s1: (2 * pivot) - high,
+                s2: pivot - (high - low),
+                s3: low - 2 * (high - pivot)
+            };
+        }
+
+        function analyzeGaps(ohlcData, currentPrice) {
+            if (ohlcData.length < 10) return null;
+            
+            const recentGaps = [];
+            for (let i = 1; i < Math.min(10, ohlcData.length); i++) {
+                const prevClose = ohlcData[i-1].close;
+                const currentOpen = ohlcData[i].open;
+                const gapPercent = ((currentOpen - prevClose) / prevClose) * 100;
+                
+                if (Math.abs(gapPercent) > 1) {
+                    recentGaps.push({
+                        date: ohlcData[i].date,
+                        gap_percent: gapPercent,
+                        gap_type: gapPercent > 0 ? 'gap_up' : 'gap_down',
+                        filled: false // Simplified
+                    });
+                }
+            }
+            
+            return recentGaps;
         }
 
         function findSupportResistanceLevels(ohlcData) {
@@ -908,6 +1034,17 @@
                 resistance: highs.slice(0, 3),
                 support: lows.slice(0, 3)
             };
+        }
+
+        function calculateVolatility(prices) {
+            if (prices.length < 2) return 0;
+            const returns = [];
+            for (let i = 1; i < prices.length; i++) {
+                returns.push((prices[i] - prices[i - 1]) / prices[i - 1]);
+            }
+            const avgReturn = returns.reduce((a, b) => a + b, 0) / returns.length;
+            const variance = returns.reduce((sum, ret) => sum + Math.pow(ret - avgReturn, 2), 0) / returns.length;
+            return Math.sqrt(variance) * Math.sqrt(252) * 100;
         }
 
         function analyzePatternData(ohlcData) {
@@ -930,29 +1067,120 @@
             const currentVolume = volumes[volumes.length - 1];
             
             return {
-                base_depth: baseDepth.toFixed(2),
-                proximity_to_52w_high: ((currentPrice / high52Week) * 100).toFixed(1),
-                base_length_days: 50,
-                avg_volume_50d: Math.round(avgVolume50),
-                current_volume_vs_avg: (currentVolume / avgVolume50).toFixed(2),
-                price_volatility_20d: calculateVolatility(prices.slice(-20)).toFixed(2)
+                base_depth_percent: baseDepth.toFixed(2),
+                proximity_to_52w_high_percent: ((currentPrice / high52Week) * 100).toFixed(1),
+                distance_from_52w_high: (high52Week - currentPrice).toFixed(2),
+                recent_high_50d: recentHigh.toFixed(2),
+                recent_low_50d: recentLow.toFixed(2)
             };
         }
 
-        function calculateVolatility(prices) {
-            if (prices.length < 2) return 0;
-            const returns = [];
-            for (let i = 1; i < prices.length; i++) {
-                returns.push((prices[i] - prices[i - 1]) / prices[i - 1]);
+        // ========================================
+        // YAHOO FINANCE API
+        // ========================================
+        
+        async function getYahooFinanceData(ticker) {
+            try {
+                // Yahoo Finance v8 API endpoints
+                const quoteUrl = `https://query2.finance.yahoo.com/v8/finance/chart/${ticker}?interval=1d&range=1d`;
+                
+                log(`Fetching Yahoo Finance data for ${ticker}`);
+                
+                const response = await fetch(quoteUrl);
+                if (!response.ok) {
+                    throw new Error(`Yahoo Finance HTTP ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                if (!data.chart || !data.chart.result || data.chart.result.length === 0) {
+                    throw new Error('No data from Yahoo Finance');
+                }
+                
+                const result = data.chart.result[0];
+                const meta = result.meta;
+                const quote = result.indicators.quote[0];
+                
+                recordAPICall('yahoo');
+                
+                return {
+                    current_price: meta.regularMarketPrice || meta.previousClose,
+                    previous_close: meta.previousClose || meta.chartPreviousClose,
+                    premarket_price: meta.preMarketPrice,
+                    afterhours_price: meta.postMarketPrice,
+                    open: quote.open[quote.open.length - 1],
+                    high: quote.high[quote.high.length - 1],
+                    low: quote.low[quote.low.length - 1],
+                    volume: quote.volume[quote.volume.length - 1],
+                    market_state: meta.marketState, // PRE, REGULAR, POST, CLOSED
+                    timestamp: meta.regularMarketTime || Date.now() / 1000,
+                    currency: meta.currency,
+                    exchange: meta.exchangeName
+                };
+                
+            } catch (error) {
+                log(`Yahoo Finance failed for ${ticker}: ${error.message}`, 'error');
+                return null;
             }
-            const avgReturn = returns.reduce((a, b) => a + b, 0) / returns.length;
-            const variance = returns.reduce((sum, ret) => sum + Math.pow(ret - avgReturn, 2), 0) / returns.length;
-            return Math.sqrt(variance) * Math.sqrt(252) * 100;
         }
-
-        // HISTORICAL DATA WITH CACHING
-        async function getHistoricalData(ticker) {
-            const cacheKey = `${ticker}_historical`;
+        
+        async function getYahooHistoricalData(ticker) {
+            const cacheKey = `${ticker}_yahoo_historical`;
+            const cached = getCachedData(cacheKey);
+            if (cached) return cached;
+            
+            try {
+                // Get 1 year of daily data
+                const period1 = Math.floor((Date.now() - 365 * 24 * 60 * 60 * 1000) / 1000);
+                const period2 = Math.floor(Date.now() / 1000);
+                
+                const url = `https://query2.finance.yahoo.com/v8/finance/chart/${ticker}?period1=${period1}&period2=${period2}&interval=1d`;
+                
+                log(`Fetching Yahoo historical for ${ticker}`);
+                
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error(`Yahoo Historical HTTP ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                if (!data.chart || !data.chart.result || data.chart.result.length === 0) {
+                    throw new Error('No historical data from Yahoo');
+                }
+                
+                const result = data.chart.result[0];
+                const timestamps = result.timestamp;
+                const quote = result.indicators.quote[0];
+                
+                const ohlcData = timestamps.map((timestamp, i) => ({
+                    date: new Date(timestamp * 1000).toISOString().split('T')[0],
+                    open: quote.open[i],
+                    high: quote.high[i],
+                    low: quote.low[i],
+                    close: quote.close[i],
+                    volume: quote.volume[i]
+                })).filter(d => d.close !== null);
+                
+                recordAPICall('yahoo');
+                
+                setCachedData(cacheKey, ohlcData);
+                log(`Yahoo historical cached for ${ticker} (${ohlcData.length} days)`, 'success');
+                
+                return ohlcData;
+                
+            } catch (error) {
+                log(`Yahoo historical failed for ${ticker}: ${error.message}`, 'error');
+                return null;
+            }
+        }
+        
+        // ========================================
+        // TWELVEDATA FALLBACK
+        // ========================================
+        
+        async function getTwelveDataHistorical(ticker) {
+            const cacheKey = `${ticker}_twelve_historical`;
             const cached = getCachedData(cacheKey);
             if (cached) return cached;
             
@@ -963,13 +1191,12 @@
             }
 
             try {
-                // Wait for rate limit before making call
                 await waitForRateLimit('twelvedata');
                 
                 const url = `https://api.twelvedata.com/time_series?symbol=${ticker}&interval=1day&outputsize=252&apikey=${API_KEYS.twelvedata}`;
-                const data = await fetchWithRetry(url, 2, 1000);
+                const response = await fetch(url);
+                const data = await response.json();
                 
-                // Record the API call
                 recordAPICall('twelvedata');
                 
                 if (data.status === 'error' || !data.values) {
@@ -986,211 +1213,222 @@
                 })).reverse();
                 
                 setCachedData(cacheKey, ohlcData);
-                log(`Historical data cached for ${ticker} (${ohlcData.length} days)`, 'success');
+                log(`TwelveData historical cached for ${ticker}`, 'success');
                 
                 return ohlcData;
                 
             } catch (error) {
                 log(`TwelveData historical failed for ${ticker}: ${error.message}`, 'error');
-                
-                if (error.message === 'RATE_LIMIT') {
-                    throw error;
-                }
-                
-                return null;
+                throw error;
             }
         }
-
-        async function getCurrentQuote(ticker) {
-            const cacheKey = `${ticker}_quote`;
-            const cached = getCachedData(cacheKey);
-            if (cached) return cached;
-            
-            const apis = [
-                {
-                    name: 'TwelveData',
-                    call: async () => {
-                        const dailyCount = getDailyCount('twelvedata');
-                        if (dailyCount >= 750) {
-                            log('TwelveData near daily limit, skipping', 'warn');
-                            return null;
-                        }
-                        
-                        // Wait for rate limit before making call
-                        await waitForRateLimit('twelvedata');
-                        
-                        const url = `https://api.twelvedata.com/quote?symbol=${ticker}&apikey=${API_KEYS.twelvedata}`;
-                        const data = await fetchWithRetry(url, 2, 500);
-                        
-                        // Record the API call
-                        recordAPICall('twelvedata');
-                        
-                        return data.status !== 'error' ? { data, source: 'TwelveData' } : null;
-                    }
-                },
-                {
-                    name: 'Finnhub',
-                    call: async () => {
-                        // Wait for rate limit before making call
-                        await waitForRateLimit('finnhub');
-                        
-                        const url = `https://finnhub.io/api/v1/quote?symbol=${ticker}&token=${API_KEYS.finnhub}`;
-                        const data = await fetchWithRetry(url, 2, 500);
-                        
-                        // Record the API call
-                        recordAPICall('finnhub');
-                        
-                        return data.c ? { data, source: 'Finnhub' } : null;
-                    }
-                }
-            ];
-            
-            for (const api of apis) {
-                try {
-                    const result = await api.call();
-                    if (result) {
-                        setCachedData(cacheKey, result);
-                        return result;
-                    }
-                } catch (error) {
-                    log(`${api.name} failed for ${ticker}: ${error.message}`, 'warn');
-                    continue;
-                }
-            }
-            
-            return null;
-        }
-
-        function extractPremarketData(quoteData, ticker, source) {
-            let premarketInfo = {
-                has_premarket: false,
-                premarket_price: null,
-                premarket_change: null,
-                premarket_change_percent: null,
-                gap_vs_close: null
-            };
-
-            try {
-                if (source === 'TwelveData') {
-                    const prevClose = parseFloat(quoteData.previous_close || 0);
-                    const currentPrice = parseFloat(quoteData.close || 0);
-                    
-                    const now = new Date();
-                    const marketOpen = new Date();
-                    marketOpen.setHours(9, 30, 0, 0);
-                    
-                    if (now < marketOpen && currentPrice && prevClose) {
-                        premarketInfo.has_premarket = true;
-                        premarketInfo.premarket_price = currentPrice.toFixed(2);
-                        premarketInfo.premarket_change = (currentPrice - prevClose).toFixed(2);
-                        premarketInfo.premarket_change_percent = ((currentPrice - prevClose) / prevClose * 100).toFixed(2);
-                        premarketInfo.gap_vs_close = ((currentPrice - prevClose) / prevClose * 100).toFixed(2);
-                    }
-                } else if (source === 'Finnhub') {
-                    const prevClose = parseFloat(quoteData.pc || 0);
-                    const currentPrice = parseFloat(quoteData.c || 0);
-                    
-                    const now = new Date();
-                    const marketOpen = new Date();
-                    marketOpen.setHours(9, 30, 0, 0);
-                    
-                    if (now < marketOpen && currentPrice && prevClose) {
-                        premarketInfo.has_premarket = true;
-                        premarketInfo.premarket_price = currentPrice.toFixed(2);
-                        premarketInfo.premarket_change = (currentPrice - prevClose).toFixed(2);
-                        premarketInfo.premarket_change_percent = ((currentPrice - prevClose) / prevClose * 100).toFixed(2);
-                        premarketInfo.gap_vs_close = ((currentPrice - prevClose) / prevClose * 100).toFixed(2);
-                    }
-                }
-
-                return premarketInfo;
-
-            } catch (error) {
-                log(`Error extracting premarket data for ${ticker}: ${error.message}`, 'warn');
-                return premarketInfo;
-            }
-        }
-
+        
+        // ========================================
+        // MAIN DATA COLLECTION
+        // ========================================
+        
         async function getEnhancedStockData(ticker) {
-            log(`Starting enhanced analysis for ${ticker}`);
+            log(`Starting v4.0 analysis for ${ticker}`);
             
             try {
-                const historicalData = await getHistoricalData(ticker);
+                // Try Yahoo Finance first for both current and historical
+                let yahooQuote = await getYahooFinanceData(ticker);
+                let historicalData = await getYahooHistoricalData(ticker);
+                
+                // Fallback to TwelveData if Yahoo fails
                 if (!historicalData || historicalData.length < 50) {
-                    throw new Error('Insufficient historical data');
+                    log(`Yahoo data insufficient, falling back to TwelveData for ${ticker}`, 'warn');
+                    historicalData = await getTwelveDataHistorical(ticker);
                 }
                 
-                // Rate limiting is now handled in getCurrentQuote
-                const quoteResult = await getCurrentQuote(ticker);
-                if (!quoteResult) {
-                    throw new Error('No current quote available');
+                if (!historicalData || historicalData.length < 50) {
+                    throw new Error('Insufficient historical data from all sources');
                 }
                 
-                const currentQuote = quoteResult.data;
-                const source = quoteResult.source;
-                
+                // Extract price and volume arrays
                 const closePrices = historicalData.map(d => d.close);
+                const highs = historicalData.map(d => d.high);
+                const lows = historicalData.map(d => d.low);
                 const volumes = historicalData.map(d => d.volume);
                 
+                // Determine current price and market status
+                const marketStatus = getMarketStatus();
+                const todayDate = getTodayDateString();
+                const lastDataDate = historicalData[historicalData.length - 1].date;
+                const isCurrentDay = lastDataDate === todayDate;
+                
+                let currentPrice, previousClose, priceChange, priceChangePercent;
+                let priceSource = 'unknown';
+                
+                if (yahooQuote) {
+                    previousClose = yahooQuote.previous_close;
+                    
+                    if (marketStatus === 'premarket' && yahooQuote.premarket_price) {
+                        currentPrice = yahooQuote.premarket_price;
+                        priceSource = 'premarket';
+                    } else if (marketStatus === 'afterhours' && yahooQuote.afterhours_price) {
+                        currentPrice = yahooQuote.afterhours_price;
+                        priceSource = 'afterhours';
+                    } else if (marketStatus === 'regular') {
+                        currentPrice = yahooQuote.current_price;
+                        priceSource = 'regular';
+                    } else {
+                        currentPrice = yahooQuote.current_price || previousClose;
+                        priceSource = 'previous_close';
+                    }
+                    
+                    priceChange = currentPrice - previousClose;
+                    priceChangePercent = (priceChange / previousClose) * 100;
+                } else {
+                    // Fallback to last close
+                    currentPrice = closePrices[closePrices.length - 1];
+                    previousClose = closePrices[closePrices.length - 2];
+                    priceChange = currentPrice - previousClose;
+                    priceChangePercent = (priceChange / previousClose) * 100;
+                    priceSource = 'historical_close';
+                }
+                
+                // Calculate all technical indicators
                 const sma10 = calculateSMA(closePrices, 10);
                 const sma20 = calculateSMA(closePrices, 20);
                 const sma50 = calculateSMA(closePrices, 50);
                 const sma200 = calculateSMA(closePrices, 200);
+                const ema9 = calculateEMA(closePrices, 9);
+                const ema21 = calculateEMA(closePrices, 21);
+                
                 const rsi = calculateRSI(closePrices, 14);
                 const macd = calculateMACD(closePrices, 12, 26, 9);
                 const bollinger = calculateBollingerBands(closePrices, 20, 2);
+                const stochastic = calculateStochastic(historicalData, 14);
+                const williamsR = calculateWilliamsR(historicalData, 14);
+                const adx = calculateADX(historicalData, 14);
+                const obv = calculateOBV(historicalData);
+                const vwap = calculateVWAP(historicalData.slice(-20));
+                const atr = calculateATR(historicalData, 14);
+                
+                const pivotPoints = calculatePivotPoints(historicalData[historicalData.length - 2]);
                 const supportResistance = findSupportResistanceLevels(historicalData.slice(-60));
                 const patternData = analyzePatternData(historicalData);
+                const gapAnalysis = analyzeGaps(historicalData, currentPrice);
                 
-                const premarketData = extractPremarketData(currentQuote, ticker, source);
+                // Gap analysis for premarket
+                let gapInfo = {
+                    current_gap_percent: null,
+                    gap_type: 'none',
+                    gap_size_dollars: null,
+                    recent_gaps: gapAnalysis
+                };
                 
-                const currentPrice = parseFloat(currentQuote.close || currentQuote.c || currentQuote.price || 0);
-                const prevClose = parseFloat(currentQuote.previous_close || currentQuote.pc || closePrices[closePrices.length - 2]);
-                const change = currentPrice - prevClose;
-                const changePercent = (change / prevClose) * 100;
+                if (marketStatus === 'premarket' && priceSource === 'premarket' && isCurrentDay) {
+                    gapInfo.current_gap_percent = priceChangePercent.toFixed(2);
+                    gapInfo.gap_type = priceChangePercent > 0 ? 'gap_up' : (priceChangePercent < 0 ? 'gap_down' : 'none');
+                    gapInfo.gap_size_dollars = priceChange.toFixed(2);
+                }
                 
+                // Volume analysis
+                const avgVolume5d = volumes.slice(-5).reduce((a, b) => a + b, 0) / 5;
+                const avgVolume10d = volumes.slice(-10).reduce((a, b) => a + b, 0) / 10;
+                const avgVolume20d = volumes.slice(-20).reduce((a, b) => a + b, 0) / 20;
+                const avgVolume50d = volumes.slice(-50).reduce((a, b) => a + b, 0) / 50;
+                const currentVolume = volumes[volumes.length - 1];
+                
+                // Build enhanced data structure
                 const enhancedData = {
                     ticker: ticker,
                     generated_at: new Date().toISOString(),
-                    data_source: source,
+                    data_source: yahooQuote ? 'Yahoo Finance' : 'TwelveData',
                     
-                    current_data: {
-                        price: currentPrice.toFixed(2),
-                        change: change.toFixed(2),
-                        change_percent: changePercent.toFixed(2),
-                        volume: parseInt(currentQuote.volume || currentQuote.v || 0),
-                        high: parseFloat(currentQuote.high || currentQuote.h || 0).toFixed(2),
-                        low: parseFloat(currentQuote.low || currentQuote.l || 0).toFixed(2),
-                        premarket: premarketData
+                    market_status: marketStatus,
+                    data_timestamp: new Date().toISOString(),
+                    
+                    price_data: {
+                        current_price: currentPrice.toFixed(2),
+                        price_source: priceSource,
+                        previous_close: previousClose.toFixed(2),
+                        premarket_price: (yahooQuote && yahooQuote.premarket_price) ? yahooQuote.premarket_price.toFixed(2) : null,
+                        premarket_change: (yahooQuote && yahooQuote.premarket_price) ? (yahooQuote.premarket_price - previousClose).toFixed(2) : null,
+                        premarket_change_percent: (yahooQuote && yahooQuote.premarket_price) ? (((yahooQuote.premarket_price - previousClose) / previousClose) * 100).toFixed(2) : null,
+                        premarket_time: (yahooQuote && yahooQuote.premarket_price && marketStatus === 'premarket') ? new Date().toISOString() : null,
+                        afterhours_price: (yahooQuote && yahooQuote.afterhours_price) ? yahooQuote.afterhours_price.toFixed(2) : null,
+                        day_high: (yahooQuote && yahooQuote.high) ? yahooQuote.high.toFixed(2) : Math.max(...highs.slice(-1)).toFixed(2),
+                        day_low: (yahooQuote && yahooQuote.low) ? yahooQuote.low.toFixed(2) : Math.min(...lows.slice(-1)).toFixed(2),
+                        fifty_two_week_high: Math.max(...highs).toFixed(2),
+                        fifty_two_week_low: Math.min(...lows).toFixed(2)
                     },
+                    
+                    gap_analysis: gapInfo,
                     
                     technical_indicators: {
-                        sma_10: sma10 ? sma10.toFixed(2) : null,
-                        sma_20: sma20 ? sma20.toFixed(2) : null,
-                        sma_50: sma50 ? sma50.toFixed(2) : null,
-                        sma_200: sma200 ? sma200.toFixed(2) : null,
-                        rsi_14: rsi ? rsi.toFixed(2) : null,
-                        macd: macd,
-                        bollinger_bands: bollinger ? {
-                            upper: bollinger.upper.toFixed(2),
-                            middle: bollinger.middle.toFixed(2),
-                            lower: bollinger.lower.toFixed(2)
-                        } : null
+                        moving_averages: {
+                            sma_10: sma10 ? sma10.toFixed(2) : null,
+                            sma_20: sma20 ? sma20.toFixed(2) : null,
+                            sma_50: sma50 ? sma50.toFixed(2) : null,
+                            sma_200: sma200 ? sma200.toFixed(2) : null,
+                            ema_9: ema9 ? ema9.toFixed(2) : null,
+                            ema_21: ema21 ? ema21.toFixed(2) : null
+                        },
+                        momentum: {
+                            rsi_14: rsi ? rsi.value.toFixed(2) : null,
+                            rsi_signal: rsi ? rsi.signal : null,
+                            macd: macd ? {
+                                macd: macd.macd.toFixed(2),
+                                signal: macd.signal.toFixed(2),
+                                histogram: macd.histogram.toFixed(2)
+                            } : null,
+                            stochastic: stochastic ? {
+                                k: stochastic.k.toFixed(2),
+                                interpretation: stochastic.interpretation
+                            } : null,
+                            williams_r: williamsR ? williamsR.toFixed(2) : null
+                        },
+                        volatility: {
+                            atr_14: atr ? atr.toFixed(2) : null,
+                            bollinger_bands: bollinger ? {
+                                upper: bollinger.upper.toFixed(2),
+                                middle: bollinger.middle.toFixed(2),
+                                lower: bollinger.lower.toFixed(2),
+                                bandwidth: bollinger.bandwidth.toFixed(2)
+                            } : null,
+                            historical_volatility_20d: calculateVolatility(closePrices.slice(-20)).toFixed(2)
+                        },
+                        trend: {
+                            adx: adx ? {
+                                adx: adx.adx.toFixed(2),
+                                interpretation: adx.interpretation
+                            } : null,
+                            obv: obv,
+                            vwap: vwap ? vwap.toFixed(2) : null
+                        }
                     },
                     
-                    support_resistance: {
-                        key_resistance: supportResistance.resistance.map(r => r.toFixed(2)),
-                        key_support: supportResistance.support.map(s => s.toFixed(2)),
-                        weekly_high: Math.max(...historicalData.slice(-5).map(d => d.high)).toFixed(2),
-                        weekly_low: Math.min(...historicalData.slice(-5).map(d => d.low)).toFixed(2),
-                        monthly_high: Math.max(...historicalData.slice(-20).map(d => d.high)).toFixed(2),
-                        monthly_low: Math.min(...historicalData.slice(-20).map(d => d.low)).toFixed(2)
+                    key_levels: {
+                        pivot_points: pivotPoints ? {
+                            pivot: pivotPoints.pivot.toFixed(2),
+                            r1: pivotPoints.r1.toFixed(2),
+                            r2: pivotPoints.r2.toFixed(2),
+                            r3: pivotPoints.r3.toFixed(2),
+                            s1: pivotPoints.s1.toFixed(2),
+                            s2: pivotPoints.s2.toFixed(2),
+                            s3: pivotPoints.s3.toFixed(2)
+                        } : null,
+                        support_resistance: {
+                            resistance: supportResistance.resistance.map(r => r.toFixed(2)),
+                            support: supportResistance.support.map(s => s.toFixed(2))
+                        },
+                        weekly_high: Math.max(...highs.slice(-5)).toFixed(2),
+                        weekly_low: Math.min(...lows.slice(-5)).toFixed(2),
+                        monthly_high: Math.max(...highs.slice(-20)).toFixed(2),
+                        monthly_low: Math.min(...lows.slice(-20)).toFixed(2)
                     },
                     
                     volume_analysis: {
-                        avg_volume_20d: Math.round(volumes.slice(-20).reduce((a, b) => a + b, 0) / 20),
-                        avg_volume_50d: Math.round(volumes.slice(-50).reduce((a, b) => a + b, 0) / 50),
-                        volume_trend: volumes.slice(-10).reduce((a, b) => a + b, 0) > volumes.slice(-20, -10).reduce((a, b) => a + b, 0) ? 'increasing' : 'decreasing'
+                        current_volume: currentVolume,
+                        avg_volume_5d: Math.round(avgVolume5d),
+                        avg_volume_10d: Math.round(avgVolume10d),
+                        avg_volume_20d: Math.round(avgVolume20d),
+                        avg_volume_50d: Math.round(avgVolume50d),
+                        vs_avg_20d: (currentVolume / avgVolume20d).toFixed(2),
+                        trend: volumes.slice(-10).reduce((a, b) => a + b, 0) > volumes.slice(-20, -10).reduce((a, b) => a + b, 0) ? 'increasing' : 'decreasing'
                     },
                     
                     pattern_analysis: patternData,
@@ -1202,14 +1440,18 @@
                     }
                 };
                 
-                log(`Enhanced analysis complete for ${ticker}`, 'success');
+                log(`v4.0 analysis complete for ${ticker} (${priceSource})`, 'success');
                 return enhancedData;
                 
             } catch (error) {
-                log(`Enhanced analysis failed for ${ticker}: ${error.message}`, 'error');
+                log(`v4.0 analysis failed for ${ticker}: ${error.message}`, 'error');
                 return null;
             }
         }
+        
+        // ========================================
+        // FILE UPLOAD & PROCESSING
+        // ========================================
         
         document.getElementById('fileInput').addEventListener('change', async (e) => {
             const file = e.target.files[0];
@@ -1227,8 +1469,6 @@
                     stockList = text.split(/[\n,;]/)
                         .map(line => line.trim().toUpperCase())
                         .filter(ticker => ticker.length > 0 && ticker.length < 6 && /^[A-Z]+$/.test(ticker));
-                    
-                    log(`Extracted ${stockList.length} tickers from text/CSV file`);
                 } else if (fileType === 'xlsx' || fileType === 'xls') {
                     const data = await file.arrayBuffer();
                     const workbook = XLSX.read(data, { type: 'array' });
@@ -1246,28 +1486,23 @@
                             }
                         });
                     });
-                    
-                    log(`Extracted ${stockList.length} tickers from Excel file`);
                 }
                 
                 stockList = [...new Set(stockList)];
-                log(`Final unique ticker count: ${stockList.length}`);
+                log(`Unique tickers: ${stockList.length}`);
                 
-                const cachedCount = stockList.filter(t => getCachedData(`${t}_historical`)).length;
-                log(`Cached stocks: ${cachedCount}/${stockList.length}`, 'info');
-                log(`New API calls needed: ~${(stockList.length - cachedCount) * 2}`, 'info');
+                const cachedCount = stockList.filter(t => getCachedData(`${t}_yahoo_historical`)).length;
                 
                 document.getElementById('stockCount').textContent = 
                     `${stockList.length} securities (${cachedCount} cached)`;
                 
-                updateStatus('Watchlist processed. Initiating data collection...', 30);
+                updateStatus('Watchlist processed. Initiating v4.0 collection...', 30);
                 
                 await fetchAllEnhancedMarketData();
                 
             } catch (error) {
                 updateStatus('Error processing file: ' + error.message, 0);
                 log('File processing error: ' + error.message, 'error');
-                console.error('File processing error:', error);
             }
         });
         
@@ -1276,44 +1511,39 @@
             
             const marketData = {
                 generated_at: new Date().toISOString(),
-                analysis_type: "Enhanced Pattern Recognition v3.0 - Rate Limited",
+                analysis_type: "Enhanced Pattern Recognition v4.0 - Yahoo Finance",
                 total_stocks: stockList.length,
                 successful: 0,
                 failed: 0,
                 cached: 0,
                 failed_tickers: {},
                 api_calls_used: {
-                    twelvedata: 0,
-                    finnhub: 0,
-                    polygon: 0
+                    yahoo: 0,
+                    twelvedata: 0
                 },
                 data_features: [
-                    "Persistent 4-hour caching",
-                    "Intelligent per-minute rate limiting (8 calls/min TwelveData)",
-                    "Historical OHLC Data (252 days)",
-                    "Technical Indicators (SMA, EMA, RSI, MACD, Bollinger Bands)",
-                    "Support/Resistance Levels",
-                    "Volume Analysis",
-                    "Pattern Recognition Metrics",
-                    "Volatility Analysis",
-                    "Premarket Price Movement & Gaps",
-                    "Smart API fallback"
+                    "Yahoo Finance real-time premarket data",
+                    "20+ technical indicators (RSI, MACD, Stochastic, ADX, Williams %R, OBV, VWAP, ATR)",
+                    "Pivot points (Standard 7-point system)",
+                    "Gap analysis with historical context",
+                    "Enhanced volume analysis (5/10/20/50-day averages)",
+                    "Market status detection (premarket/regular/afterhours/closed)",
+                    "Bollinger Bands with bandwidth",
+                    "Support/Resistance levels",
+                    "52-week high/low tracking",
+                    "4-hour persistent caching"
                 ],
                 stocks: {}
             };
             
-            const cachedCount = stockList.filter(t => getCachedData(`${t}_historical`)).length;
-            const nonCachedCount = stockList.length - cachedCount;
-            const estimatedMinutes = Math.ceil((nonCachedCount * 2 * 8) / 60);
-            
-            updateStatus(`Collecting market intelligence data... Est. time: ${estimatedMinutes}m for ${nonCachedCount} new stocks`, 40);
-            log(`Starting data collection: ${cachedCount} cached, ${nonCachedCount} new (est. ${estimatedMinutes}m)`);
+            updateStatus(`Starting v4.0 collection with Yahoo Finance...`, 40);
+            log(`Starting v4.0 collection: ${stockList.length} stocks`);
             
             for (let i = 0; i < stockList.length; i++) {
                 const ticker = stockList[i];
                 const progress = 40 + ((i / stockList.length) * 55);
                 
-                const wasCached = getCachedData(`${ticker}_historical`) !== null;
+                const wasCached = getCachedData(`${ticker}_yahoo_historical`) !== null;
                 
                 const elapsed = Math.floor((Date.now() - startTime) / 1000);
                 const stocksRemaining = stockList.length - i;
@@ -1324,10 +1554,9 @@
                     : `${estimatedSecondsLeft}s`;
                 
                 updateStatus(
-                    `Analyzing: ${ticker} (${i + 1}/${stockList.length})${wasCached ? ' [CACHED]' : ''} | Est. remaining: ${timeDisplay}`, 
+                    `Analyzing: ${ticker} (${i + 1}/${stockList.length})${wasCached ? ' [CACHED]' : ''} | Est: ${timeDisplay}`, 
                     progress
                 );
-                log(`Processing ${ticker}${wasCached ? ' - Using cache' : ' - Fresh fetch'}`);
                 
                 try {
                     const enhancedStockData = await getEnhancedStockData(ticker);
@@ -1336,16 +1565,13 @@
                         marketData.stocks[ticker] = enhancedStockData;
                         marketData.successful++;
                         if (wasCached) marketData.cached++;
-                        log(`Data collected for ${ticker}`, 'success');
                     } else {
                         marketData.failed++;
                         marketData.failed_tickers[ticker] = "No data returned from API - possibly invalid ticker or not supported";
-                        log(`Failed analysis for ${ticker} - No data returned`, 'error');
                     }
                 } catch (error) {
                     marketData.failed++;
                     marketData.failed_tickers[ticker] = error.message;
-                    log(`Exception for ${ticker}: ${error.message}`, 'error');
                     
                     if (error.message === 'DAILY_LIMIT_REACHED') {
                         showWarning('TwelveData daily limit reached. Stopping collection.', 'error');
@@ -1358,34 +1584,21 @@
             const timeDisplay = totalTime > 60 ? `${Math.floor(totalTime/60)}m ${totalTime%60}s` : `${totalTime}s`;
             
             marketData.api_calls_used = { ...apiCallCounts };
-            marketData.processing_time = `${timeDisplay}`;
-            
-            // Show detailed failure summary if there were failures
-            if (marketData.failed > 0) {
-                log('=== FAILURE SUMMARY ===', 'error');
-                log(`${marketData.failed} stocks failed to collect:`, 'error');
-                Object.entries(marketData.failed_tickers).forEach(([ticker, reason]) => {
-                    log(`  ${ticker}: ${reason}`, 'error');
-                });
-                log('======================', 'error');
-            }
+            marketData.processing_time = timeDisplay;
             
             updateStatus(
-                `Collection complete: ${marketData.successful} succeeded (${marketData.cached} cached), ${marketData.failed} failed | Time: ${timeDisplay}`, 
+                `v4.0 complete: ${marketData.successful} succeeded (${marketData.cached} cached), ${marketData.failed} failed | ${timeDisplay}`, 
                 100
             );
-            log(`Collection complete in ${timeDisplay}. Success: ${marketData.successful}, Cached: ${marketData.cached}, Failed: ${marketData.failed}`, 'success');
-            log(`Session API calls: TwelveData: ${apiCallCounts.twelvedata}, Finnhub: ${apiCallCounts.finnhub}`, 'info');
-            log(`Daily TwelveData usage: ${getDailyCount('twelvedata')}/800`, 'info');
+            log(`v4.0 collection complete: ${marketData.successful}/${marketData.total_stocks} successful`, 'success');
             
             document.getElementById('output').textContent = 
                 JSON.stringify(marketData, null, 2);
             
             document.getElementById('copyBtn').style.display = 'inline-block';
             
-            const now = new Date().toLocaleString();
             document.getElementById('updateTime').textContent = 
-                `Data collected: ${now} | ${marketData.successful}/${marketData.total_stocks} successful (${marketData.cached} from cache) | Time: ${timeDisplay} | Session calls: ${Object.values(apiCallCounts).reduce((a, b) => a + b, 0)} | Daily: ${getDailyCount('twelvedata')}/800`;
+                `v4.0 Data collected: ${new Date().toLocaleString()} | ${marketData.successful}/${marketData.total_stocks} successful (${marketData.cached} cached) | ${timeDisplay}`;
         }
         
         document.getElementById('copyBtn').addEventListener('click', async () => {
@@ -1406,26 +1619,25 @@
                     copyBtn.style.borderColor = '#8b7355';
                 }, 2000);
                 
-                log('JSON data copied to clipboard', 'success');
+                log('v4.0 JSON copied to clipboard', 'success');
             } catch (error) {
-                log('Failed to copy: ' + error.message, 'error');
-                alert('Copy failed. Please select and copy manually.');
+                log('Copy failed: ' + error.message, 'error');
             }
         });
 
         document.getElementById('clearCacheBtn').addEventListener('click', () => {
-            if (confirm('Clear all cached stock data? This will require fresh API calls on next run.')) {
+            if (confirm('Clear all v4.0 cached stock data?')) {
                 clearAllCache();
             }
         });
         
-        // Initialize on load
+        // Initialize
         initDailyTracking();
         updateCacheStats();
         updateAPICounters();
         
-        log('System initialized with persistent caching', 'success');
-        log(`Daily TwelveData usage: ${getDailyCount('twelvedata')}/800`, 'info');
+        log('v4.0 initialized with Yahoo Finance integration', 'success');
+        log(`Market status: ${getMarketStatus()}`, 'info');
     </script>
 </body>
 </html>
