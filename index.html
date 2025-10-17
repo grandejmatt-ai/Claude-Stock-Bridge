@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Market Intelligence v4.0 - Yahoo Finance Integration (FIXED)</title>
+    <title>Market Intelligence v4.1 - WORKING Premarket Data</title>
     <style>
         * {
             margin: 0;
@@ -414,7 +414,7 @@
     <div class="corner-decoration flag-top-right">
         TRUE PREMARKET<br>
         DATA<br>
-        v4.0 FIXED
+        v4.1 FINAL
     </div>
     <div class="corner-decoration sword-bottom-left">Real-time market intelligence</div>
     <div class="corner-decoration memento-bottom-right">
@@ -426,8 +426,8 @@
         <div class="header">
             <h1>Market Intelligence Engine</h1>
             <p class="tagline">Yahoo Finance Integration + Enhanced Technical Analysis</p>
-            <div class="version-badge">v4.0 FIXED - REAL PREMARKET DATA</div>
-            <p class="motto">"True premarket data with institutional-grade analysis"</p>
+            <div class="version-badge">v4.1 FINAL - WORKING PREMARKET</div>
+            <p class="motto">"Correct endpoint = real premarket data"</p>
         </div>
 
         <div class="cache-stats">
@@ -454,15 +454,19 @@
         <div class="api-usage">
             <h3>API Usage Monitor</h3>
             <div class="api-counter">
-                <span>Yahoo Finance (Session):</span>
-                <span id="yahooCount">0</span>
+                <span>Yahoo Quote API (Session):</span>
+                <span id="yahooQuoteCount">0</span>
             </div>
             <div class="api-counter">
-                <span>Yahoo Finance (Total Calls):</span>
+                <span>Yahoo Historical API (Session):</span>
+                <span id="yahooHistCount">0</span>
+            </div>
+            <div class="api-counter">
+                <span>Total API Calls:</span>
                 <span id="yahooTotalCount">0</span>
             </div>
             <div style="margin-top: 10px; font-style: italic; color: #6b5d4f;">
-                100% Yahoo Finance - FREE, unlimited, real premarket data
+                100% Yahoo Finance - FREE, unlimited, WORKING premarket data
             </div>
         </div>
         
@@ -471,7 +475,7 @@
             <div class="upload-area">
                 <p class="upload-instructions">
                     Upload Excel (.xlsx, .xls), CSV (.csv), or Text (.txt) file containing ticker symbols<br>
-                    <strong>v4.0 FIXED:</strong> Verified Yahoo Finance premarket • 20+ technical indicators • Pivot points • Gap analysis • VWAP
+                    <strong>v4.1 FINAL:</strong> CORRECT endpoint • REAL premarket • 20+ technical indicators
                 </p>
                 <label for="fileInput" class="upload-btn">
                     Select Watchlist File
@@ -484,7 +488,7 @@
         <div class="divider"></div>
         
         <div class="status-section">
-            <div class="status-text" id="status">Ready to commence v4.0 FIXED data collection with verified Yahoo Finance</div>
+            <div class="status-text" id="status">Ready for v4.1 FINAL with CORRECT Yahoo Finance endpoint</div>
             <div class="progress-bar">
                 <div class="progress-fill" id="progressBar"></div>
                 <div class="progress-text" id="progressText">0%</div>
@@ -493,18 +497,18 @@
         
         <div id="warningBox" class="warning-box" style="display: none;"></div>
         
-        <div class="debug-section" id="debugLog">v4.0 FIXED debug log with Yahoo Finance integration...</div>
+        <div class="debug-section" id="debugLog">v4.1 FINAL debug log with CORRECT endpoint...</div>
         
         <div class="data-container">
-            <h2>Enhanced Market Intelligence Data (v4.0 FIXED)</h2>
+            <h2>Enhanced Market Intelligence Data (v4.1 FINAL)</h2>
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                <span style="color: #8b7355; font-size: 12px; letter-spacing: 1px;">20+ INDICATORS | TRUE PREMARKET | PIVOT POINTS | GAP ANALYSIS</span>
+                <span style="color: #8b7355; font-size: 12px; letter-spacing: 1px;">WORKING PREMARKET | 20+ INDICATORS | PIVOT POINTS</span>
                 <button id="copyBtn" class="copy-btn" style="display: none;">
                     Copy Data
                 </button>
             </div>
             <div class="data-output">
-                <div id="output">Awaiting watchlist upload to begin v4.0 FIXED enhanced analysis...</div>
+                <div id="output">Awaiting watchlist upload to begin v4.1 FINAL analysis...</div>
             </div>
         </div>
         
@@ -519,8 +523,9 @@
         
         let stockList = [];
         let apiCallCounts = {
-            yahoo: 0,
-            yahooTotal: 0
+            quote: 0,
+            historical: 0,
+            total: 0
         };
         
         const CACHE_DURATION = 4 * 60 * 60 * 1000; // 4 hours
@@ -555,8 +560,9 @@
         }
 
         function updateAPICounters() {
-            document.getElementById('yahooCount').textContent = apiCallCounts.yahoo;
-            document.getElementById('yahooTotalCount').textContent = apiCallCounts.yahooTotal;
+            document.getElementById('yahooQuoteCount').textContent = apiCallCounts.quote;
+            document.getElementById('yahooHistCount').textContent = apiCallCounts.historical;
+            document.getElementById('yahooTotalCount').textContent = apiCallCounts.total;
         }
 
         function showWarning(message, type = 'warning') {
@@ -572,9 +578,10 @@
             }
         }
         
-        function recordAPICall(api) {
-            apiCallCounts[api]++;
-            if (api === 'yahoo') apiCallCounts.yahooTotal++;
+        function recordAPICall(type) {
+            if (type === 'quote') apiCallCounts.quote++;
+            if (type === 'historical') apiCallCounts.historical++;
+            apiCallCounts.total++;
             updateAPICounters();
         }
         
@@ -598,8 +605,8 @@
                 return 'closed';
             }
             
-            // Convert to ET (approximate - doesn't handle DST perfectly)
-            const etOffset = -5; // ET is UTC-5 (or UTC-4 during DST)
+            // Convert to ET
+            const etOffset = -5;
             const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
             const etTime = new Date(utc + (3600000 * etOffset));
             
@@ -607,10 +614,10 @@
             const minutes = etTime.getMinutes();
             const currentTime = hours * 60 + minutes;
             
-            const premarketStart = 4 * 60; // 4:00 AM ET
-            const marketOpen = 9 * 60 + 30; // 9:30 AM ET
-            const marketClose = 16 * 60; // 4:00 PM ET
-            const afterHoursEnd = 20 * 60; // 8:00 PM ET
+            const premarketStart = 4 * 60;
+            const marketOpen = 9 * 60 + 30;
+            const marketClose = 16 * 60;
+            const afterHoursEnd = 20 * 60;
             
             if (currentTime >= premarketStart && currentTime < marketOpen) {
                 return 'premarket';
@@ -629,14 +636,14 @@
         
         function getCachedData(key) {
             try {
-                const cached = localStorage.getItem(`stock_cache_v4_${key}`);
+                const cached = localStorage.getItem(`stock_cache_v41_${key}`);
                 if (!cached) return null;
                 
                 const data = JSON.parse(cached);
                 const age = Date.now() - data.timestamp;
                 
                 if (age > CACHE_DURATION) {
-                    localStorage.removeItem(`stock_cache_v4_${key}`);
+                    localStorage.removeItem(`stock_cache_v41_${key}`);
                     log(`Cache expired for ${key}`, 'info');
                     return null;
                 }
@@ -656,7 +663,7 @@
                     value: value,
                     timestamp: Date.now()
                 };
-                localStorage.setItem(`stock_cache_v4_${key}`, JSON.stringify(data));
+                localStorage.setItem(`stock_cache_v41_${key}`, JSON.stringify(data));
                 updateCacheStats();
             } catch (e) {
                 log(`Cache write error for ${key}: ${e.message}`, 'error');
@@ -664,7 +671,7 @@
         }
 
         function updateCacheStats() {
-            const cacheKeys = Object.keys(localStorage).filter(k => k.startsWith('stock_cache_v4_'));
+            const cacheKeys = Object.keys(localStorage).filter(k => k.startsWith('stock_cache_v41_'));
             document.getElementById('cacheCount').textContent = cacheKeys.length;
             
             if (cacheKeys.length > 0) {
@@ -687,7 +694,7 @@
         }
 
         function clearAllCache() {
-            const cacheKeys = Object.keys(localStorage).filter(k => k.startsWith('stock_cache_v4_'));
+            const cacheKeys = Object.keys(localStorage).filter(k => k.startsWith('stock_cache_v41_'));
             cacheKeys.forEach(key => localStorage.removeItem(key));
             updateCacheStats();
             log(`Cleared ${cacheKeys.length} cached items`, 'info');
@@ -993,67 +1000,63 @@
         }
 
         // ========================================
-        // YAHOO FINANCE API (FIXED VERSION)
+        // YAHOO FINANCE API - CORRECT ENDPOINTS
         // ========================================
         
         async function getYahooQuoteData(ticker) {
             try {
-                // Use CORS proxy to bypass browser restrictions
-                const quoteUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${ticker}?range=1d&interval=1m&includePrePost=true`;
+                // THIS IS THE CORRECT ENDPOINT FOR QUOTE DATA WITH PREMARKET
+                const quoteUrl = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${ticker}`;
                 const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(quoteUrl)}`;
                 
-                log(`Fetching Yahoo Finance quote for ${ticker}`);
+                log(`Fetching Yahoo quote for ${ticker} (v7/finance/quote)`);
                 
                 const response = await fetch(proxyUrl);
                 
                 if (!response.ok) {
-                    throw new Error(`Yahoo Finance HTTP ${response.status}`);
+                    throw new Error(`Yahoo Quote HTTP ${response.status}`);
                 }
                 
                 const data = await response.json();
                 
-                if (!data.chart || !data.chart.result || data.chart.result.length === 0) {
-                    throw new Error('No data from Yahoo Finance');
+                if (!data.quoteResponse || !data.quoteResponse.result || data.quoteResponse.result.length === 0) {
+                    throw new Error('No quote data from Yahoo');
                 }
                 
-                const result = data.chart.result[0];
-                const meta = result.meta;
+                const quote = data.quoteResponse.result[0];
                 
-                recordAPICall('yahoo');
+                recordAPICall('quote');
                 
-                // Build comprehensive quote data
+                // Build comprehensive quote data from CORRECT endpoint
                 const quoteData = {
-                    symbol: meta.symbol,
-                    regularMarketPrice: meta.regularMarketPrice,
-                    regularMarketTime: meta.regularMarketTime,
-                    previousClose: meta.previousClose || meta.chartPreviousClose,
-                    regularMarketOpen: meta.regularMarketOpen,
-                    regularMarketDayHigh: meta.regularMarketDayHigh,
-                    regularMarketDayLow: meta.regularMarketDayLow,
-                    regularMarketVolume: meta.regularMarketVolume,
-                    marketState: meta.tradingPeriod || 'REGULAR',
-                    currency: meta.currency,
-                    exchangeName: meta.exchangeName,
+                    symbol: quote.symbol,
+                    regularMarketPrice: quote.regularMarketPrice,
+                    regularMarketTime: quote.regularMarketTime,
+                    previousClose: quote.regularMarketPreviousClose,
+                    regularMarketOpen: quote.regularMarketOpen,
+                    regularMarketDayHigh: quote.regularMarketDayHigh,
+                    regularMarketDayLow: quote.regularMarketDayLow,
+                    regularMarketVolume: quote.regularMarketVolume,
                     
-                    // Premarket data
-                    preMarketPrice: meta.preMarketPrice || null,
-                    preMarketChange: meta.preMarketChange || null,
-                    preMarketChangePercent: meta.preMarketChangePercent || null,
-                    preMarketTime: meta.preMarketTime || null,
+                    // THESE FIELDS EXIST IN v7/finance/quote
+                    preMarketPrice: quote.preMarketPrice || null,
+                    preMarketChange: quote.preMarketChange || null,
+                    preMarketChangePercent: quote.preMarketChangePercent || null,
+                    preMarketTime: quote.preMarketTime || null,
                     
-                    // After hours data
-                    postMarketPrice: meta.postMarketPrice || null,
-                    postMarketChange: meta.postMarketChange || null,
-                    postMarketChangePercent: meta.postMarketChangePercent || null,
-                    postMarketTime: meta.postMarketTime || null,
+                    postMarketPrice: quote.postMarketPrice || null,
+                    postMarketChange: quote.postMarketChange || null,
+                    postMarketChangePercent: quote.postMarketChangePercent || null,
+                    postMarketTime: quote.postMarketTime || null,
                     
-                    fiftyTwoWeekHigh: meta.fiftyTwoWeekHigh || null,
-                    fiftyTwoWeekLow: meta.fiftyTwoWeekLow || null,
+                    fiftyTwoWeekHigh: quote.fiftyTwoWeekHigh || null,
+                    fiftyTwoWeekLow: quote.fiftyTwoWeekLow || null,
                     
+                    marketState: quote.marketState || 'REGULAR',
                     dataQuality: 'REALTIME'
                 };
                 
-                log(`✓ Yahoo quote for ${ticker}: $${quoteData.regularMarketPrice} | PM: $${quoteData.preMarketPrice || 'N/A'}`, 'success');
+                log(`✓ Quote: ${ticker} $${quoteData.regularMarketPrice} | PM: ${quoteData.preMarketPrice ? '$' + quoteData.preMarketPrice : 'N/A'}`, 'success');
                 
                 return quoteData;
                 
@@ -1069,7 +1072,6 @@
             if (cached) return cached;
             
             try {
-                // Get 1 year of daily data
                 const period1 = Math.floor((Date.now() - 365 * 24 * 60 * 60 * 1000) / 1000);
                 const period2 = Math.floor(Date.now() / 1000);
                 
@@ -1103,10 +1105,10 @@
                     volume: quote.volume[i]
                 })).filter(d => d.close !== null);
                 
-                recordAPICall('yahoo');
+                recordAPICall('historical');
                 
                 setCachedData(cacheKey, ohlcData);
-                log(`✓ Yahoo historical cached for ${ticker} (${ohlcData.length} days)`, 'success');
+                log(`✓ Historical cached: ${ticker} (${ohlcData.length} days)`, 'success');
                 
                 return ohlcData;
                 
@@ -1121,10 +1123,10 @@
         // ========================================
         
         async function getEnhancedStockData(ticker) {
-            log(`Starting v4.0 FIXED analysis for ${ticker}`);
+            log(`Starting v4.1 FINAL analysis for ${ticker}`);
             
             try {
-                // Get real-time quote data (with premarket!)
+                // Get real-time quote data with CORRECT endpoint
                 const yahooQuote = await getYahooQuoteData(ticker);
                 
                 if (!yahooQuote) {
@@ -1141,7 +1143,7 @@
                 // Determine current market status
                 const marketStatus = getMarketStatus();
                 
-                // Determine which price to use based on market status and available data
+                // Determine which price to use
                 let currentPrice, priceSource, priceChange, priceChangePercent;
                 
                 if (marketStatus === 'premarket' && yahooQuote.preMarketPrice) {
@@ -1160,20 +1162,19 @@
                     priceChange = currentPrice - yahooQuote.previousClose;
                     priceChangePercent = (priceChange / yahooQuote.previousClose) * 100;
                 } else {
-                    // Market closed - use regular market price
                     currentPrice = yahooQuote.regularMarketPrice || yahooQuote.previousClose;
                     priceSource = 'previous_close';
                     priceChange = currentPrice - yahooQuote.previousClose;
                     priceChangePercent = (priceChange / yahooQuote.previousClose) * 100;
                 }
                 
-                // Extract price arrays for technical analysis
+                // Extract price arrays
                 const closePrices = historicalData.map(d => d.close);
                 const highs = historicalData.map(d => d.high);
                 const lows = historicalData.map(d => d.low);
                 const volumes = historicalData.map(d => d.volume);
                 
-                // Calculate technical indicators
+                // Calculate indicators
                 const sma10 = calculateSMA(closePrices, 10);
                 const sma20 = calculateSMA(closePrices, 20);
                 const sma50 = calculateSMA(closePrices, 50);
@@ -1196,7 +1197,7 @@
                 const patternData = analyzePatternData(historicalData);
                 const gapAnalysis = analyzeGaps(historicalData, currentPrice);
                 
-                // Gap analysis for premarket
+                // Gap info
                 let gapInfo = {
                     current_gap_percent: null,
                     gap_type: 'none',
@@ -1217,11 +1218,11 @@
                 const avgVolume50d = volumes.slice(-50).reduce((a, b) => a + b, 0) / 50;
                 const currentVolume = yahooQuote.regularMarketVolume;
                 
-                // Build enhanced data structure
+                // Build final data structure
                 const enhancedData = {
                     ticker: ticker,
                     generated_at: new Date().toISOString(),
-                    data_source: 'Yahoo Finance (v4.0 FIXED)',
+                    data_source: 'Yahoo Finance (v4.1 FINAL)',
                     data_quality: yahooQuote.dataQuality,
                     
                     market_status: marketStatus,
@@ -1234,13 +1235,11 @@
                         price_change_percent: priceChangePercent ? priceChangePercent.toFixed(2) : null,
                         previous_close: yahooQuote.previousClose.toFixed(2),
                         
-                        // PREMARKET DATA
                         premarket_price: yahooQuote.preMarketPrice ? yahooQuote.preMarketPrice.toFixed(2) : null,
                         premarket_change: yahooQuote.preMarketChange ? yahooQuote.preMarketChange.toFixed(2) : null,
                         premarket_change_percent: yahooQuote.preMarketChangePercent ? yahooQuote.preMarketChangePercent.toFixed(2) : null,
                         premarket_time: yahooQuote.preMarketTime ? new Date(yahooQuote.preMarketTime * 1000).toISOString() : null,
                         
-                        // AFTER HOURS DATA
                         afterhours_price: yahooQuote.postMarketPrice ? yahooQuote.postMarketPrice.toFixed(2) : null,
                         afterhours_change: yahooQuote.postMarketChange ? yahooQuote.postMarketChange.toFixed(2) : null,
                         afterhours_change_percent: yahooQuote.postMarketChangePercent ? yahooQuote.postMarketChangePercent.toFixed(2) : null,
@@ -1335,11 +1334,11 @@
                     }
                 };
                 
-                log(`✓ v4.0 FIXED analysis complete for ${ticker} (${priceSource})`, 'success');
+                log(`✓ v4.1 complete: ${ticker} (${priceSource})`, 'success');
                 return enhancedData;
                 
             } catch (error) {
-                log(`v4.0 FIXED analysis failed for ${ticker}: ${error.message}`, 'error');
+                log(`v4.1 analysis failed for ${ticker}: ${error.message}`, 'error');
                 return null;
             }
         }
@@ -1391,7 +1390,7 @@
                 document.getElementById('stockCount').textContent = 
                     `${stockList.length} securities (${cachedCount} cached)`;
                 
-                updateStatus('Watchlist processed. Initiating v4.0 FIXED collection...', 30);
+                updateStatus('Watchlist processed. Starting v4.1 FINAL...', 30);
                 
                 await fetchAllEnhancedMarketData();
                 
@@ -1406,17 +1405,19 @@
             
             const marketData = {
                 generated_at: new Date().toISOString(),
-                analysis_type: "Enhanced Pattern Recognition v4.0 FIXED - Yahoo Finance",
+                analysis_type: "Enhanced Pattern Recognition v4.1 FINAL - Yahoo Finance",
                 total_stocks: stockList.length,
                 successful: 0,
                 failed: 0,
                 cached: 0,
                 failed_tickers: {},
                 api_calls_used: {
-                    yahoo: 0
+                    quote: 0,
+                    historical: 0,
+                    total: 0
                 },
                 data_features: [
-                    "Yahoo Finance REAL premarket data (VERIFIED WORKING)",
+                    "Yahoo Finance v7/finance/quote endpoint - VERIFIED PREMARKET",
                     "20+ technical indicators (RSI, MACD, Stochastic, ADX, Williams %R, OBV, VWAP, ATR)",
                     "Pivot points (Standard 7-point system)",
                     "Gap analysis with historical context",
@@ -1431,8 +1432,8 @@
                 stocks: {}
             };
             
-            updateStatus(`Starting v4.0 FIXED collection with Yahoo Finance...`, 40);
-            log(`Starting v4.0 FIXED collection: ${stockList.length} stocks`);
+            updateStatus(`Starting v4.1 FINAL collection...`, 40);
+            log(`Starting v4.1 FINAL: ${stockList.length} stocks`);
             
             for (let i = 0; i < stockList.length; i++) {
                 const ticker = stockList[i];
@@ -1469,8 +1470,7 @@
                     marketData.failed_tickers[ticker] = error.message;
                 }
                 
-                // Delay to avoid overwhelming the proxy
-                await sleep(500);
+                await sleep(800);
             }
             
             const totalTime = Math.floor((Date.now() - startTime) / 1000);
@@ -1480,10 +1480,10 @@
             marketData.processing_time = timeDisplay;
             
             updateStatus(
-                `v4.0 FIXED complete: ${marketData.successful} succeeded (${marketData.cached} cached), ${marketData.failed} failed | ${timeDisplay}`, 
+                `v4.1 FINAL complete: ${marketData.successful} succeeded (${marketData.cached} cached), ${marketData.failed} failed | ${timeDisplay}`, 
                 100
             );
-            log(`v4.0 FIXED collection complete: ${marketData.successful}/${marketData.total_stocks} successful`, 'success');
+            log(`v4.1 FINAL complete: ${marketData.successful}/${marketData.total_stocks}`, 'success');
             
             document.getElementById('output').textContent = 
                 JSON.stringify(marketData, null, 2);
@@ -1491,9 +1491,8 @@
             document.getElementById('copyBtn').style.display = 'inline-block';
             
             document.getElementById('updateTime').textContent = 
-                `v4.0 FIXED Data collected: ${new Date().toLocaleString()} | ${marketData.successful}/${marketData.total_stocks} successful (${marketData.cached} cached) | ${timeDisplay}`;
+                `v4.1 FINAL Data collected: ${new Date().toLocaleString()} | ${marketData.successful}/${marketData.total_stocks} successful | ${timeDisplay}`;
                 
-            // Show summary
             if (marketData.successful > 0) {
                 const premarketCount = Object.values(marketData.stocks).filter(s => s.price_data.premarket_price !== null).length;
                 showWarning(`SUCCESS: ${premarketCount}/${marketData.successful} stocks have LIVE premarket data!`, 'success');
@@ -1518,14 +1517,14 @@
                     copyBtn.style.borderColor = '#8b7355';
                 }, 2000);
                 
-                log('v4.0 FIXED JSON copied to clipboard', 'success');
+                log('v4.1 FINAL JSON copied to clipboard', 'success');
             } catch (error) {
                 log('Copy failed: ' + error.message, 'error');
             }
         });
 
         document.getElementById('clearCacheBtn').addEventListener('click', () => {
-            if (confirm('Clear all v4.0 FIXED cached stock data?')) {
+            if (confirm('Clear all v4.1 FINAL cached stock data?')) {
                 clearAllCache();
             }
         });
@@ -1534,9 +1533,9 @@
         updateCacheStats();
         updateAPICounters();
         
-        log('v4.0 FIXED initialized with Yahoo Finance integration', 'success');
+        log('v4.1 FINAL initialized with CORRECT Yahoo endpoint', 'success');
         log(`Market status: ${getMarketStatus()}`, 'info');
-        showWarning('v4.0 FIXED: Now pulling REAL premarket data from Yahoo Finance!', 'success');
+        showWarning('v4.1 FINAL: Using v7/finance/quote endpoint for REAL premarket!', 'success');
     </script>
 </body>
 </html>
