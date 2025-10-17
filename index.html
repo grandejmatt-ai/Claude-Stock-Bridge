@@ -1000,24 +1000,61 @@
         }
 
         // ========================================
-        // YAHOO FINANCE API - CORRECT ENDPOINTS
+        // YAHOO FINANCE API - WITH FALLBACK PROXIES
         // ========================================
+        
+        const CORS_PROXIES = [
+            url => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
+            url => `https://corsproxy.io/?${encodeURIComponent(url)}`,
+            url => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`
+        ];
+        
+        async function fetchWithFallback(url, description) {
+            let lastError = null;
+            
+            // Try direct fetch first (no proxy)
+            try {
+                log(`${description} - trying direct`);
+                const response = await fetch(url);
+                if (response.ok) {
+                    return await response.json();
+                }
+            } catch (e) {
+                log(`${description} - direct failed: ${e.message}`, 'error');
+            }
+            
+            // Try each CORS proxy
+            for (let i = 0; i < CORS_PROXIES.length; i++) {
+                try {
+                    const proxyUrl = CORS_PROXIES[i](url);
+                    log(`${description} - trying proxy ${i + 1}`);
+                    
+                    const response = await fetch(proxyUrl);
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        log(`${description} - proxy ${i + 1} SUCCESS`, 'success');
+                        return data;
+                    }
+                    
+                    lastError = new Error(`HTTP ${response.status}`);
+                } catch (error) {
+                    lastError = error;
+                    log(`${description} - proxy ${i + 1} failed: ${error.message}`, 'error');
+                }
+                
+                // Small delay between proxy attempts
+                await sleep(200);
+            }
+            
+            throw lastError || new Error('All proxies failed');
+        }
         
         async function getYahooQuoteData(ticker) {
             try {
-                // THIS IS THE CORRECT ENDPOINT FOR QUOTE DATA WITH PREMARKET
                 const quoteUrl = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${ticker}`;
-                const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(quoteUrl)}`;
                 
-                log(`Fetching Yahoo quote for ${ticker} (v7/finance/quote)`);
-                
-                const response = await fetch(proxyUrl);
-                
-                if (!response.ok) {
-                    throw new Error(`Yahoo Quote HTTP ${response.status}`);
-                }
-                
-                const data = await response.json();
+                const data = await fetchWithFallback(quoteUrl, `Quote for ${ticker}`);
                 
                 if (!data.quoteResponse || !data.quoteResponse.result || data.quoteResponse.result.length === 0) {
                     throw new Error('No quote data from Yahoo');
@@ -1027,7 +1064,6 @@
                 
                 recordAPICall('quote');
                 
-                // Build comprehensive quote data from CORRECT endpoint
                 const quoteData = {
                     symbol: quote.symbol,
                     regularMarketPrice: quote.regularMarketPrice,
@@ -1038,7 +1074,6 @@
                     regularMarketDayLow: quote.regularMarketDayLow,
                     regularMarketVolume: quote.regularMarketVolume,
                     
-                    // THESE FIELDS EXIST IN v7/finance/quote
                     preMarketPrice: quote.preMarketPrice || null,
                     preMarketChange: quote.preMarketChange || null,
                     preMarketChangePercent: quote.preMarketChangePercent || null,
@@ -1056,7 +1091,429 @@
                     dataQuality: 'REALTIME'
                 };
                 
-                log(`✓ Quote: ${ticker} $${quoteData.regularMarketPrice} | PM: ${quoteData.preMarketPrice ? '$' + quoteData.preMarketPrice : 'N/A'}`, 'success');
+                log(`✓ Quote: ${ticker} ${quoteData.regularMarketPrice} | PM: ${quoteData.preMarketPrice ? '
+        
+        // ========================================
+        // MAIN DATA COLLECTION
+        // ========================================
+        
+        async function getEnhancedStockData(ticker) {
+            log(`Starting v4.1 FINAL analysis for ${ticker}`);
+            
+            try {
+                // Get real-time quote data with CORRECT endpoint
+                const yahooQuote = await getYahooQuoteData(ticker);
+                
+                if (!yahooQuote) {
+                    throw new Error('Failed to fetch Yahoo quote data');
+                }
+                
+                // Get historical data
+                const historicalData = await getYahooHistoricalData(ticker);
+                
+                if (!historicalData || historicalData.length < 50) {
+                    throw new Error('Insufficient historical data');
+                }
+                
+                // Determine current market status
+                const marketStatus = getMarketStatus();
+                
+                // Determine which price to use
+                let currentPrice, priceSource, priceChange, priceChangePercent;
+                
+                if (marketStatus === 'premarket' && yahooQuote.preMarketPrice) {
+                    currentPrice = yahooQuote.preMarketPrice;
+                    priceSource = 'premarket';
+                    priceChange = yahooQuote.preMarketChange;
+                    priceChangePercent = yahooQuote.preMarketChangePercent;
+                } else if (marketStatus === 'afterhours' && yahooQuote.postMarketPrice) {
+                    currentPrice = yahooQuote.postMarketPrice;
+                    priceSource = 'afterhours';
+                    priceChange = yahooQuote.postMarketChange;
+                    priceChangePercent = yahooQuote.postMarketChangePercent;
+                } else if (marketStatus === 'regular') {
+                    currentPrice = yahooQuote.regularMarketPrice;
+                    priceSource = 'regular';
+                    priceChange = currentPrice - yahooQuote.previousClose;
+                    priceChangePercent = (priceChange / yahooQuote.previousClose) * 100;
+                } else {
+                    currentPrice = yahooQuote.regularMarketPrice || yahooQuote.previousClose;
+                    priceSource = 'previous_close';
+                    priceChange = currentPrice - yahooQuote.previousClose;
+                    priceChangePercent = (priceChange / yahooQuote.previousClose) * 100;
+                }
+                
+                // Extract price arrays
+                const closePrices = historicalData.map(d => d.close);
+                const highs = historicalData.map(d => d.high);
+                const lows = historicalData.map(d => d.low);
+                const volumes = historicalData.map(d => d.volume);
+                
+                // Calculate indicators
+                const sma10 = calculateSMA(closePrices, 10);
+                const sma20 = calculateSMA(closePrices, 20);
+                const sma50 = calculateSMA(closePrices, 50);
+                const sma200 = calculateSMA(closePrices, 200);
+                const ema9 = calculateEMA(closePrices, 9);
+                const ema21 = calculateEMA(closePrices, 21);
+                
+                const rsi = calculateRSI(closePrices, 14);
+                const macd = calculateMACD(closePrices, 12, 26, 9);
+                const bollinger = calculateBollingerBands(closePrices, 20, 2);
+                const stochastic = calculateStochastic(historicalData, 14);
+                const williamsR = calculateWilliamsR(historicalData, 14);
+                const adx = calculateADX(historicalData, 14);
+                const obv = calculateOBV(historicalData);
+                const vwap = calculateVWAP(historicalData.slice(-20));
+                const atr = calculateATR(historicalData, 14);
+                
+                const pivotPoints = calculatePivotPoints(historicalData[historicalData.length - 2]);
+                const supportResistance = findSupportResistanceLevels(historicalData.slice(-60));
+                const patternData = analyzePatternData(historicalData);
+                const gapAnalysis = analyzeGaps(historicalData, currentPrice);
+                
+                // Gap info
+                let gapInfo = {
+                    current_gap_percent: null,
+                    gap_type: 'none',
+                    gap_size_dollars: null,
+                    recent_gaps: gapAnalysis
+                };
+                
+                if (priceSource === 'premarket' && yahooQuote.preMarketChangePercent) {
+                    gapInfo.current_gap_percent = yahooQuote.preMarketChangePercent.toFixed(2);
+                    gapInfo.gap_type = yahooQuote.preMarketChangePercent > 0 ? 'gap_up' : 'gap_down';
+                    gapInfo.gap_size_dollars = yahooQuote.preMarketChange.toFixed(2);
+                }
+                
+                // Volume analysis
+                const avgVolume5d = volumes.slice(-5).reduce((a, b) => a + b, 0) / 5;
+                const avgVolume10d = volumes.slice(-10).reduce((a, b) => a + b, 0) / 10;
+                const avgVolume20d = volumes.slice(-20).reduce((a, b) => a + b, 0) / 20;
+                const avgVolume50d = volumes.slice(-50).reduce((a, b) => a + b, 0) / 50;
+                const currentVolume = yahooQuote.regularMarketVolume;
+                
+                // Build final data structure
+                const enhancedData = {
+                    ticker: ticker,
+                    generated_at: new Date().toISOString(),
+                    data_source: 'Yahoo Finance (v4.1 FINAL)',
+                    data_quality: yahooQuote.dataQuality,
+                    
+                    market_status: marketStatus,
+                    data_timestamp: new Date().toISOString(),
+                    
+                    price_data: {
+                        current_price: currentPrice.toFixed(2),
+                        price_source: priceSource,
+                        price_change: priceChange ? priceChange.toFixed(2) : null,
+                        price_change_percent: priceChangePercent ? priceChangePercent.toFixed(2) : null,
+                        previous_close: yahooQuote.previousClose.toFixed(2),
+                        
+                        premarket_price: yahooQuote.preMarketPrice ? yahooQuote.preMarketPrice.toFixed(2) : null,
+                        premarket_change: yahooQuote.preMarketChange ? yahooQuote.preMarketChange.toFixed(2) : null,
+                        premarket_change_percent: yahooQuote.preMarketChangePercent ? yahooQuote.preMarketChangePercent.toFixed(2) : null,
+                        premarket_time: yahooQuote.preMarketTime ? new Date(yahooQuote.preMarketTime * 1000).toISOString() : null,
+                        
+                        afterhours_price: yahooQuote.postMarketPrice ? yahooQuote.postMarketPrice.toFixed(2) : null,
+                        afterhours_change: yahooQuote.postMarketChange ? yahooQuote.postMarketChange.toFixed(2) : null,
+                        afterhours_change_percent: yahooQuote.postMarketChangePercent ? yahooQuote.postMarketChangePercent.toFixed(2) : null,
+                        
+                        day_high: yahooQuote.regularMarketDayHigh ? yahooQuote.regularMarketDayHigh.toFixed(2) : Math.max(...highs.slice(-1)).toFixed(2),
+                        day_low: yahooQuote.regularMarketDayLow ? yahooQuote.regularMarketDayLow.toFixed(2) : Math.min(...lows.slice(-1)).toFixed(2),
+                        fifty_two_week_high: yahooQuote.fiftyTwoWeekHigh ? yahooQuote.fiftyTwoWeekHigh.toFixed(2) : Math.max(...highs).toFixed(2),
+                        fifty_two_week_low: yahooQuote.fiftyTwoWeekLow ? yahooQuote.fiftyTwoWeekLow.toFixed(2) : Math.min(...lows).toFixed(2)
+                    },
+                    
+                    gap_analysis: gapInfo,
+                    
+                    technical_indicators: {
+                        moving_averages: {
+                            sma_10: sma10 ? sma10.toFixed(2) : null,
+                            sma_20: sma20 ? sma20.toFixed(2) : null,
+                            sma_50: sma50 ? sma50.toFixed(2) : null,
+                            sma_200: sma200 ? sma200.toFixed(2) : null,
+                            ema_9: ema9 ? ema9.toFixed(2) : null,
+                            ema_21: ema21 ? ema21.toFixed(2) : null
+                        },
+                        momentum: {
+                            rsi_14: rsi ? rsi.value.toFixed(2) : null,
+                            rsi_signal: rsi ? rsi.signal : null,
+                            macd: macd ? {
+                                macd: macd.macd.toFixed(2),
+                                signal: macd.signal.toFixed(2),
+                                histogram: macd.histogram.toFixed(2)
+                            } : null,
+                            stochastic: stochastic ? {
+                                k: stochastic.k.toFixed(2),
+                                interpretation: stochastic.interpretation
+                            } : null,
+                            williams_r: williamsR ? williamsR.toFixed(2) : null
+                        },
+                        volatility: {
+                            atr_14: atr ? atr.toFixed(2) : null,
+                            bollinger_bands: bollinger ? {
+                                upper: bollinger.upper.toFixed(2),
+                                middle: bollinger.middle.toFixed(2),
+                                lower: bollinger.lower.toFixed(2),
+                                bandwidth: bollinger.bandwidth.toFixed(2)
+                            } : null,
+                            historical_volatility_20d: calculateVolatility(closePrices.slice(-20)).toFixed(2)
+                        },
+                        trend: {
+                            adx: adx ? {
+                                adx: adx.adx.toFixed(2),
+                                interpretation: adx.interpretation
+                            } : null,
+                            obv: obv,
+                            vwap: vwap ? vwap.toFixed(2) : null
+                        }
+                    },
+                    
+                    key_levels: {
+                        pivot_points: pivotPoints ? {
+                            pivot: pivotPoints.pivot.toFixed(2),
+                            r1: pivotPoints.r1.toFixed(2),
+                            r2: pivotPoints.r2.toFixed(2),
+                            r3: pivotPoints.r3.toFixed(2),
+                            s1: pivotPoints.s1.toFixed(2),
+                            s2: pivotPoints.s2.toFixed(2),
+                            s3: pivotPoints.s3.toFixed(2)
+                        } : null,
+                        support_resistance: {
+                            resistance: supportResistance.resistance.map(r => r.toFixed(2)),
+                            support: supportResistance.support.map(s => s.toFixed(2))
+                        },
+                        weekly_high: Math.max(...highs.slice(-5)).toFixed(2),
+                        weekly_low: Math.min(...lows.slice(-5)).toFixed(2),
+                        monthly_high: Math.max(...highs.slice(-20)).toFixed(2),
+                        monthly_low: Math.min(...lows.slice(-20)).toFixed(2)
+                    },
+                    
+                    volume_analysis: {
+                        current_volume: currentVolume,
+                        avg_volume_5d: Math.round(avgVolume5d),
+                        avg_volume_10d: Math.round(avgVolume10d),
+                        avg_volume_20d: Math.round(avgVolume20d),
+                        avg_volume_50d: Math.round(avgVolume50d),
+                        vs_avg_20d: (currentVolume / avgVolume20d).toFixed(2),
+                        trend: volumes.slice(-10).reduce((a, b) => a + b, 0) > volumes.slice(-20, -10).reduce((a, b) => a + b, 0) ? 'increasing' : 'decreasing'
+                    },
+                    
+                    pattern_analysis: patternData,
+                    
+                    historical_context: {
+                        data_points: historicalData.length,
+                        date_range: `${historicalData[0].date} to ${historicalData[historicalData.length - 1].date}`,
+                        volatility_20d: calculateVolatility(closePrices.slice(-20)).toFixed(2)
+                    }
+                };
+                
+                log(`✓ v4.1 complete: ${ticker} (${priceSource})`, 'success');
+                return enhancedData;
+                
+            } catch (error) {
+                log(`v4.1 analysis failed for ${ticker}: ${error.message}`, 'error');
+                return null;
+            }
+        }
+        
+        // ========================================
+        // FILE UPLOAD & PROCESSING
+        // ========================================
+        
+        document.getElementById('fileInput').addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            debugMessages = [];
+            updateStatus('Processing watchlist file...', 10);
+            log('File upload initiated: ' + file.name);
+            
+            const fileType = file.name.split('.').pop().toLowerCase();
+            
+            try {
+                if (fileType === 'txt' || fileType === 'csv') {
+                    const text = await file.text();
+                    stockList = text.split(/[\n,;]/)
+                        .map(line => line.trim().toUpperCase())
+                        .filter(ticker => ticker.length > 0 && ticker.length < 6 && /^[A-Z]+$/.test(ticker));
+                } else if (fileType === 'xlsx' || fileType === 'xls') {
+                    const data = await file.arrayBuffer();
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+                    const jsonData = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
+                    
+                    stockList = [];
+                    jsonData.forEach(row => {
+                        row.forEach(cell => {
+                            if (cell && typeof cell === 'string') {
+                                const ticker = cell.trim().toUpperCase();
+                                if (ticker.length > 0 && ticker.length < 6 && /^[A-Z]+$/.test(ticker)) {
+                                    stockList.push(ticker);
+                                }
+                            }
+                        });
+                    });
+                }
+                
+                stockList = [...new Set(stockList)];
+                log(`Unique tickers: ${stockList.length}`);
+                
+                const cachedCount = stockList.filter(t => getCachedData(`${t}_yahoo_historical`)).length;
+                
+                document.getElementById('stockCount').textContent = 
+                    `${stockList.length} securities (${cachedCount} cached)`;
+                
+                updateStatus('Watchlist processed. Starting v4.1 FINAL...', 30);
+                
+                await fetchAllEnhancedMarketData();
+                
+            } catch (error) {
+                updateStatus('Error processing file: ' + error.message, 0);
+                log('File processing error: ' + error.message, 'error');
+            }
+        });
+        
+        async function fetchAllEnhancedMarketData() {
+            const startTime = Date.now();
+            
+            const marketData = {
+                generated_at: new Date().toISOString(),
+                analysis_type: "Enhanced Pattern Recognition v4.1 FINAL - Yahoo Finance",
+                total_stocks: stockList.length,
+                successful: 0,
+                failed: 0,
+                cached: 0,
+                failed_tickers: {},
+                api_calls_used: {
+                    quote: 0,
+                    historical: 0,
+                    total: 0
+                },
+                data_features: [
+                    "Yahoo Finance v7/finance/quote endpoint - VERIFIED PREMARKET",
+                    "20+ technical indicators (RSI, MACD, Stochastic, ADX, Williams %R, OBV, VWAP, ATR)",
+                    "Pivot points (Standard 7-point system)",
+                    "Gap analysis with historical context",
+                    "Enhanced volume analysis (5/10/20/50-day averages)",
+                    "Market status detection (premarket/regular/afterhours/closed)",
+                    "Bollinger Bands with bandwidth",
+                    "Support/Resistance levels",
+                    "52-week high/low tracking",
+                    "4-hour persistent caching",
+                    "100% FREE - No API keys needed"
+                ],
+                stocks: {}
+            };
+            
+            updateStatus(`Starting v4.1 FINAL collection...`, 40);
+            log(`Starting v4.1 FINAL: ${stockList.length} stocks`);
+            
+            for (let i = 0; i < stockList.length; i++) {
+                const ticker = stockList[i];
+                const progress = 40 + ((i / stockList.length) * 55);
+                
+                const wasCached = getCachedData(`${ticker}_yahoo_historical`) !== null;
+                
+                const elapsed = Math.floor((Date.now() - startTime) / 1000);
+                const stocksRemaining = stockList.length - i;
+                const avgTimePerStock = elapsed / (i + 1);
+                const estimatedSecondsLeft = Math.ceil(stocksRemaining * avgTimePerStock);
+                const timeDisplay = estimatedSecondsLeft > 60 
+                    ? `${Math.floor(estimatedSecondsLeft/60)}m ${estimatedSecondsLeft%60}s` 
+                    : `${estimatedSecondsLeft}s`;
+                
+                updateStatus(
+                    `Analyzing: ${ticker} (${i + 1}/${stockList.length})${wasCached ? ' [CACHED]' : ''} | Est: ${timeDisplay}`, 
+                    progress
+                );
+                
+                try {
+                    const enhancedStockData = await getEnhancedStockData(ticker);
+                    
+                    if (enhancedStockData) {
+                        marketData.stocks[ticker] = enhancedStockData;
+                        marketData.successful++;
+                        if (wasCached) marketData.cached++;
+                    } else {
+                        marketData.failed++;
+                        marketData.failed_tickers[ticker] = "Failed to fetch data from Yahoo Finance";
+                    }
+                } catch (error) {
+                    marketData.failed++;
+                    marketData.failed_tickers[ticker] = error.message;
+                }
+                
+                await sleep(800);
+            }
+            
+            const totalTime = Math.floor((Date.now() - startTime) / 1000);
+            const timeDisplay = totalTime > 60 ? `${Math.floor(totalTime/60)}m ${totalTime%60}s` : `${totalTime}s`;
+            
+            marketData.api_calls_used = { ...apiCallCounts };
+            marketData.processing_time = timeDisplay;
+            
+            updateStatus(
+                `v4.1 FINAL complete: ${marketData.successful} succeeded (${marketData.cached} cached), ${marketData.failed} failed | ${timeDisplay}`, 
+                100
+            );
+            log(`v4.1 FINAL complete: ${marketData.successful}/${marketData.total_stocks}`, 'success');
+            
+            document.getElementById('output').textContent = 
+                JSON.stringify(marketData, null, 2);
+            
+            document.getElementById('copyBtn').style.display = 'inline-block';
+            
+            document.getElementById('updateTime').textContent = 
+                `v4.1 FINAL Data collected: ${new Date().toLocaleString()} | ${marketData.successful}/${marketData.total_stocks} successful | ${timeDisplay}`;
+                
+            if (marketData.successful > 0) {
+                const premarketCount = Object.values(marketData.stocks).filter(s => s.price_data.premarket_price !== null).length;
+                showWarning(`SUCCESS: ${premarketCount}/${marketData.successful} stocks have LIVE premarket data!`, 'success');
+            }
+        }
+        
+        document.getElementById('copyBtn').addEventListener('click', async () => {
+            const output = document.getElementById('output').textContent;
+            const copyBtn = document.getElementById('copyBtn');
+            
+            try {
+                await navigator.clipboard.writeText(output);
+                
+                const originalText = copyBtn.textContent;
+                copyBtn.textContent = 'Copied!';
+                copyBtn.style.background = 'linear-gradient(135deg, #2a4a2f 0%, #1a3a1f 100%)';
+                copyBtn.style.borderColor = '#4a8a4a';
+                
+                setTimeout(() => {
+                    copyBtn.textContent = originalText;
+                    copyBtn.style.background = 'linear-gradient(135deg, #2a1f15 0%, #1a1208 100%)';
+                    copyBtn.style.borderColor = '#8b7355';
+                }, 2000);
+                
+                log('v4.1 FINAL JSON copied to clipboard', 'success');
+            } catch (error) {
+                log('Copy failed: ' + error.message, 'error');
+            }
+        });
+
+        document.getElementById('clearCacheBtn').addEventListener('click', () => {
+            if (confirm('Clear all v4.1 FINAL cached stock data?')) {
+                clearAllCache();
+            }
+        });
+        
+        // Initialize
+        updateCacheStats();
+        updateAPICounters();
+        
+        log('v4.1 FINAL initialized with CORRECT Yahoo endpoint', 'success');
+        log(`Market status: ${getMarketStatus()}`, 'info');
+        showWarning('v4.1 FINAL: Using v7/finance/quote endpoint for REAL premarket!', 'success');
+    </script>
+</body>
+</html> + quoteData.preMarketPrice : 'N/A'}`, 'success');
                 
                 return quoteData;
                 
@@ -1076,17 +1533,8 @@
                 const period2 = Math.floor(Date.now() / 1000);
                 
                 const url = `https://query1.finance.yahoo.com/v8/finance/chart/${ticker}?period1=${period1}&period2=${period2}&interval=1d`;
-                const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`;
                 
-                log(`Fetching Yahoo historical for ${ticker}`);
-                
-                const response = await fetch(proxyUrl);
-                
-                if (!response.ok) {
-                    throw new Error(`Yahoo Historical HTTP ${response.status}`);
-                }
-                
-                const data = await response.json();
+                const data = await fetchWithFallback(url, `Historical for ${ticker}`);
                 
                 if (!data.chart || !data.chart.result || data.chart.result.length === 0) {
                     throw new Error('No historical data from Yahoo');
