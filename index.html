@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Market Intelligence v4.1 - WORKING Premarket Data</title>
+    <title>Market Intelligence v5.0 HYBRID - Real Premarket Data</title>
     <style>
         * {
             margin: 0;
@@ -12,50 +12,45 @@
         }
         
         body {
-            font-family: 'Georgia', 'Times New Roman', serif;
-            background: #0d0d0d;
-            background-image: 
-                radial-gradient(circle at 20% 50%, rgba(40, 20, 10, 0.2) 0%, transparent 50%),
-                radial-gradient(circle at 80% 80%, rgba(20, 10, 5, 0.2) 0%, transparent 50%);
-            color: #d4c5a9;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #2c3e50;
             min-height: 100vh;
             position: relative;
         }
         
         .corner-decoration {
             position: fixed;
-            opacity: 0.15;
+            opacity: 0.2;
             z-index: 1;
-            color: #8b7355;
-            font-family: serif;
+            color: #7f8c8d;
+            font-family: sans-serif;
+            font-size: 11px;
+            font-weight: 500;
         }
         
         .skull-top-left {
-            top: 30px;
-            left: 30px;
-            font-size: 24px;
-            letter-spacing: 2px;
+            top: 20px;
+            left: 20px;
+            letter-spacing: 1px;
         }
         
         .flag-top-right {
-            top: 30px;
-            right: 30px;
-            font-size: 14px;
+            top: 20px;
+            right: 20px;
             text-align: right;
             line-height: 1.4;
         }
         
         .sword-bottom-left {
-            bottom: 30px;
-            left: 30px;
-            font-size: 14px;
+            bottom: 20px;
+            left: 20px;
             font-style: italic;
         }
         
         .memento-bottom-right {
-            bottom: 30px;
-            right: 30px;
-            font-size: 12px;
+            bottom: 20px;
+            right: 20px;
             text-align: right;
             line-height: 1.6;
             font-style: italic;
@@ -65,42 +60,40 @@
             max-width: 1400px;
             margin: 0 auto;
             padding: 40px 20px;
-            background: linear-gradient(135deg, rgba(20, 15, 10, 0.95) 0%, rgba(15, 10, 5, 0.95) 100%);
-            border: 1px solid rgba(139, 115, 85, 0.3);
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.8);
             box-shadow: 
-                0 20px 60px rgba(0, 0, 0, 0.5),
-                inset 0 1px 0 rgba(255, 255, 255, 0.05);
+                0 20px 60px rgba(0, 0, 0, 0.1),
+                0 0 0 1px rgba(255, 255, 255, 0.5);
             position: relative;
             margin-top: 20px;
-            border-radius: 2px;
+            border-radius: 12px;
         }
         
         .header {
             text-align: center;
-            border-bottom: 1px solid rgba(139, 115, 85, 0.3);
+            border-bottom: 2px solid #e8eef5;
             padding-bottom: 30px;
             margin-bottom: 40px;
         }
         
         .header h1 {
-            font-size: 32px;
-            color: #d4c5a9;
-            font-weight: 300;
-            letter-spacing: 4px;
-            text-transform: uppercase;
+            font-size: 36px;
+            color: #2c3e50;
+            font-weight: 600;
+            letter-spacing: 1px;
             margin-bottom: 10px;
         }
         
         .header .tagline {
-            color: #8b7355;
-            font-size: 14px;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            font-weight: normal;
+            color: #7f8c8d;
+            font-size: 15px;
+            letter-spacing: 0.5px;
+            font-weight: 500;
         }
         
         .header .motto {
-            color: #6b5d4f;
+            color: #95a5a6;
             font-size: 13px;
             font-style: italic;
             margin-top: 15px;
@@ -108,29 +101,120 @@
 
         .version-badge {
             display: inline-block;
-            background: linear-gradient(135deg, #2a4a2f 0%, #1a3a1f 100%);
-            color: #4a8a4a;
-            padding: 4px 12px;
-            border: 1px solid #4a8a4a;
-            font-size: 11px;
-            letter-spacing: 1px;
-            margin-top: 10px;
-            border-radius: 2px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 6px 16px;
+            border: none;
+            font-size: 12px;
+            letter-spacing: 0.5px;
+            margin-top: 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .api-key-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: 2px solid #667eea;
+            padding: 25px;
+            margin-bottom: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(102, 126, 234, 0.2);
+        }
+
+        .api-key-section h2 {
+            color: white;
+            font-size: 18px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .api-key-input-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .api-key-input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 2px solid white;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: 'Consolas', monospace;
+            background: white;
+            color: #2c3e50;
+        }
+
+        .api-key-input:focus {
+            outline: none;
+            border-color: #ffd700;
+            box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.2);
+        }
+
+        .api-key-btn {
+            background: white;
+            color: #667eea;
+            padding: 12px 28px;
+            border: 2px solid white;
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 8px;
+        }
+
+        .api-key-btn:hover {
+            background: #f0f0f0;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .api-key-status {
+            text-align: center;
+            margin-top: 12px;
+            font-size: 13px;
+            color: white;
+            font-weight: 500;
+        }
+
+        .api-key-help {
+            text-align: center;
+            margin-top: 12px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .api-key-help a {
+            color: white;
+            font-weight: 600;
+            text-decoration: underline;
         }
         
         .upload-section {
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(139, 115, 85, 0.2);
+            background: #f8f9fa;
+            border: 2px dashed #cbd5e0;
             padding: 35px;
             margin-bottom: 30px;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .upload-section:hover {
+            border-color: #667eea;
+            background: #f0f4ff;
         }
         
         .upload-section h2 {
-            color: #d4c5a9;
-            font-size: 18px;
-            font-weight: 300;
-            letter-spacing: 3px;
-            text-transform: uppercase;
+            color: #2c3e50;
+            font-size: 20px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
             margin-bottom: 20px;
             text-align: center;
         }
@@ -143,50 +227,50 @@
         }
         
         .upload-instructions {
-            color: #8b7355;
-            font-size: 13px;
+            color: #7f8c8d;
+            font-size: 14px;
             text-align: center;
             margin-bottom: 10px;
+            line-height: 1.6;
         }
         
         .upload-btn, .cache-btn {
-            background: linear-gradient(135deg, #2a1f15 0%, #1a1208 100%);
-            color: #d4c5a9;
-            padding: 14px 45px;
-            border: 1px solid #8b7355;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 14px 40px;
+            border: none;
             font-size: 14px;
-            font-weight: normal;
-            letter-spacing: 2px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
             text-transform: uppercase;
             cursor: pointer;
             transition: all 0.3s ease;
-            font-family: 'Georgia', serif;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
         }
         
         .upload-btn:hover, .cache-btn:hover {
-            background: linear-gradient(135deg, #3a2f25 0%, #2a1f15 100%);
-            border-color: #d4c5a9;
-            box-shadow: 0 0 20px rgba(139, 115, 85, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
         }
         
         .copy-btn {
-            background: linear-gradient(135deg, #2a1f15 0%, #1a1208 100%);
-            color: #d4c5a9;
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
             padding: 10px 30px;
-            border: 1px solid #8b7355;
+            border: none;
             font-size: 13px;
-            font-weight: normal;
-            letter-spacing: 1px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
             cursor: pointer;
             transition: all 0.3s ease;
-            font-family: 'Georgia', serif;
-            border-radius: 2px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(17, 153, 142, 0.3);
         }
         
         .copy-btn:hover {
-            background: linear-gradient(135deg, #3a2f25 0%, #2a1f15 100%);
-            border-color: #d4c5a9;
-            box-shadow: 0 0 15px rgba(139, 115, 85, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(17, 153, 142, 0.4);
         }
         
         .copy-btn:active {
@@ -198,97 +282,112 @@
         }
         
         .stock-count {
-            color: #d4c5a9;
+            color: #2c3e50;
             font-size: 16px;
-            letter-spacing: 1px;
+            letter-spacing: 0.5px;
+            font-weight: 600;
         }
 
         .api-usage {
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px solid rgba(139, 115, 85, 0.2);
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            border: none;
             padding: 20px;
             margin-bottom: 20px;
-            font-size: 12px;
-            color: #8b7355;
+            font-size: 13px;
+            color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(240, 147, 251, 0.3);
         }
 
         .api-usage h3 {
-            color: #d4c5a9;
-            margin-bottom: 10px;
-            font-size: 14px;
+            color: white;
+            margin-bottom: 12px;
+            font-size: 16px;
+            font-weight: 600;
         }
 
         .api-counter {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 5px;
+            margin-bottom: 8px;
+            font-weight: 500;
         }
 
         .cache-stats {
-            background: rgba(42, 58, 42, 0.3);
-            border: 1px solid rgba(74, 138, 74, 0.3);
-            padding: 15px;
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            border: none;
+            padding: 20px;
             margin-bottom: 20px;
-            font-size: 12px;
-            color: #8b7355;
+            font-size: 13px;
+            color: #2c3e50;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(168, 237, 234, 0.3);
         }
 
         .cache-stats h3 {
-            color: #4a8a4a;
-            margin-bottom: 10px;
-            font-size: 14px;
+            color: #2c3e50;
+            margin-bottom: 12px;
+            font-size: 16px;
+            font-weight: 600;
         }
 
         .warning-box {
-            background: rgba(58, 42, 20, 0.4);
-            border: 1px solid rgba(139, 115, 85, 0.4);
+            background: #fff4e6;
+            border: 2px solid #ffd93d;
             padding: 15px;
             margin-bottom: 20px;
-            font-size: 12px;
-            color: #d4a574;
+            font-size: 13px;
+            color: #8b6914;
+            border-radius: 8px;
+            font-weight: 500;
         }
 
         .warning-box.error {
-            background: rgba(58, 20, 20, 0.4);
-            border-color: rgba(180, 80, 80, 0.4);
-            color: #d47474;
+            background: #ffe6e6;
+            border-color: #ff6b6b;
+            color: #c92a2a;
         }
 
         .warning-box.success {
-            background: rgba(20, 58, 20, 0.4);
-            border-color: rgba(80, 180, 80, 0.4);
-            color: #74d474;
+            background: #e6f7ed;
+            border-color: #51cf66;
+            color: #2b8a3e;
         }
         
         .status-section {
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px solid rgba(139, 115, 85, 0.2);
+            background: white;
+            border: 2px solid #e8eef5;
             padding: 25px;
             margin-bottom: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
         }
         
         .status-text {
-            color: #8b7355;
-            font-size: 13px;
+            color: #7f8c8d;
+            font-size: 14px;
             text-align: center;
             margin-bottom: 15px;
-            letter-spacing: 1px;
+            letter-spacing: 0.3px;
+            font-weight: 500;
         }
         
         .progress-bar {
             width: 100%;
-            height: 24px;
-            background: rgba(0, 0, 0, 0.6);
-            border: 1px solid rgba(139, 115, 85, 0.3);
+            height: 28px;
+            background: #e8eef5;
+            border: 2px solid #cbd5e0;
             overflow: hidden;
             position: relative;
+            border-radius: 14px;
         }
         
         .progress-fill {
             height: 100%;
-            background: linear-gradient(90deg, #3a2f25, #8b7355);
+            background: linear-gradient(90deg, #667eea, #764ba2);
             width: 0%;
             transition: width 0.5s ease;
+            border-radius: 12px;
         }
         
         .progress-text {
@@ -296,53 +395,57 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            color: #d4c5a9;
-            font-size: 12px;
-            letter-spacing: 1px;
+            color: #2c3e50;
+            font-size: 13px;
+            letter-spacing: 0.5px;
+            font-weight: 600;
         }
         
         .debug-section {
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(139, 115, 85, 0.15);
+            background: #f8f9fa;
+            border: 2px solid #e8eef5;
             padding: 15px;
             margin-bottom: 20px;
             max-height: 150px;
             overflow-y: auto;
             font-family: 'Consolas', monospace;
             font-size: 11px;
-            color: #6b5d4f;
+            color: #7f8c8d;
+            border-radius: 8px;
         }
         
         .data-container {
-            background: rgba(0, 0, 0, 0.5);
-            border: 1px solid rgba(139, 115, 85, 0.3);
+            background: white;
+            border: 2px solid #e8eef5;
             padding: 30px;
             margin-top: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
         }
         
         .data-container h2 {
-            color: #d4c5a9;
-            font-size: 16px;
-            font-weight: 300;
-            letter-spacing: 3px;
-            text-transform: uppercase;
+            color: #2c3e50;
+            font-size: 18px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
             margin-bottom: 25px;
             text-align: center;
             padding-bottom: 15px;
-            border-bottom: 1px solid rgba(139, 115, 85, 0.2);
+            border-bottom: 2px solid #e8eef5;
         }
         
         .data-output {
             max-height: 65vh;
             overflow-y: auto;
-            background: rgba(0, 0, 0, 0.3);
+            background: #f8f9fa;
             padding: 20px;
-            border: 1px solid rgba(139, 115, 85, 0.15);
+            border: 2px solid #e8eef5;
+            border-radius: 8px;
         }
         
         #output {
             font-family: 'Consolas', 'Monaco', monospace;
-            color: #9b8b73;
+            color: #2c3e50;
             white-space: pre-wrap;
             word-wrap: break-word;
             font-size: 12px;
@@ -351,37 +454,39 @@
         
         .data-output::-webkit-scrollbar,
         .debug-section::-webkit-scrollbar {
-            width: 10px;
+            width: 12px;
         }
         
         .data-output::-webkit-scrollbar-track,
         .debug-section::-webkit-scrollbar-track {
-            background: rgba(0, 0, 0, 0.5);
+            background: #e8eef5;
+            border-radius: 6px;
         }
         
         .data-output::-webkit-scrollbar-thumb,
         .debug-section::-webkit-scrollbar-thumb {
-            background: #3a2f25;
-            border: 1px solid #2a1f15;
+            background: #cbd5e0;
+            border-radius: 6px;
+            border: 2px solid #e8eef5;
         }
         
         .data-output::-webkit-scrollbar-thumb:hover,
         .debug-section::-webkit-scrollbar-thumb:hover {
-            background: #4a3f35;
+            background: #a0aec0;
         }
         
         .update-time {
             text-align: center;
-            color: #6b5d4f;
+            color: #95a5a6;
             font-size: 12px;
             margin-top: 20px;
             font-style: italic;
-            letter-spacing: 1px;
+            letter-spacing: 0.3px;
         }
         
         .divider {
-            height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(139, 115, 85, 0.3), transparent);
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #e8eef5, transparent);
             margin: 30px 0;
         }
 
@@ -394,91 +499,121 @@
         
         @media (max-width: 768px) {
             .container {
-                padding: 20px 10px;
+                padding: 20px 15px;
+                margin-top: 10px;
             }
             
             .header h1 {
                 font-size: 24px;
-                letter-spacing: 2px;
+                letter-spacing: 0.5px;
             }
             
             .corner-decoration {
-                font-size: 10px;
-                opacity: 0.1;
+                font-size: 9px;
+                opacity: 0.15;
+            }
+            
+            .api-key-input-group {
+                flex-direction: column;
+            }
+            
+            .api-key-input {
+                width: 100%;
+            }
+            
+            .api-key-btn {
+                width: 100%;
             }
         }
     </style>
 </head>
 <body>
-    <div class="corner-decoration skull-top-left">⚔ YAHOO FINANCE</div>
+    <div class="corner-decoration skull-top-left">📊 MARKET INTELLIGENCE</div>
     <div class="corner-decoration flag-top-right">
-        TRUE PREMARKET<br>
-        DATA<br>
-        v4.1 FINAL
+        REAL-TIME PREMARKET<br>
+        FINNHUB + YAHOO<br>
+        v5.0 HYBRID
     </div>
-    <div class="corner-decoration sword-bottom-left">Real-time market intelligence</div>
+    <div class="corner-decoration sword-bottom-left">Accurate real-time data</div>
     <div class="corner-decoration memento-bottom-right">
-        MEMENTO MORI<br>
-        <span style="font-size: 10px;">Enhanced TA,<br>verified data sources</span>
+        Smart Data Collection<br>
+        <span style="font-size: 10px;">Finnhub premarket,<br>Yahoo historical</span>
     </div>
     
     <div class="container">
         <div class="header">
-            <h1>Market Intelligence Engine</h1>
-            <p class="tagline">Yahoo Finance Integration + Enhanced Technical Analysis</p>
-            <div class="version-badge">v4.1 FINAL - WORKING PREMARKET</div>
-            <p class="motto">"Correct endpoint = real premarket data"</p>
+            <h1>Market Intelligence Platform</h1>
+            <p class="tagline">Finnhub Real-Time Premarket + Yahoo Historical Analysis</p>
+            <div class="version-badge">v5.0 HYBRID - RELIABLE PREMARKET</div>
+            <p class="motto">"Accurate data, smart caching, reliable analysis"</p>
+        </div>
+
+        <div class="api-key-section">
+            <h2>🔑 Finnhub API Configuration</h2>
+            <div class="api-key-input-group">
+                <input 
+                    type="text" 
+                    id="apiKeyInput" 
+                    class="api-key-input" 
+                    placeholder="Enter your Finnhub API key (e.g., ck1a2b3c4d5e6f7g8h9i0)"
+                >
+                <button id="saveApiKeyBtn" class="api-key-btn">Save Key</button>
+            </div>
+            <div class="api-key-status" id="apiKeyStatus">No API key configured</div>
+            <div class="api-key-help">
+                Don't have an API key? <a href="https://finnhub.io/register" target="_blank">Get one FREE at Finnhub.io</a> (takes 30 seconds)
+            </div>
         </div>
 
         <div class="cache-stats">
-            <h3>Cache Status (4-Hour Persistent Storage)</h3>
+            <h3>📦 Smart Cache Status (Daily Reset at 4am ET)</h3>
             <div class="api-counter">
                 <span>Cached stocks:</span>
                 <span id="cacheCount">0</span>
             </div>
             <div class="api-counter">
-                <span>Cache age:</span>
-                <span id="cacheAge">N/A</span>
+                <span>Cache valid until:</span>
+                <span id="cacheExpiry">N/A</span>
             </div>
             <div class="api-counter">
-                <span>Last reset:</span>
-                <span id="lastReset">Never</span>
+                <span>Last cache time:</span>
+                <span id="lastCacheTime">Never</span>
             </div>
-            <div style="margin-top: 10px;">
-                <button id="clearCacheBtn" class="cache-btn" style="padding: 8px 20px; font-size: 12px;">
+            <div style="margin-top: 12px;">
+                <button id="clearCacheBtn" class="cache-btn" style="padding: 10px 24px; font-size: 13px;">
                     Clear Cache
                 </button>
             </div>
         </div>
         
         <div class="api-usage">
-            <h3>API Usage Monitor</h3>
+            <h3>📡 API Usage Monitor (Current Session)</h3>
             <div class="api-counter">
-                <span>Yahoo Quote API (Session):</span>
-                <span id="yahooQuoteCount">0</span>
+                <span>Finnhub Premarket Calls:</span>
+                <span id="finnhubQuoteCount">0</span>
             </div>
             <div class="api-counter">
-                <span>Yahoo Historical API (Session):</span>
+                <span>Yahoo Historical Calls:</span>
                 <span id="yahooHistCount">0</span>
             </div>
             <div class="api-counter">
                 <span>Total API Calls:</span>
-                <span id="yahooTotalCount">0</span>
+                <span id="totalApiCount">0</span>
             </div>
-            <div style="margin-top: 10px; font-style: italic; color: #6b5d4f;">
-                100% Yahoo Finance - FREE, unlimited, WORKING premarket data
+            <div style="margin-top: 12px; font-style: italic; opacity: 0.9;">
+                ⚡ Finnhub: Real-time premarket | 📊 Yahoo: Historical data for indicators
             </div>
         </div>
         
         <div class="upload-section">
-            <h2>Stock Watchlist Import</h2>
+            <h2>📂 Stock Watchlist Upload</h2>
             <div class="upload-area">
                 <p class="upload-instructions">
-                    Upload Excel (.xlsx, .xls), CSV (.csv), or Text (.txt) file containing ticker symbols<br>
-                    <strong>v4.1 FINAL:</strong> CORRECT endpoint • REAL premarket • 20+ technical indicators
+                    Upload your watchlist file (Excel, CSV, or TXT) containing stock ticker symbols<br>
+                    <strong>v5.0 HYBRID:</strong> Finnhub for accurate premarket prices + Yahoo for historical analysis
                 </p>
                 <label for="fileInput" class="upload-btn">
-                    Select Watchlist File
+                    📁 Select Watchlist File
                 </label>
                 <input type="file" id="fileInput" accept=".xlsx,.xls,.csv,.txt">
                 <div class="stock-count" id="stockCount">No watchlist loaded</div>
@@ -488,7 +623,7 @@
         <div class="divider"></div>
         
         <div class="status-section">
-            <div class="status-text" id="status">Ready for v4.1 FINAL with CORRECT Yahoo Finance endpoint</div>
+            <div class="status-text" id="status">Ready for v5.0 HYBRID analysis with Finnhub + Yahoo</div>
             <div class="progress-bar">
                 <div class="progress-fill" id="progressBar"></div>
                 <div class="progress-text" id="progressText">0%</div>
@@ -497,18 +632,18 @@
         
         <div id="warningBox" class="warning-box" style="display: none;"></div>
         
-        <div class="debug-section" id="debugLog">v4.1 FINAL debug log with CORRECT endpoint...</div>
+        <div class="debug-section" id="debugLog">v5.0 HYBRID system initialized...</div>
         
         <div class="data-container">
-            <h2>Enhanced Market Intelligence Data (v4.1 FINAL)</h2>
+            <h2>📊 Market Intelligence Data (v5.0 HYBRID)</h2>
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                <span style="color: #8b7355; font-size: 12px; letter-spacing: 1px;">WORKING PREMARKET | 20+ INDICATORS | PIVOT POINTS</span>
+                <span style="color: #7f8c8d; font-size: 13px; letter-spacing: 0.3px; font-weight: 600;">REAL PREMARKET | 20+ INDICATORS | SMART CACHING</span>
                 <button id="copyBtn" class="copy-btn" style="display: none;">
-                    Copy Data
+                    📋 Copy Data
                 </button>
             </div>
             <div class="data-output">
-                <div id="output">Awaiting watchlist upload to begin v4.1 FINAL analysis...</div>
+                <div id="output">Awaiting Finnhub API key and watchlist upload to begin analysis...</div>
             </div>
         </div>
         
@@ -522,14 +657,54 @@
         // ========================================
         
         let stockList = [];
+        let FINNHUB_API_KEY = '';
         let apiCallCounts = {
-            quote: 0,
-            historical: 0,
+            finnhubQuote: 0,
+            yahooHistorical: 0,
             total: 0
         };
         
-        const CACHE_DURATION = 4 * 60 * 60 * 1000; // 4 hours
         let debugMessages = [];
+        
+        // ========================================
+        // API KEY MANAGEMENT
+        // ========================================
+        
+        function loadApiKey() {
+            const savedKey = localStorage.getItem('finnhub_api_key_v5');
+            if (savedKey) {
+                FINNHUB_API_KEY = savedKey;
+                document.getElementById('apiKeyInput').value = savedKey;
+                document.getElementById('apiKeyStatus').textContent = '✅ API key loaded and ready';
+                document.getElementById('apiKeyStatus').style.color = '#d4edda';
+                log('Finnhub API key loaded from storage', 'success');
+                return true;
+            }
+            return false;
+        }
+        
+        function saveApiKey() {
+            const input = document.getElementById('apiKeyInput').value.trim();
+            if (!input) {
+                showWarning('Please enter a valid Finnhub API key', 'error');
+                return;
+            }
+            
+            FINNHUB_API_KEY = input;
+            localStorage.setItem('finnhub_api_key_v5', input);
+            document.getElementById('apiKeyStatus').textContent = '✅ API key saved successfully!';
+            document.getElementById('apiKeyStatus').style.color = '#d4edda';
+            log('Finnhub API key saved', 'success');
+            showWarning('Finnhub API key saved! You can now upload your watchlist.', 'success');
+        }
+        
+        document.getElementById('saveApiKeyBtn').addEventListener('click', saveApiKey);
+        
+        document.getElementById('apiKeyInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                saveApiKey();
+            }
+        });
         
         // ========================================
         // UTILITY FUNCTIONS
@@ -560,9 +735,9 @@
         }
 
         function updateAPICounters() {
-            document.getElementById('yahooQuoteCount').textContent = apiCallCounts.quote;
-            document.getElementById('yahooHistCount').textContent = apiCallCounts.historical;
-            document.getElementById('yahooTotalCount').textContent = apiCallCounts.total;
+            document.getElementById('finnhubQuoteCount').textContent = apiCallCounts.finnhubQuote;
+            document.getElementById('yahooHistCount').textContent = apiCallCounts.yahooHistorical;
+            document.getElementById('totalApiCount').textContent = apiCallCounts.total;
         }
 
         function showWarning(message, type = 'warning') {
@@ -579,15 +754,32 @@
         }
         
         function recordAPICall(type) {
-            if (type === 'quote') apiCallCounts.quote++;
-            if (type === 'historical') apiCallCounts.historical++;
+            if (type === 'finnhub_quote') apiCallCounts.finnhubQuote++;
+            if (type === 'yahoo_historical') apiCallCounts.yahooHistorical++;
             apiCallCounts.total++;
             updateAPICounters();
         }
         
         // ========================================
-        // DATE & TIME FUNCTIONS
+        // DATE & TIME FUNCTIONS - SMART CACHE
         // ========================================
+        
+        function getNext4amET() {
+            const now = new Date();
+            const etOffset = -5;
+            
+            const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+            const etTime = new Date(utc + (3600000 * etOffset));
+            
+            let next4am = new Date(etTime);
+            next4am.setHours(4, 0, 0, 0);
+            
+            if (etTime >= next4am) {
+                next4am.setDate(next4am.getDate() + 1);
+            }
+            
+            return new Date(next4am.getTime() - (3600000 * etOffset) + (now.getTimezoneOffset() * 60000));
+        }
         
         function getTodayDateString() {
             const today = new Date();
@@ -605,7 +797,6 @@
                 return 'closed';
             }
             
-            // Convert to ET
             const etOffset = -5;
             const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
             const etTime = new Date(utc + (3600000 * etOffset));
@@ -631,25 +822,24 @@
         }
         
         // ========================================
-        // CACHE FUNCTIONS
+        // SMART CACHE FUNCTIONS (Daily Reset at 4am ET)
         // ========================================
         
         function getCachedData(key) {
             try {
-                const cached = localStorage.getItem(`stock_cache_v41_${key}`);
+                const cached = localStorage.getItem(`stock_cache_v5_${key}`);
                 if (!cached) return null;
                 
                 const data = JSON.parse(cached);
-                const age = Date.now() - data.timestamp;
+                const next4am = getNext4amET();
                 
-                if (age > CACHE_DURATION) {
-                    localStorage.removeItem(`stock_cache_v41_${key}`);
-                    log(`Cache expired for ${key}`, 'info');
+                if (data.expiresAt && new Date(data.expiresAt) < new Date()) {
+                    localStorage.removeItem(`stock_cache_v5_${key}`);
+                    log(`Cache expired for ${key} (past 4am ET)`, 'info');
                     return null;
                 }
                 
-                const ageMinutes = Math.floor(age / 60000);
-                log(`Cache HIT for ${key} (age: ${ageMinutes}m)`, 'success');
+                log(`Cache HIT for ${key}`, 'success');
                 return data.value;
             } catch (e) {
                 log(`Cache read error for ${key}: ${e.message}`, 'error');
@@ -659,42 +849,52 @@
 
         function setCachedData(key, value) {
             try {
+                const next4am = getNext4amET();
                 const data = {
                     value: value,
-                    timestamp: Date.now()
+                    cachedAt: new Date().toISOString(),
+                    expiresAt: next4am.toISOString()
                 };
-                localStorage.setItem(`stock_cache_v41_${key}`, JSON.stringify(data));
+                localStorage.setItem(`stock_cache_v5_${key}`, JSON.stringify(data));
                 updateCacheStats();
+                log(`Cached ${key} until ${next4am.toLocaleTimeString()}`, 'info');
             } catch (e) {
                 log(`Cache write error for ${key}: ${e.message}`, 'error');
             }
         }
 
         function updateCacheStats() {
-            const cacheKeys = Object.keys(localStorage).filter(k => k.startsWith('stock_cache_v41_'));
+            const cacheKeys = Object.keys(localStorage).filter(k => k.startsWith('stock_cache_v5_'));
             document.getElementById('cacheCount').textContent = cacheKeys.length;
             
             if (cacheKeys.length > 0) {
-                let oldestTime = Date.now();
+                const next4am = getNext4amET();
+                document.getElementById('cacheExpiry').textContent = next4am.toLocaleString();
+                
+                let mostRecentTime = null;
                 cacheKeys.forEach(key => {
                     try {
                         const data = JSON.parse(localStorage.getItem(key));
-                        if (data.timestamp < oldestTime) {
-                            oldestTime = data.timestamp;
+                        if (data.cachedAt) {
+                            const cacheTime = new Date(data.cachedAt);
+                            if (!mostRecentTime || cacheTime > mostRecentTime) {
+                                mostRecentTime = cacheTime;
+                            }
                         }
                     } catch (e) {}
                 });
                 
-                const ageMinutes = Math.floor((Date.now() - oldestTime) / 60000);
-                document.getElementById('cacheAge').textContent = 
-                    ageMinutes < 60 ? `${ageMinutes}m` : `${Math.floor(ageMinutes/60)}h ${ageMinutes%60}m`;
+                if (mostRecentTime) {
+                    document.getElementById('lastCacheTime').textContent = mostRecentTime.toLocaleTimeString();
+                }
+            } else {
+                document.getElementById('cacheExpiry').textContent = 'N/A';
+                document.getElementById('lastCacheTime').textContent = 'Never';
             }
-            
-            document.getElementById('lastReset').textContent = new Date().toLocaleDateString();
         }
 
         function clearAllCache() {
-            const cacheKeys = Object.keys(localStorage).filter(k => k.startsWith('stock_cache_v41_'));
+            const cacheKeys = Object.keys(localStorage).filter(k => k.startsWith('stock_cache_v5_'));
             cacheKeys.forEach(key => localStorage.removeItem(key));
             updateCacheStats();
             log(`Cleared ${cacheKeys.length} cached items`, 'info');
@@ -1000,528 +1200,62 @@
         }
 
         // ========================================
-        // YAHOO FINANCE API - WITH FALLBACK PROXIES
+        // FINNHUB API - REAL-TIME PREMARKET DATA
         // ========================================
         
-        const CORS_PROXIES = [
-            url => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
-            url => `https://corsproxy.io/?${encodeURIComponent(url)}`,
-            url => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`
-        ];
-        
-        async function fetchWithFallback(url, description) {
-            let lastError = null;
+        async function getFinnhubQuote(ticker) {
+            if (!FINNHUB_API_KEY) {
+                throw new Error('Finnhub API key not configured');
+            }
             
-            // Try direct fetch first (no proxy)
             try {
-                log(`${description} - trying direct`);
+                const url = `https://finnhub.io/api/v1/quote?symbol=${ticker}&token=${FINNHUB_API_KEY}`;
+                
+                log(`Fetching Finnhub quote for ${ticker}`);
                 const response = await fetch(url);
-                if (response.ok) {
-                    return await response.json();
-                }
-            } catch (e) {
-                log(`${description} - direct failed: ${e.message}`, 'error');
-            }
-            
-            // Try each CORS proxy
-            for (let i = 0; i < CORS_PROXIES.length; i++) {
-                try {
-                    const proxyUrl = CORS_PROXIES[i](url);
-                    log(`${description} - trying proxy ${i + 1}`);
-                    
-                    const response = await fetch(proxyUrl);
-                    
-                    if (response.ok) {
-                        const data = await response.json();
-                        log(`${description} - proxy ${i + 1} SUCCESS`, 'success');
-                        return data;
+                
+                if (!response.ok) {
+                    if (response.status === 429) {
+                        throw new Error('Rate limit exceeded');
                     }
-                    
-                    lastError = new Error(`HTTP ${response.status}`);
-                } catch (error) {
-                    lastError = error;
-                    log(`${description} - proxy ${i + 1} failed: ${error.message}`, 'error');
+                    throw new Error(`HTTP ${response.status}`);
                 }
                 
-                // Small delay between proxy attempts
-                await sleep(200);
-            }
-            
-            throw lastError || new Error('All proxies failed');
-        }
-        
-        async function getYahooQuoteData(ticker) {
-            try {
-                const quoteUrl = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${ticker}`;
+                const data = await response.json();
                 
-                const data = await fetchWithFallback(quoteUrl, `Quote for ${ticker}`);
-                
-                if (!data.quoteResponse || !data.quoteResponse.result || data.quoteResponse.result.length === 0) {
-                    throw new Error('No quote data from Yahoo');
+                if (!data.c || data.c === 0) {
+                    throw new Error('No quote data available');
                 }
                 
-                const quote = data.quoteResponse.result[0];
-                
-                recordAPICall('quote');
+                recordAPICall('finnhub_quote');
                 
                 const quoteData = {
-                    symbol: quote.symbol,
-                    regularMarketPrice: quote.regularMarketPrice,
-                    regularMarketTime: quote.regularMarketTime,
-                    previousClose: quote.regularMarketPreviousClose,
-                    regularMarketOpen: quote.regularMarketOpen,
-                    regularMarketDayHigh: quote.regularMarketDayHigh,
-                    regularMarketDayLow: quote.regularMarketDayLow,
-                    regularMarketVolume: quote.regularMarketVolume,
-                    
-                    preMarketPrice: quote.preMarketPrice || null,
-                    preMarketChange: quote.preMarketChange || null,
-                    preMarketChangePercent: quote.preMarketChangePercent || null,
-                    preMarketTime: quote.preMarketTime || null,
-                    
-                    postMarketPrice: quote.postMarketPrice || null,
-                    postMarketChange: quote.postMarketChange || null,
-                    postMarketChangePercent: quote.postMarketChangePercent || null,
-                    postMarketTime: quote.postMarketTime || null,
-                    
-                    fiftyTwoWeekHigh: quote.fiftyTwoWeekHigh || null,
-                    fiftyTwoWeekLow: quote.fiftyTwoWeekLow || null,
-                    
-                    marketState: quote.marketState || 'REGULAR',
-                    dataQuality: 'REALTIME'
+                    symbol: ticker,
+                    currentPrice: data.c,
+                    previousClose: data.pc,
+                    change: data.d,
+                    changePercent: data.dp,
+                    high: data.h,
+                    low: data.l,
+                    open: data.o,
+                    timestamp: data.t,
+                    dataSource: 'Finnhub',
+                    isPremarket: true
                 };
                 
-                log(`✓ Quote: ${ticker} ${quoteData.regularMarketPrice} | PM: ${quoteData.preMarketPrice ? '
-        
-        // ========================================
-        // MAIN DATA COLLECTION
-        // ========================================
-        
-        async function getEnhancedStockData(ticker) {
-            log(`Starting v4.1 FINAL analysis for ${ticker}`);
-            
-            try {
-                // Get real-time quote data with CORRECT endpoint
-                const yahooQuote = await getYahooQuoteData(ticker);
-                
-                if (!yahooQuote) {
-                    throw new Error('Failed to fetch Yahoo quote data');
-                }
-                
-                // Get historical data
-                const historicalData = await getYahooHistoricalData(ticker);
-                
-                if (!historicalData || historicalData.length < 50) {
-                    throw new Error('Insufficient historical data');
-                }
-                
-                // Determine current market status
-                const marketStatus = getMarketStatus();
-                
-                // Determine which price to use
-                let currentPrice, priceSource, priceChange, priceChangePercent;
-                
-                if (marketStatus === 'premarket' && yahooQuote.preMarketPrice) {
-                    currentPrice = yahooQuote.preMarketPrice;
-                    priceSource = 'premarket';
-                    priceChange = yahooQuote.preMarketChange;
-                    priceChangePercent = yahooQuote.preMarketChangePercent;
-                } else if (marketStatus === 'afterhours' && yahooQuote.postMarketPrice) {
-                    currentPrice = yahooQuote.postMarketPrice;
-                    priceSource = 'afterhours';
-                    priceChange = yahooQuote.postMarketChange;
-                    priceChangePercent = yahooQuote.postMarketChangePercent;
-                } else if (marketStatus === 'regular') {
-                    currentPrice = yahooQuote.regularMarketPrice;
-                    priceSource = 'regular';
-                    priceChange = currentPrice - yahooQuote.previousClose;
-                    priceChangePercent = (priceChange / yahooQuote.previousClose) * 100;
-                } else {
-                    currentPrice = yahooQuote.regularMarketPrice || yahooQuote.previousClose;
-                    priceSource = 'previous_close';
-                    priceChange = currentPrice - yahooQuote.previousClose;
-                    priceChangePercent = (priceChange / yahooQuote.previousClose) * 100;
-                }
-                
-                // Extract price arrays
-                const closePrices = historicalData.map(d => d.close);
-                const highs = historicalData.map(d => d.high);
-                const lows = historicalData.map(d => d.low);
-                const volumes = historicalData.map(d => d.volume);
-                
-                // Calculate indicators
-                const sma10 = calculateSMA(closePrices, 10);
-                const sma20 = calculateSMA(closePrices, 20);
-                const sma50 = calculateSMA(closePrices, 50);
-                const sma200 = calculateSMA(closePrices, 200);
-                const ema9 = calculateEMA(closePrices, 9);
-                const ema21 = calculateEMA(closePrices, 21);
-                
-                const rsi = calculateRSI(closePrices, 14);
-                const macd = calculateMACD(closePrices, 12, 26, 9);
-                const bollinger = calculateBollingerBands(closePrices, 20, 2);
-                const stochastic = calculateStochastic(historicalData, 14);
-                const williamsR = calculateWilliamsR(historicalData, 14);
-                const adx = calculateADX(historicalData, 14);
-                const obv = calculateOBV(historicalData);
-                const vwap = calculateVWAP(historicalData.slice(-20));
-                const atr = calculateATR(historicalData, 14);
-                
-                const pivotPoints = calculatePivotPoints(historicalData[historicalData.length - 2]);
-                const supportResistance = findSupportResistanceLevels(historicalData.slice(-60));
-                const patternData = analyzePatternData(historicalData);
-                const gapAnalysis = analyzeGaps(historicalData, currentPrice);
-                
-                // Gap info
-                let gapInfo = {
-                    current_gap_percent: null,
-                    gap_type: 'none',
-                    gap_size_dollars: null,
-                    recent_gaps: gapAnalysis
-                };
-                
-                if (priceSource === 'premarket' && yahooQuote.preMarketChangePercent) {
-                    gapInfo.current_gap_percent = yahooQuote.preMarketChangePercent.toFixed(2);
-                    gapInfo.gap_type = yahooQuote.preMarketChangePercent > 0 ? 'gap_up' : 'gap_down';
-                    gapInfo.gap_size_dollars = yahooQuote.preMarketChange.toFixed(2);
-                }
-                
-                // Volume analysis
-                const avgVolume5d = volumes.slice(-5).reduce((a, b) => a + b, 0) / 5;
-                const avgVolume10d = volumes.slice(-10).reduce((a, b) => a + b, 0) / 10;
-                const avgVolume20d = volumes.slice(-20).reduce((a, b) => a + b, 0) / 20;
-                const avgVolume50d = volumes.slice(-50).reduce((a, b) => a + b, 0) / 50;
-                const currentVolume = yahooQuote.regularMarketVolume;
-                
-                // Build final data structure
-                const enhancedData = {
-                    ticker: ticker,
-                    generated_at: new Date().toISOString(),
-                    data_source: 'Yahoo Finance (v4.1 FINAL)',
-                    data_quality: yahooQuote.dataQuality,
-                    
-                    market_status: marketStatus,
-                    data_timestamp: new Date().toISOString(),
-                    
-                    price_data: {
-                        current_price: currentPrice.toFixed(2),
-                        price_source: priceSource,
-                        price_change: priceChange ? priceChange.toFixed(2) : null,
-                        price_change_percent: priceChangePercent ? priceChangePercent.toFixed(2) : null,
-                        previous_close: yahooQuote.previousClose.toFixed(2),
-                        
-                        premarket_price: yahooQuote.preMarketPrice ? yahooQuote.preMarketPrice.toFixed(2) : null,
-                        premarket_change: yahooQuote.preMarketChange ? yahooQuote.preMarketChange.toFixed(2) : null,
-                        premarket_change_percent: yahooQuote.preMarketChangePercent ? yahooQuote.preMarketChangePercent.toFixed(2) : null,
-                        premarket_time: yahooQuote.preMarketTime ? new Date(yahooQuote.preMarketTime * 1000).toISOString() : null,
-                        
-                        afterhours_price: yahooQuote.postMarketPrice ? yahooQuote.postMarketPrice.toFixed(2) : null,
-                        afterhours_change: yahooQuote.postMarketChange ? yahooQuote.postMarketChange.toFixed(2) : null,
-                        afterhours_change_percent: yahooQuote.postMarketChangePercent ? yahooQuote.postMarketChangePercent.toFixed(2) : null,
-                        
-                        day_high: yahooQuote.regularMarketDayHigh ? yahooQuote.regularMarketDayHigh.toFixed(2) : Math.max(...highs.slice(-1)).toFixed(2),
-                        day_low: yahooQuote.regularMarketDayLow ? yahooQuote.regularMarketDayLow.toFixed(2) : Math.min(...lows.slice(-1)).toFixed(2),
-                        fifty_two_week_high: yahooQuote.fiftyTwoWeekHigh ? yahooQuote.fiftyTwoWeekHigh.toFixed(2) : Math.max(...highs).toFixed(2),
-                        fifty_two_week_low: yahooQuote.fiftyTwoWeekLow ? yahooQuote.fiftyTwoWeekLow.toFixed(2) : Math.min(...lows).toFixed(2)
-                    },
-                    
-                    gap_analysis: gapInfo,
-                    
-                    technical_indicators: {
-                        moving_averages: {
-                            sma_10: sma10 ? sma10.toFixed(2) : null,
-                            sma_20: sma20 ? sma20.toFixed(2) : null,
-                            sma_50: sma50 ? sma50.toFixed(2) : null,
-                            sma_200: sma200 ? sma200.toFixed(2) : null,
-                            ema_9: ema9 ? ema9.toFixed(2) : null,
-                            ema_21: ema21 ? ema21.toFixed(2) : null
-                        },
-                        momentum: {
-                            rsi_14: rsi ? rsi.value.toFixed(2) : null,
-                            rsi_signal: rsi ? rsi.signal : null,
-                            macd: macd ? {
-                                macd: macd.macd.toFixed(2),
-                                signal: macd.signal.toFixed(2),
-                                histogram: macd.histogram.toFixed(2)
-                            } : null,
-                            stochastic: stochastic ? {
-                                k: stochastic.k.toFixed(2),
-                                interpretation: stochastic.interpretation
-                            } : null,
-                            williams_r: williamsR ? williamsR.toFixed(2) : null
-                        },
-                        volatility: {
-                            atr_14: atr ? atr.toFixed(2) : null,
-                            bollinger_bands: bollinger ? {
-                                upper: bollinger.upper.toFixed(2),
-                                middle: bollinger.middle.toFixed(2),
-                                lower: bollinger.lower.toFixed(2),
-                                bandwidth: bollinger.bandwidth.toFixed(2)
-                            } : null,
-                            historical_volatility_20d: calculateVolatility(closePrices.slice(-20)).toFixed(2)
-                        },
-                        trend: {
-                            adx: adx ? {
-                                adx: adx.adx.toFixed(2),
-                                interpretation: adx.interpretation
-                            } : null,
-                            obv: obv,
-                            vwap: vwap ? vwap.toFixed(2) : null
-                        }
-                    },
-                    
-                    key_levels: {
-                        pivot_points: pivotPoints ? {
-                            pivot: pivotPoints.pivot.toFixed(2),
-                            r1: pivotPoints.r1.toFixed(2),
-                            r2: pivotPoints.r2.toFixed(2),
-                            r3: pivotPoints.r3.toFixed(2),
-                            s1: pivotPoints.s1.toFixed(2),
-                            s2: pivotPoints.s2.toFixed(2),
-                            s3: pivotPoints.s3.toFixed(2)
-                        } : null,
-                        support_resistance: {
-                            resistance: supportResistance.resistance.map(r => r.toFixed(2)),
-                            support: supportResistance.support.map(s => s.toFixed(2))
-                        },
-                        weekly_high: Math.max(...highs.slice(-5)).toFixed(2),
-                        weekly_low: Math.min(...lows.slice(-5)).toFixed(2),
-                        monthly_high: Math.max(...highs.slice(-20)).toFixed(2),
-                        monthly_low: Math.min(...lows.slice(-20)).toFixed(2)
-                    },
-                    
-                    volume_analysis: {
-                        current_volume: currentVolume,
-                        avg_volume_5d: Math.round(avgVolume5d),
-                        avg_volume_10d: Math.round(avgVolume10d),
-                        avg_volume_20d: Math.round(avgVolume20d),
-                        avg_volume_50d: Math.round(avgVolume50d),
-                        vs_avg_20d: (currentVolume / avgVolume20d).toFixed(2),
-                        trend: volumes.slice(-10).reduce((a, b) => a + b, 0) > volumes.slice(-20, -10).reduce((a, b) => a + b, 0) ? 'increasing' : 'decreasing'
-                    },
-                    
-                    pattern_analysis: patternData,
-                    
-                    historical_context: {
-                        data_points: historicalData.length,
-                        date_range: `${historicalData[0].date} to ${historicalData[historicalData.length - 1].date}`,
-                        volatility_20d: calculateVolatility(closePrices.slice(-20)).toFixed(2)
-                    }
-                };
-                
-                log(`✓ v4.1 complete: ${ticker} (${priceSource})`, 'success');
-                return enhancedData;
-                
-            } catch (error) {
-                log(`v4.1 analysis failed for ${ticker}: ${error.message}`, 'error');
-                return null;
-            }
-        }
-        
-        // ========================================
-        // FILE UPLOAD & PROCESSING
-        // ========================================
-        
-        document.getElementById('fileInput').addEventListener('change', async (e) => {
-            const file = e.target.files[0];
-            if (!file) return;
-            
-            debugMessages = [];
-            updateStatus('Processing watchlist file...', 10);
-            log('File upload initiated: ' + file.name);
-            
-            const fileType = file.name.split('.').pop().toLowerCase();
-            
-            try {
-                if (fileType === 'txt' || fileType === 'csv') {
-                    const text = await file.text();
-                    stockList = text.split(/[\n,;]/)
-                        .map(line => line.trim().toUpperCase())
-                        .filter(ticker => ticker.length > 0 && ticker.length < 6 && /^[A-Z]+$/.test(ticker));
-                } else if (fileType === 'xlsx' || fileType === 'xls') {
-                    const data = await file.arrayBuffer();
-                    const workbook = XLSX.read(data, { type: 'array' });
-                    const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-                    const jsonData = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
-                    
-                    stockList = [];
-                    jsonData.forEach(row => {
-                        row.forEach(cell => {
-                            if (cell && typeof cell === 'string') {
-                                const ticker = cell.trim().toUpperCase();
-                                if (ticker.length > 0 && ticker.length < 6 && /^[A-Z]+$/.test(ticker)) {
-                                    stockList.push(ticker);
-                                }
-                            }
-                        });
-                    });
-                }
-                
-                stockList = [...new Set(stockList)];
-                log(`Unique tickers: ${stockList.length}`);
-                
-                const cachedCount = stockList.filter(t => getCachedData(`${t}_yahoo_historical`)).length;
-                
-                document.getElementById('stockCount').textContent = 
-                    `${stockList.length} securities (${cachedCount} cached)`;
-                
-                updateStatus('Watchlist processed. Starting v4.1 FINAL...', 30);
-                
-                await fetchAllEnhancedMarketData();
-                
-            } catch (error) {
-                updateStatus('Error processing file: ' + error.message, 0);
-                log('File processing error: ' + error.message, 'error');
-            }
-        });
-        
-        async function fetchAllEnhancedMarketData() {
-            const startTime = Date.now();
-            
-            const marketData = {
-                generated_at: new Date().toISOString(),
-                analysis_type: "Enhanced Pattern Recognition v4.1 FINAL - Yahoo Finance",
-                total_stocks: stockList.length,
-                successful: 0,
-                failed: 0,
-                cached: 0,
-                failed_tickers: {},
-                api_calls_used: {
-                    quote: 0,
-                    historical: 0,
-                    total: 0
-                },
-                data_features: [
-                    "Yahoo Finance v7/finance/quote endpoint - VERIFIED PREMARKET",
-                    "20+ technical indicators (RSI, MACD, Stochastic, ADX, Williams %R, OBV, VWAP, ATR)",
-                    "Pivot points (Standard 7-point system)",
-                    "Gap analysis with historical context",
-                    "Enhanced volume analysis (5/10/20/50-day averages)",
-                    "Market status detection (premarket/regular/afterhours/closed)",
-                    "Bollinger Bands with bandwidth",
-                    "Support/Resistance levels",
-                    "52-week high/low tracking",
-                    "4-hour persistent caching",
-                    "100% FREE - No API keys needed"
-                ],
-                stocks: {}
-            };
-            
-            updateStatus(`Starting v4.1 FINAL collection...`, 40);
-            log(`Starting v4.1 FINAL: ${stockList.length} stocks`);
-            
-            for (let i = 0; i < stockList.length; i++) {
-                const ticker = stockList[i];
-                const progress = 40 + ((i / stockList.length) * 55);
-                
-                const wasCached = getCachedData(`${ticker}_yahoo_historical`) !== null;
-                
-                const elapsed = Math.floor((Date.now() - startTime) / 1000);
-                const stocksRemaining = stockList.length - i;
-                const avgTimePerStock = elapsed / (i + 1);
-                const estimatedSecondsLeft = Math.ceil(stocksRemaining * avgTimePerStock);
-                const timeDisplay = estimatedSecondsLeft > 60 
-                    ? `${Math.floor(estimatedSecondsLeft/60)}m ${estimatedSecondsLeft%60}s` 
-                    : `${estimatedSecondsLeft}s`;
-                
-                updateStatus(
-                    `Analyzing: ${ticker} (${i + 1}/${stockList.length})${wasCached ? ' [CACHED]' : ''} | Est: ${timeDisplay}`, 
-                    progress
-                );
-                
-                try {
-                    const enhancedStockData = await getEnhancedStockData(ticker);
-                    
-                    if (enhancedStockData) {
-                        marketData.stocks[ticker] = enhancedStockData;
-                        marketData.successful++;
-                        if (wasCached) marketData.cached++;
-                    } else {
-                        marketData.failed++;
-                        marketData.failed_tickers[ticker] = "Failed to fetch data from Yahoo Finance";
-                    }
-                } catch (error) {
-                    marketData.failed++;
-                    marketData.failed_tickers[ticker] = error.message;
-                }
-                
-                await sleep(800);
-            }
-            
-            const totalTime = Math.floor((Date.now() - startTime) / 1000);
-            const timeDisplay = totalTime > 60 ? `${Math.floor(totalTime/60)}m ${totalTime%60}s` : `${totalTime}s`;
-            
-            marketData.api_calls_used = { ...apiCallCounts };
-            marketData.processing_time = timeDisplay;
-            
-            updateStatus(
-                `v4.1 FINAL complete: ${marketData.successful} succeeded (${marketData.cached} cached), ${marketData.failed} failed | ${timeDisplay}`, 
-                100
-            );
-            log(`v4.1 FINAL complete: ${marketData.successful}/${marketData.total_stocks}`, 'success');
-            
-            document.getElementById('output').textContent = 
-                JSON.stringify(marketData, null, 2);
-            
-            document.getElementById('copyBtn').style.display = 'inline-block';
-            
-            document.getElementById('updateTime').textContent = 
-                `v4.1 FINAL Data collected: ${new Date().toLocaleString()} | ${marketData.successful}/${marketData.total_stocks} successful | ${timeDisplay}`;
-                
-            if (marketData.successful > 0) {
-                const premarketCount = Object.values(marketData.stocks).filter(s => s.price_data.premarket_price !== null).length;
-                showWarning(`SUCCESS: ${premarketCount}/${marketData.successful} stocks have LIVE premarket data!`, 'success');
-            }
-        }
-        
-        document.getElementById('copyBtn').addEventListener('click', async () => {
-            const output = document.getElementById('output').textContent;
-            const copyBtn = document.getElementById('copyBtn');
-            
-            try {
-                await navigator.clipboard.writeText(output);
-                
-                const originalText = copyBtn.textContent;
-                copyBtn.textContent = 'Copied!';
-                copyBtn.style.background = 'linear-gradient(135deg, #2a4a2f 0%, #1a3a1f 100%)';
-                copyBtn.style.borderColor = '#4a8a4a';
-                
-                setTimeout(() => {
-                    copyBtn.textContent = originalText;
-                    copyBtn.style.background = 'linear-gradient(135deg, #2a1f15 0%, #1a1208 100%)';
-                    copyBtn.style.borderColor = '#8b7355';
-                }, 2000);
-                
-                log('v4.1 FINAL JSON copied to clipboard', 'success');
-            } catch (error) {
-                log('Copy failed: ' + error.message, 'error');
-            }
-        });
-
-        document.getElementById('clearCacheBtn').addEventListener('click', () => {
-            if (confirm('Clear all v4.1 FINAL cached stock data?')) {
-                clearAllCache();
-            }
-        });
-        
-        // Initialize
-        updateCacheStats();
-        updateAPICounters();
-        
-        log('v4.1 FINAL initialized with CORRECT Yahoo endpoint', 'success');
-        log(`Market status: ${getMarketStatus()}`, 'info');
-        showWarning('v4.1 FINAL: Using v7/finance/quote endpoint for REAL premarket!', 'success');
-    </script>
-</body>
-</html> + quoteData.preMarketPrice : 'N/A'}`, 'success');
+                log(`✓ Finnhub: ${ticker} = $${quoteData.currentPrice} (${quoteData.changePercent >= 0 ? '+' : ''}${quoteData.changePercent.toFixed(2)}%)`, 'success');
                 
                 return quoteData;
                 
             } catch (error) {
-                log(`Yahoo quote failed for ${ticker}: ${error.message}`, 'error');
-                return null;
+                log(`Finnhub quote failed for ${ticker}: ${error.message}`, 'error');
+                throw error;
             }
         }
+        
+        // ========================================
+        // YAHOO FINANCE API - HISTORICAL DATA ONLY
+        // ========================================
         
         async function getYahooHistoricalData(ticker) {
             const cacheKey = `${ticker}_yahoo_historical`;
@@ -1534,7 +1268,20 @@
                 
                 const url = `https://query1.finance.yahoo.com/v8/finance/chart/${ticker}?period1=${period1}&period2=${period2}&interval=1d`;
                 
-                const data = await fetchWithFallback(url, `Historical for ${ticker}`);
+                log(`Fetching Yahoo historical for ${ticker}`);
+                
+                let response = await fetch(url);
+                
+                if (!response.ok) {
+                    const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`;
+                    response = await fetch(proxyUrl);
+                }
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+                
+                const data = await response.json();
                 
                 if (!data.chart || !data.chart.result || data.chart.result.length === 0) {
                     throw new Error('No historical data from Yahoo');
@@ -1553,76 +1300,50 @@
                     volume: quote.volume[i]
                 })).filter(d => d.close !== null);
                 
-                recordAPICall('historical');
+                recordAPICall('yahoo_historical');
                 
                 setCachedData(cacheKey, ohlcData);
-                log(`✓ Historical cached: ${ticker} (${ohlcData.length} days)`, 'success');
+                log(`✓ Yahoo historical: ${ticker} (${ohlcData.length} days) - CACHED`, 'success');
                 
                 return ohlcData;
                 
             } catch (error) {
                 log(`Yahoo historical failed for ${ticker}: ${error.message}`, 'error');
-                return null;
+                throw error;
             }
         }
         
         // ========================================
-        // MAIN DATA COLLECTION
+        // MAIN DATA COLLECTION - HYBRID APPROACH
         // ========================================
         
         async function getEnhancedStockData(ticker) {
-            log(`Starting v4.1 FINAL analysis for ${ticker}`);
+            log(`Starting v5.0 HYBRID analysis for ${ticker}`);
             
             try {
-                // Get real-time quote data with CORRECT endpoint
-                const yahooQuote = await getYahooQuoteData(ticker);
+                const finnhubQuote = await getFinnhubQuote(ticker);
                 
-                if (!yahooQuote) {
-                    throw new Error('Failed to fetch Yahoo quote data');
+                if (!finnhubQuote) {
+                    throw new Error('Failed to fetch Finnhub quote data');
                 }
                 
-                // Get historical data
                 const historicalData = await getYahooHistoricalData(ticker);
                 
                 if (!historicalData || historicalData.length < 50) {
                     throw new Error('Insufficient historical data');
                 }
                 
-                // Determine current market status
                 const marketStatus = getMarketStatus();
                 
-                // Determine which price to use
-                let currentPrice, priceSource, priceChange, priceChangePercent;
+                const currentPrice = finnhubQuote.currentPrice;
+                const priceChange = finnhubQuote.change;
+                const priceChangePercent = finnhubQuote.changePercent;
                 
-                if (marketStatus === 'premarket' && yahooQuote.preMarketPrice) {
-                    currentPrice = yahooQuote.preMarketPrice;
-                    priceSource = 'premarket';
-                    priceChange = yahooQuote.preMarketChange;
-                    priceChangePercent = yahooQuote.preMarketChangePercent;
-                } else if (marketStatus === 'afterhours' && yahooQuote.postMarketPrice) {
-                    currentPrice = yahooQuote.postMarketPrice;
-                    priceSource = 'afterhours';
-                    priceChange = yahooQuote.postMarketChange;
-                    priceChangePercent = yahooQuote.postMarketChangePercent;
-                } else if (marketStatus === 'regular') {
-                    currentPrice = yahooQuote.regularMarketPrice;
-                    priceSource = 'regular';
-                    priceChange = currentPrice - yahooQuote.previousClose;
-                    priceChangePercent = (priceChange / yahooQuote.previousClose) * 100;
-                } else {
-                    currentPrice = yahooQuote.regularMarketPrice || yahooQuote.previousClose;
-                    priceSource = 'previous_close';
-                    priceChange = currentPrice - yahooQuote.previousClose;
-                    priceChangePercent = (priceChange / yahooQuote.previousClose) * 100;
-                }
-                
-                // Extract price arrays
                 const closePrices = historicalData.map(d => d.close);
                 const highs = historicalData.map(d => d.high);
                 const lows = historicalData.map(d => d.low);
                 const volumes = historicalData.map(d => d.volume);
                 
-                // Calculate indicators
                 const sma10 = calculateSMA(closePrices, 10);
                 const sma20 = calculateSMA(closePrices, 20);
                 const sma50 = calculateSMA(closePrices, 50);
@@ -1645,57 +1366,42 @@
                 const patternData = analyzePatternData(historicalData);
                 const gapAnalysis = analyzeGaps(historicalData, currentPrice);
                 
-                // Gap info
                 let gapInfo = {
-                    current_gap_percent: null,
-                    gap_type: 'none',
-                    gap_size_dollars: null,
+                    current_gap_percent: priceChangePercent.toFixed(2),
+                    gap_type: priceChangePercent > 0 ? 'gap_up' : priceChangePercent < 0 ? 'gap_down' : 'none',
+                    gap_size_dollars: priceChange.toFixed(2),
                     recent_gaps: gapAnalysis
                 };
                 
-                if (priceSource === 'premarket' && yahooQuote.preMarketChangePercent) {
-                    gapInfo.current_gap_percent = yahooQuote.preMarketChangePercent.toFixed(2);
-                    gapInfo.gap_type = yahooQuote.preMarketChangePercent > 0 ? 'gap_up' : 'gap_down';
-                    gapInfo.gap_size_dollars = yahooQuote.preMarketChange.toFixed(2);
-                }
-                
-                // Volume analysis
                 const avgVolume5d = volumes.slice(-5).reduce((a, b) => a + b, 0) / 5;
                 const avgVolume10d = volumes.slice(-10).reduce((a, b) => a + b, 0) / 10;
                 const avgVolume20d = volumes.slice(-20).reduce((a, b) => a + b, 0) / 20;
                 const avgVolume50d = volumes.slice(-50).reduce((a, b) => a + b, 0) / 50;
-                const currentVolume = yahooQuote.regularMarketVolume;
+                const lastVolume = volumes[volumes.length - 1];
                 
-                // Build final data structure
                 const enhancedData = {
                     ticker: ticker,
                     generated_at: new Date().toISOString(),
-                    data_source: 'Yahoo Finance (v4.1 FINAL)',
-                    data_quality: yahooQuote.dataQuality,
+                    data_source: 'Finnhub (Quote) + Yahoo Finance (Historical)',
+                    data_quality: 'REALTIME',
                     
                     market_status: marketStatus,
-                    data_timestamp: new Date().toISOString(),
+                    data_timestamp: new Date(finnhubQuote.timestamp * 1000).toISOString(),
                     
                     price_data: {
                         current_price: currentPrice.toFixed(2),
-                        price_source: priceSource,
-                        price_change: priceChange ? priceChange.toFixed(2) : null,
-                        price_change_percent: priceChangePercent ? priceChangePercent.toFixed(2) : null,
-                        previous_close: yahooQuote.previousClose.toFixed(2),
+                        price_source: marketStatus === 'premarket' ? 'premarket (Finnhub)' : 
+                                      marketStatus === 'afterhours' ? 'afterhours (Finnhub)' : 
+                                      marketStatus === 'regular' ? 'regular (Finnhub)' : 'previous_close',
+                        price_change: priceChange.toFixed(2),
+                        price_change_percent: priceChangePercent.toFixed(2),
+                        previous_close: finnhubQuote.previousClose.toFixed(2),
                         
-                        premarket_price: yahooQuote.preMarketPrice ? yahooQuote.preMarketPrice.toFixed(2) : null,
-                        premarket_change: yahooQuote.preMarketChange ? yahooQuote.preMarketChange.toFixed(2) : null,
-                        premarket_change_percent: yahooQuote.preMarketChangePercent ? yahooQuote.preMarketChangePercent.toFixed(2) : null,
-                        premarket_time: yahooQuote.preMarketTime ? new Date(yahooQuote.preMarketTime * 1000).toISOString() : null,
-                        
-                        afterhours_price: yahooQuote.postMarketPrice ? yahooQuote.postMarketPrice.toFixed(2) : null,
-                        afterhours_change: yahooQuote.postMarketChange ? yahooQuote.postMarketChange.toFixed(2) : null,
-                        afterhours_change_percent: yahooQuote.postMarketChangePercent ? yahooQuote.postMarketChangePercent.toFixed(2) : null,
-                        
-                        day_high: yahooQuote.regularMarketDayHigh ? yahooQuote.regularMarketDayHigh.toFixed(2) : Math.max(...highs.slice(-1)).toFixed(2),
-                        day_low: yahooQuote.regularMarketDayLow ? yahooQuote.regularMarketDayLow.toFixed(2) : Math.min(...lows.slice(-1)).toFixed(2),
-                        fifty_two_week_high: yahooQuote.fiftyTwoWeekHigh ? yahooQuote.fiftyTwoWeekHigh.toFixed(2) : Math.max(...highs).toFixed(2),
-                        fifty_two_week_low: yahooQuote.fiftyTwoWeekLow ? yahooQuote.fiftyTwoWeekLow.toFixed(2) : Math.min(...lows).toFixed(2)
+                        day_open: finnhubQuote.open ? finnhubQuote.open.toFixed(2) : null,
+                        day_high: finnhubQuote.high ? finnhubQuote.high.toFixed(2) : Math.max(...highs.slice(-1)).toFixed(2),
+                        day_low: finnhubQuote.low ? finnhubQuote.low.toFixed(2) : Math.min(...lows.slice(-1)).toFixed(2),
+                        fifty_two_week_high: Math.max(...highs).toFixed(2),
+                        fifty_two_week_low: Math.min(...lows).toFixed(2)
                     },
                     
                     gap_analysis: gapInfo,
@@ -1764,12 +1470,12 @@
                     },
                     
                     volume_analysis: {
-                        current_volume: currentVolume,
+                        last_volume: Math.round(lastVolume),
                         avg_volume_5d: Math.round(avgVolume5d),
                         avg_volume_10d: Math.round(avgVolume10d),
                         avg_volume_20d: Math.round(avgVolume20d),
                         avg_volume_50d: Math.round(avgVolume50d),
-                        vs_avg_20d: (currentVolume / avgVolume20d).toFixed(2),
+                        vs_avg_20d: (lastVolume / avgVolume20d).toFixed(2),
                         trend: volumes.slice(-10).reduce((a, b) => a + b, 0) > volumes.slice(-20, -10).reduce((a, b) => a + b, 0) ? 'increasing' : 'decreasing'
                     },
                     
@@ -1782,11 +1488,11 @@
                     }
                 };
                 
-                log(`✓ v4.1 complete: ${ticker} (${priceSource})`, 'success');
+                log(`✓ v5.0 complete: ${ticker} ($${currentPrice.toFixed(2)}, ${priceChangePercent >= 0 ? '+' : ''}${priceChangePercent.toFixed(2)}%)`, 'success');
                 return enhancedData;
                 
             } catch (error) {
-                log(`v4.1 analysis failed for ${ticker}: ${error.message}`, 'error');
+                log(`v5.0 analysis failed for ${ticker}: ${error.message}`, 'error');
                 return null;
             }
         }
@@ -1798,6 +1504,12 @@
         document.getElementById('fileInput').addEventListener('change', async (e) => {
             const file = e.target.files[0];
             if (!file) return;
+            
+            if (!FINNHUB_API_KEY) {
+                showWarning('Please configure your Finnhub API key before uploading a watchlist', 'error');
+                e.target.value = '';
+                return;
+            }
             
             debugMessages = [];
             updateStatus('Processing watchlist file...', 10);
@@ -1836,15 +1548,16 @@
                 const cachedCount = stockList.filter(t => getCachedData(`${t}_yahoo_historical`)).length;
                 
                 document.getElementById('stockCount').textContent = 
-                    `${stockList.length} securities (${cachedCount} cached)`;
+                    `${stockList.length} securities (${cachedCount} cached, ${stockList.length - cachedCount} will fetch)`;
                 
-                updateStatus('Watchlist processed. Starting v4.1 FINAL...', 30);
+                updateStatus('Watchlist processed. Starting v5.0 HYBRID...', 30);
                 
                 await fetchAllEnhancedMarketData();
                 
             } catch (error) {
                 updateStatus('Error processing file: ' + error.message, 0);
                 log('File processing error: ' + error.message, 'error');
+                showWarning('Error processing file: ' + error.message, 'error');
             }
         });
         
@@ -1853,19 +1566,21 @@
             
             const marketData = {
                 generated_at: new Date().toISOString(),
-                analysis_type: "Enhanced Pattern Recognition v4.1 FINAL - Yahoo Finance",
+                analysis_type: "v5.0 HYBRID - Finnhub Premarket + Yahoo Historical",
                 total_stocks: stockList.length,
                 successful: 0,
                 failed: 0,
-                cached: 0,
+                cached_historical: 0,
                 failed_tickers: {},
                 api_calls_used: {
-                    quote: 0,
-                    historical: 0,
+                    finnhub_quote: 0,
+                    yahoo_historical: 0,
                     total: 0
                 },
                 data_features: [
-                    "Yahoo Finance v7/finance/quote endpoint - VERIFIED PREMARKET",
+                    "Finnhub: Real-time premarket/afterhours data (60 calls/min free)",
+                    "Yahoo Finance: Historical OHLCV data (unlimited, cached daily)",
+                    "Smart caching: Resets at 4am ET each trading day",
                     "20+ technical indicators (RSI, MACD, Stochastic, ADX, Williams %R, OBV, VWAP, ATR)",
                     "Pivot points (Standard 7-point system)",
                     "Gap analysis with historical context",
@@ -1874,14 +1589,13 @@
                     "Bollinger Bands with bandwidth",
                     "Support/Resistance levels",
                     "52-week high/low tracking",
-                    "4-hour persistent caching",
-                    "100% FREE - No API keys needed"
+                    "100% FREE APIs"
                 ],
                 stocks: {}
             };
             
-            updateStatus(`Starting v4.1 FINAL collection...`, 40);
-            log(`Starting v4.1 FINAL: ${stockList.length} stocks`);
+            updateStatus(`Starting v5.0 HYBRID collection...`, 40);
+            log(`Starting v5.0 HYBRID: ${stockList.length} stocks`);
             
             for (let i = 0; i < stockList.length; i++) {
                 const ticker = stockList[i];
@@ -1898,7 +1612,7 @@
                     : `${estimatedSecondsLeft}s`;
                 
                 updateStatus(
-                    `Analyzing: ${ticker} (${i + 1}/${stockList.length})${wasCached ? ' [CACHED]' : ''} | Est: ${timeDisplay}`, 
+                    `Analyzing: ${ticker} (${i + 1}/${stockList.length})${wasCached ? ' [CACHED]' : ' [FETCHING]'} | Est: ${timeDisplay}`, 
                     progress
                 );
                 
@@ -1908,17 +1622,18 @@
                     if (enhancedStockData) {
                         marketData.stocks[ticker] = enhancedStockData;
                         marketData.successful++;
-                        if (wasCached) marketData.cached++;
+                        if (wasCached) marketData.cached_historical++;
                     } else {
                         marketData.failed++;
-                        marketData.failed_tickers[ticker] = "Failed to fetch data from Yahoo Finance";
+                        marketData.failed_tickers[ticker] = "Failed to fetch data";
                     }
                 } catch (error) {
                     marketData.failed++;
                     marketData.failed_tickers[ticker] = error.message;
+                    log(`Failed: ${ticker} - ${error.message}`, 'error');
                 }
                 
-                await sleep(800);
+                await sleep(1000);
             }
             
             const totalTime = Math.floor((Date.now() - startTime) / 1000);
@@ -1928,10 +1643,10 @@
             marketData.processing_time = timeDisplay;
             
             updateStatus(
-                `v4.1 FINAL complete: ${marketData.successful} succeeded (${marketData.cached} cached), ${marketData.failed} failed | ${timeDisplay}`, 
+                `v5.0 HYBRID complete: ${marketData.successful} succeeded (${marketData.cached_historical} cached), ${marketData.failed} failed | ${timeDisplay}`, 
                 100
             );
-            log(`v4.1 FINAL complete: ${marketData.successful}/${marketData.total_stocks}`, 'success');
+            log(`v5.0 HYBRID complete: ${marketData.successful}/${marketData.total_stocks} in ${timeDisplay}`, 'success');
             
             document.getElementById('output').textContent = 
                 JSON.stringify(marketData, null, 2);
@@ -1939,11 +1654,14 @@
             document.getElementById('copyBtn').style.display = 'inline-block';
             
             document.getElementById('updateTime').textContent = 
-                `v4.1 FINAL Data collected: ${new Date().toLocaleString()} | ${marketData.successful}/${marketData.total_stocks} successful | ${timeDisplay}`;
+                `v5.0 HYBRID Data collected: ${new Date().toLocaleString()} | ${marketData.successful}/${marketData.total_stocks} successful | ${timeDisplay}`;
                 
             if (marketData.successful > 0) {
-                const premarketCount = Object.values(marketData.stocks).filter(s => s.price_data.premarket_price !== null).length;
-                showWarning(`SUCCESS: ${premarketCount}/${marketData.successful} stocks have LIVE premarket data!`, 'success');
+                const premarketStatus = getMarketStatus();
+                const statusMessage = premarketStatus === 'premarket' 
+                    ? `SUCCESS: ${marketData.successful} stocks with LIVE PREMARKET DATA from Finnhub!`
+                    : `SUCCESS: ${marketData.successful} stocks analyzed with Finnhub real-time quotes!`;
+                showWarning(statusMessage, 'success');
             }
         }
         
@@ -1955,35 +1673,43 @@
                 await navigator.clipboard.writeText(output);
                 
                 const originalText = copyBtn.textContent;
-                copyBtn.textContent = 'Copied!';
-                copyBtn.style.background = 'linear-gradient(135deg, #2a4a2f 0%, #1a3a1f 100%)';
-                copyBtn.style.borderColor = '#4a8a4a';
+                copyBtn.textContent = '✅ Copied!';
+                copyBtn.style.background = 'linear-gradient(135deg, #51cf66 0%, #38d9a9 100%)';
                 
                 setTimeout(() => {
                     copyBtn.textContent = originalText;
-                    copyBtn.style.background = 'linear-gradient(135deg, #2a1f15 0%, #1a1208 100%)';
-                    copyBtn.style.borderColor = '#8b7355';
+                    copyBtn.style.background = 'linear-gradient(135deg, #11998e 0%, #38ef7d 100%)';
                 }, 2000);
                 
-                log('v4.1 FINAL JSON copied to clipboard', 'success');
+                log('v5.0 HYBRID JSON copied to clipboard', 'success');
             } catch (error) {
                 log('Copy failed: ' + error.message, 'error');
+                showWarning('Failed to copy: ' + error.message, 'error');
             }
         });
 
         document.getElementById('clearCacheBtn').addEventListener('click', () => {
-            if (confirm('Clear all v4.1 FINAL cached stock data?')) {
+            if (confirm('Clear all v5.0 HYBRID cached stock data? This will force re-fetch of historical data.')) {
                 clearAllCache();
             }
         });
         
-        // Initialize
+        // ========================================
+        // INITIALIZATION
+        // ========================================
+        
+        loadApiKey();
         updateCacheStats();
         updateAPICounters();
         
-        log('v4.1 FINAL initialized with CORRECT Yahoo endpoint', 'success');
+        log('v5.0 HYBRID system initialized', 'success');
         log(`Market status: ${getMarketStatus()}`, 'info');
-        showWarning('v4.1 FINAL: Using v7/finance/quote endpoint for REAL premarket!', 'success');
+        
+        if (FINNHUB_API_KEY) {
+            showWarning('v5.0 HYBRID ready: Finnhub API key loaded! Upload your watchlist to begin.', 'success');
+        } else {
+            showWarning('Welcome to v5.0 HYBRID! Please enter your Finnhub API key above to get started.', 'warning');
+        }
     </script>
 </body>
 </html>
