@@ -1,4 +1,190 @@
-<!DOCTYPE html>
+        // ========================================
+        // MAIN DATA COLLECTION - HYBRID WITH FALLBACK
+        // ========================================
+        
+        async function getEnhancedStockData(ticker) {
+            log(`Starting v5.0 HYBRID analysis for ${ticker}`);
+            
+            try {
+                // Try Finnhub first, fall back to Yahoo if it fails
+                let quoteData = await getFinnhubQuote(ticker);
+                
+                if (!quoteData) {
+                    log(`Finnhub unavailable for ${ticker}, using Yahoo quote`, 'info');
+                    quoteData = await getYahooQuote(ticker);
+                }
+                
+                if (!quoteData) {
+                    throw new Error('Failed to fetch quote data from any source');
+                }
+                
+                const historicalData = await getYahooHistoricalData(ticker);
+                
+                if (!historicalData || historicalData.length < 50) {
+                    throw new Error('Insufficient historical data');
+                }
+                
+                const marketStatus = getMarketStatus();
+                
+                const currentPrice = quoteData.currentPrice;
+                const priceChange = quoteData.change;
+                const priceChangePercent = quoteData.changePercent;
+                
+                const closePrices = historicalData.map(d => d.close);
+                const highs = historicalData.map(d => d.high);
+                const lows = historicalData.map(d => d.low);
+                const volumes = historicalData.map(d => d.volume);
+                
+                const sma10 = calculateSMA(closePrices, 10);
+                const sma20 = calculateSMA(closePrices, 20);
+                const sma50 = calculateSMA(closePrices, 50);
+                const sma200 = calculateSMA(closePrices, 200);
+                const ema9 = calculateEMA(closePrices, 9);
+                const ema21 = calculateEMA(closePrices, 21);
+                
+                const rsi = calculateRSI(closePrices, 14);
+                const macd = calculateMACD(closePrices, 12, 26, 9);
+                const bollinger = calculateBollingerBands(closePrices, 20, 2);
+                const stochastic = calculateStochastic(historicalData, 14);
+                const williamsR = calculateWilliamsR(historicalData, 14);
+                const adx = calculateADX(historicalData, 14);
+                const obv = calculateOBV(historicalData);
+                const vwap = calculateVWAP(historicalData.slice(-20));
+                const atr = calculateATR(historicalData, 14);
+                
+                const pivotPoints = calculatePivotPoints(historicalData[historicalData.length - 2]);
+                const supportResistance = findSupportResistanceLevels(historicalData.slice(-60));
+                const patternData = analyzePatternData(historicalData);
+                const gapAnalysis = analyzeGaps(historicalData, currentPrice);
+                
+                let gapInfo = {
+                    current_gap_percent: priceChangePercent.toFixed(2),
+                    gap_type: priceChangePercent > 0 ? 'gap_up' : priceChangePercent < 0 ? 'gap_down' : 'none',
+                    gap_size_dollars: priceChange.toFixed(2),
+                    recent_gaps: gapAnalysis
+                };
+                
+                const avgVolume5d = volumes.slice(-5).reduce((a, b) => a + b, 0) / 5;
+                const avgVolume10d = volumes.slice(-10).reduce((a, b) => a + b, 0) / 10;
+                const avgVolume20d = volumes.slice(-20).reduce((a, b) => a + b, 0) / 20;
+                const avgVolume50d = volumes.slice(-50).reduce((a, b) => a + b, 0) / 50;
+                const lastVolume = volumes[volumes.length - 1];
+                
+                const enhancedData = {
+                    ticker: ticker,
+                    generated_at: new Date().toISOString(),
+                    data_source: quoteData.dataSource + ' (Quote) + Yahoo Finance (Historical)',
+                    data_quality: 'REALTIME',
+                    
+                    market_status: marketStatus,
+                    data_timestamp: new Date(quoteData.timestamp * 1000).toISOString(),
+                    
+                    price_data: {
+                        current_price: currentPrice.toFixed(2),
+                        price_source: quoteData.dataSource,
+                        price_change: priceChange.toFixed(2),
+                        price_change_percent: priceChangePercent.toFixed(2),
+                        previous_close: quoteData.previousClose.toFixed(2),
+                        
+                        day_open: quoteData.open ? quoteData.open.toFixed(2) : null,
+                        day_high: quoteData.high ? quoteData.high.toFixed(2) : Math.max(...highs.slice(-1)).toFixed(2),
+                        day_low: quoteData.low ? quoteData.low.toFixed(2) : Math.min(...lows.slice(-1)).toFixed(2),
+                        fifty_two_week_high: Math.max(...highs).toFixed(2),
+                        fifty_two_week_low: Math.min(...lows).toFixed(2)
+                    },
+                    
+                    gap_analysis: gapInfo,
+                    
+                    technical_indicators: {
+                        moving_averages: {
+                            sma_10: sma10 ? sma10.toFixed(2) : null,
+                            sma_20: sma20 ? sma20.toFixed(2) : null,
+                            sma_50: sma50 ? sma50.toFixed(2) : null,
+                            sma_200: sma200 ? sma200.toFixed(2) : null,
+                            ema_9: ema9 ? ema9.toFixed(2) : null,
+                            ema_21: ema21 ? ema21.toFixed(2) : null
+                        },
+                        momentum: {
+                            rsi_14: rsi ? rsi.value.toFixed(2) : null,
+                            rsi_signal: rsi ? rsi.signal : null,
+                            macd: macd ? {
+                                macd: macd.macd.toFixed(2),
+                                signal: macd.signal.toFixed(2),
+                                histogram: macd.histogram.toFixed(2)
+                            } : null,
+                            stochastic: stochastic ? {
+                                k: stochastic.k.toFixed(2),
+                                interpretation: stochastic.interpretation
+                            } : null,
+                            williams_r: williamsR ? williamsR.toFixed(2) : null
+                        },
+                        volatility: {
+                            atr_14: atr ? atr.toFixed(2) : null,
+                            bollinger_bands: bollinger ? {
+                                upper: bollinger.upper.toFixed(2),
+                                middle: bollinger.middle.toFixed(2),
+                                lower: bollinger.lower.toFixed(2),
+                                bandwidth: bollinger.bandwidth.toFixed(2)
+                            } : null,
+                            historical_volatility_20d: calculateVolatility(closePrices.slice(-20)).toFixed(2)
+                        },
+                        trend: {
+                            adx: adx ? {
+                                adx: adx.adx.toFixed(2),
+                                interpretation: adx.interpretation
+                            } : null,
+                            obv: obv,
+                            vwap: vwap ? vwap.toFixed(2) : null
+                        }
+                    },
+                    
+                    key_levels: {
+                        pivot_points: pivotPoints ? {
+                            pivot: pivotPoints.pivot.toFixed(2),
+                            r1: pivotPoints.r1.toFixed(2),
+                            r2: pivotPoints.r2.toFixed(2),
+                            r3: pivotPoints.r3.toFixed(2),
+                            s1: pivotPoints.s1.toFixed(2),
+                            s2: pivotPoints.s2.toFixed(2),
+                            s3: pivotPoints.s3.toFixed(2)
+                        } : null,
+                        support_resistance: {
+                            resistance: supportResistance.resistance.map(r => r.toFixed(2)),
+                            support: supportResistance.support.map(s => s.toFixed(2))
+                        },
+                        weekly_high: Math.max(...highs.slice(-5)).toFixed(2),
+                        weekly_low: Math.min(...lows.slice(-5)).toFixed(2),
+                        monthly_high: Math.max(...highs.slice(-20)).toFixed(2),
+                        monthly_low: Math.min(...lows.slice(-20)).toFixed(2)
+                    },
+                    
+                    volume_analysis: {
+                        last_volume: Math.round(lastVolume),
+                        avg_volume_5d: Math.round(avgVolume5d),
+                        avg_volume_10d: Math.round(avgVolume10d),
+                        avg_volume_20d: Math.round(avgVolume20d),
+                        avg_volume_50d: Math.round(avgVolume50d),
+                        vs_avg_20d: (lastVolume / avgVolume20d).toFixed(2),
+                        trend: volumes.slice(-10).reduce((a, b) => a + b, 0) > volumes.slice(-20, -10).reduce((a, b) => a + b, 0) ? 'increasing' : 'decreasing'
+                    },
+                    
+                    pattern_analysis: patternData,
+                    
+                    historical_context: {
+                        data_points: historicalData.length,
+                        date_range: `${historicalData[0].date} to ${historicalData[historicalData.length - 1].date}`,
+                        volatility_20d: calculateVolatility(closePrices.slice(-20)).toFixed(2)
+                    }
+                };
+                
+                log(`✓ v5.0 complete: ${ticker} (${currentPrice.toFixed(2)}, ${priceChangePercent >= 0 ? '+' : ''}${priceChangePercent.toFixed(2)}%) via ${quoteData.dataSource}`, 'success');
+                return enhancedData;
+                
+            } catch (error) {
+                log(`v5.0 analysis failed for ${ticker}: ${error.message}`, 'error');
+                return null;
+            }
+        }<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -1205,7 +1391,8 @@
         
         async function getFinnhubQuote(ticker) {
             if (!FINNHUB_API_KEY) {
-                throw new Error('Finnhub API key not configured');
+                log('No Finnhub API key - will use Yahoo fallback', 'info');
+                return null;
             }
             
             try {
@@ -1215,16 +1402,23 @@
                 const response = await fetch(url);
                 
                 if (!response.ok) {
-                    if (response.status === 429) {
-                        throw new Error('Rate limit exceeded');
+                    if (response.status === 401) {
+                        log(`Finnhub 401 for ${ticker} - API key invalid or not verified. Check email!`, 'error');
+                        return null; // Fall back to Yahoo
                     }
-                    throw new Error(`HTTP ${response.status}`);
+                    if (response.status === 429) {
+                        log('Finnhub rate limit - falling back to Yahoo', 'error');
+                        return null;
+                    }
+                    log(`Finnhub HTTP ${response.status} - falling back to Yahoo`, 'error');
+                    return null;
                 }
                 
                 const data = await response.json();
                 
                 if (!data.c || data.c === 0) {
-                    throw new Error('No quote data available');
+                    log(`No Finnhub data for ${ticker} - using Yahoo`, 'info');
+                    return null;
                 }
                 
                 recordAPICall('finnhub_quote');
@@ -1243,33 +1437,25 @@
                     isPremarket: true
                 };
                 
-                log(`✓ Finnhub: ${ticker} = $${quoteData.currentPrice} (${quoteData.changePercent >= 0 ? '+' : ''}${quoteData.changePercent.toFixed(2)}%)`, 'success');
+                log(`✓ Finnhub: ${ticker} = ${quoteData.currentPrice} (${quoteData.changePercent >= 0 ? '+' : ''}${quoteData.changePercent.toFixed(2)}%)`, 'success');
                 
                 return quoteData;
                 
             } catch (error) {
-                log(`Finnhub quote failed for ${ticker}: ${error.message}`, 'error');
-                throw error;
+                log(`Finnhub failed for ${ticker}: ${error.message} - using Yahoo`, 'info');
+                return null;
             }
         }
         
         // ========================================
-        // YAHOO FINANCE API - HISTORICAL DATA ONLY
+        // YAHOO FINANCE - QUOTE DATA (FALLBACK)
         // ========================================
         
-        async function getYahooHistoricalData(ticker) {
-            const cacheKey = `${ticker}_yahoo_historical`;
-            const cached = getCachedData(cacheKey);
-            if (cached) return cached;
-            
+        async function getYahooQuote(ticker) {
             try {
-                const period1 = Math.floor((Date.now() - 365 * 24 * 60 * 60 * 1000) / 1000);
-                const period2 = Math.floor(Date.now() / 1000);
+                const url = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${ticker}`;
                 
-                const url = `https://query1.finance.yahoo.com/v8/finance/chart/${ticker}?period1=${period1}&period2=${period2}&interval=1d`;
-                
-                log(`Fetching Yahoo historical for ${ticker}`);
-                
+                log(`Fetching Yahoo quote for ${ticker}`);
                 let response = await fetch(url);
                 
                 if (!response.ok) {
@@ -1283,34 +1469,136 @@
                 
                 const data = await response.json();
                 
-                if (!data.chart || !data.chart.result || data.chart.result.length === 0) {
-                    throw new Error('No historical data from Yahoo');
+                if (!data.quoteResponse || !data.quoteResponse.result || data.quoteResponse.result.length === 0) {
+                    throw new Error('No quote data from Yahoo');
                 }
                 
-                const result = data.chart.result[0];
-                const timestamps = result.timestamp;
-                const quote = result.indicators.quote[0];
+                const quote = data.quoteResponse.result[0];
                 
-                const ohlcData = timestamps.map((timestamp, i) => ({
-                    date: new Date(timestamp * 1000).toISOString().split('T')[0],
-                    open: quote.open[i],
-                    high: quote.high[i],
-                    low: quote.low[i],
-                    close: quote.close[i],
-                    volume: quote.volume[i]
-                })).filter(d => d.close !== null);
+                // Determine market status
+                const marketStatus = getMarketStatus();
                 
-                recordAPICall('yahoo_historical');
+                let currentPrice, priceChange, priceChangePercent, dataSource;
                 
-                setCachedData(cacheKey, ohlcData);
-                log(`✓ Yahoo historical: ${ticker} (${ohlcData.length} days) - CACHED`, 'success');
+                if (marketStatus === 'premarket' && quote.preMarketPrice) {
+                    currentPrice = quote.preMarketPrice;
+                    priceChange = quote.preMarketChange;
+                    priceChangePercent = quote.preMarketChangePercent;
+                    dataSource = 'Yahoo (Premarket)';
+                } else if (marketStatus === 'afterhours' && quote.postMarketPrice) {
+                    currentPrice = quote.postMarketPrice;
+                    priceChange = quote.postMarketChange;
+                    priceChangePercent = quote.postMarketChangePercent;
+                    dataSource = 'Yahoo (Afterhours)';
+                } else {
+                    currentPrice = quote.regularMarketPrice;
+                    priceChange = currentPrice - quote.regularMarketPreviousClose;
+                    priceChangePercent = (priceChange / quote.regularMarketPreviousClose) * 100;
+                    dataSource = 'Yahoo (Regular)';
+                }
                 
-                return ohlcData;
+                const quoteData = {
+                    symbol: ticker,
+                    currentPrice: currentPrice,
+                    previousClose: quote.regularMarketPreviousClose,
+                    change: priceChange,
+                    changePercent: priceChangePercent,
+                    high: quote.regularMarketDayHigh || null,
+                    low: quote.regularMarketDayLow || null,
+                    open: quote.regularMarketOpen || null,
+                    timestamp: Math.floor(Date.now() / 1000),
+                    dataSource: dataSource,
+                    isPremarket: marketStatus === 'premarket' && quote.preMarketPrice !== null
+                };
+                
+                log(`✓ Yahoo: ${ticker} = ${currentPrice.toFixed(2)} (${priceChangePercent >= 0 ? '+' : ''}${priceChangePercent.toFixed(2)}%) [${dataSource}]`, 'success');
+                
+                return quoteData;
                 
             } catch (error) {
-                log(`Yahoo historical failed for ${ticker}: ${error.message}`, 'error');
+                log(`Yahoo quote failed for ${ticker}: ${error.message}`, 'error');
                 throw error;
             }
+        }
+        
+        // ========================================
+        // YAHOO FINANCE API - HISTORICAL DATA ONLY
+        // ========================================
+        
+        async function getYahooHistoricalData(ticker) {
+            const cacheKey = `${ticker}_yahoo_historical`;
+            const cached = getCachedData(cacheKey);
+            if (cached) return cached;
+            
+            const period1 = Math.floor((Date.now() - 365 * 24 * 60 * 60 * 1000) / 1000);
+            const period2 = Math.floor(Date.now() / 1000);
+            const url = `https://query1.finance.yahoo.com/v8/finance/chart/${ticker}?period1=${period1}&period2=${period2}&interval=1d`;
+            
+            // Try multiple CORS proxies in order
+            const proxies = [
+                // Direct attempt first
+                null,
+                // CORS proxies
+                (url) => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
+                (url) => `https://corsproxy.io/?${encodeURIComponent(url)}`,
+                (url) => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`
+            ];
+            
+            for (let i = 0; i < proxies.length; i++) {
+                try {
+                    const fetchUrl = proxies[i] ? proxies[i](url) : url;
+                    const proxyName = proxies[i] ? `proxy ${i}` : 'direct';
+                    
+                    log(`Fetching Yahoo historical for ${ticker} (${proxyName})`);
+                    
+                    const response = await fetch(fetchUrl);
+                    
+                    if (!response.ok) {
+                        log(`Yahoo ${proxyName} HTTP ${response.status} for ${ticker}`, 'error');
+                        continue;
+                    }
+                    
+                    const data = await response.json();
+                    
+                    if (!data.chart || !data.chart.result || data.chart.result.length === 0) {
+                        log(`Yahoo ${proxyName} no data for ${ticker}`, 'error');
+                        continue;
+                    }
+                    
+                    const result = data.chart.result[0];
+                    const timestamps = result.timestamp;
+                    const quote = result.indicators.quote[0];
+                    
+                    const ohlcData = timestamps.map((timestamp, i) => ({
+                        date: new Date(timestamp * 1000).toISOString().split('T')[0],
+                        open: quote.open[i],
+                        high: quote.high[i],
+                        low: quote.low[i],
+                        close: quote.close[i],
+                        volume: quote.volume[i]
+                    })).filter(d => d.close !== null);
+                    
+                    if (ohlcData.length < 50) {
+                        log(`Yahoo ${proxyName} insufficient data for ${ticker} (${ohlcData.length} days)`, 'error');
+                        continue;
+                    }
+                    
+                    recordAPICall('yahoo_historical');
+                    setCachedData(cacheKey, ohlcData);
+                    log(`✓ Yahoo historical: ${ticker} (${ohlcData.length} days) via ${proxyName} - CACHED`, 'success');
+                    
+                    return ohlcData;
+                    
+                } catch (error) {
+                    log(`Yahoo historical attempt ${i + 1} failed for ${ticker}: ${error.message}`, 'error');
+                    if (i < proxies.length - 1) {
+                        await sleep(500); // Wait before trying next proxy
+                    }
+                }
+            }
+            
+            // All proxies failed
+            throw new Error('All Yahoo historical data sources failed');
         }
         
         // ========================================
@@ -1505,10 +1793,9 @@
             const file = e.target.files[0];
             if (!file) return;
             
+            // API key is now optional - will use Yahoo fallback if not provided
             if (!FINNHUB_API_KEY) {
-                showWarning('Please configure your Finnhub API key before uploading a watchlist', 'error');
-                e.target.value = '';
-                return;
+                showWarning('No Finnhub API key - using Yahoo Finance for all data', 'warning');
             }
             
             debugMessages = [];
