@@ -1,4 +1,4 @@
-        // ========================================
+// ========================================
         // MAIN DATA COLLECTION - HYBRID WITH FALLBACK
         // ========================================
         
@@ -57,12 +57,34 @@
                 const patternData = analyzePatternData(historicalData);
                 const gapAnalysis = analyzeGaps(historicalData, currentPrice);
                 
-                let gapInfo = {
-                    current_gap_percent: priceChangePercent.toFixed(2),
-                    gap_type: priceChangePercent > 0 ? 'gap_up' : priceChangePercent < 0 ? 'gap_down' : 'none',
-                    gap_size_dollars: priceChange.toFixed(2),
-                    recent_gaps: gapAnalysis
-                };
+                // *** FIX: Properly calculate gap based on market status ***
+                let gapInfo;
+                
+                if (marketStatus === 'premarket' || marketStatus === 'afterhours') {
+                    // During pre/after market, gap is current price vs yesterday's close
+                    const yesterdayClose = historicalData[historicalData.length - 1].close;
+                    const gapSize = currentPrice - yesterdayClose;
+                    const gapPercent = (gapSize / yesterdayClose) * 100;
+                    
+                    gapInfo = {
+                        current_gap_percent: gapPercent.toFixed(2),
+                        gap_type: gapPercent > 0 ? 'gap_up' : gapPercent < 0 ? 'gap_down' : 'none',
+                        gap_size_dollars: gapSize.toFixed(2),
+                        gap_vs_close: yesterdayClose.toFixed(2),
+                        recent_gaps: gapAnalysis
+                    };
+                    
+                    log(`*** GAP DETECTED: ${ticker} current ${currentPrice.toFixed(2)} vs yesterday close ${yesterdayClose.toFixed(2)} = ${gapPercent >= 0 ? '+' : ''}${gapPercent.toFixed(2)}%`, gapPercent !== 0 ? 'warning' : 'info');
+                } else {
+                    // During regular hours or at close, use the quote's change
+                    gapInfo = {
+                        current_gap_percent: priceChangePercent.toFixed(2),
+                        gap_type: priceChangePercent > 0 ? 'gap_up' : priceChangePercent < 0 ? 'gap_down' : 'none',
+                        gap_size_dollars: priceChange.toFixed(2),
+                        gap_vs_close: quoteData.previousClose.toFixed(2),
+                        recent_gaps: gapAnalysis
+                    };
+                }
                 
                 const avgVolume5d = volumes.slice(-5).reduce((a, b) => a + b, 0) / 5;
                 const avgVolume10d = volumes.slice(-10).reduce((a, b) => a + b, 0) / 10;
@@ -77,6 +99,7 @@
                     data_quality: 'REALTIME',
                     
                     market_status: marketStatus,
+                    market_status_at_collection: quoteData.marketStatusAtCollection,
                     data_timestamp: new Date(quoteData.timestamp * 1000).toISOString(),
                     
                     price_data: {
@@ -1423,6 +1446,20 @@
                 
                 recordAPICall('finnhub_quote');
                 
+                // *** FIX: Determine actual market status and create proper label ***
+                const marketStatus = getMarketStatus();
+                let dataSourceLabel;
+                
+                if (marketStatus === 'premarket') {
+                    dataSourceLabel = 'premarket (Finnhub)';
+                } else if (marketStatus === 'afterhours') {
+                    dataSourceLabel = 'afterhours (Finnhub)';
+                } else if (marketStatus === 'regular') {
+                    dataSourceLabel = 'regular hours (Finnhub)';
+                } else {
+                    dataSourceLabel = 'market close (Finnhub)';
+                }
+                
                 const quoteData = {
                     symbol: ticker,
                     currentPrice: data.c,
@@ -1433,11 +1470,11 @@
                     low: data.l,
                     open: data.o,
                     timestamp: data.t,
-                    dataSource: 'Finnhub',
-                    isPremarket: true
+                    dataSource: dataSourceLabel,
+                    marketStatusAtCollection: marketStatus
                 };
                 
-                log(`✓ Finnhub: ${ticker} = ${quoteData.currentPrice} (${quoteData.changePercent >= 0 ? '+' : ''}${quoteData.changePercent.toFixed(2)}%)`, 'success');
+                log(`✓ Finnhub: ${ticker} = ${quoteData.currentPrice} (${quoteData.changePercent >= 0 ? '+' : ''}${quoteData.changePercent.toFixed(2)}%) [${marketStatus}]`, 'success');
                 
                 return quoteData;
                 
@@ -1484,17 +1521,17 @@
                     currentPrice = quote.preMarketPrice;
                     priceChange = quote.preMarketChange;
                     priceChangePercent = quote.preMarketChangePercent;
-                    dataSource = 'Yahoo (Premarket)';
+                    dataSource = 'premarket (Yahoo)';
                 } else if (marketStatus === 'afterhours' && quote.postMarketPrice) {
                     currentPrice = quote.postMarketPrice;
                     priceChange = quote.postMarketChange;
                     priceChangePercent = quote.postMarketChangePercent;
-                    dataSource = 'Yahoo (Afterhours)';
+                    dataSource = 'afterhours (Yahoo)';
                 } else {
                     currentPrice = quote.regularMarketPrice;
                     priceChange = currentPrice - quote.regularMarketPreviousClose;
                     priceChangePercent = (priceChange / quote.regularMarketPreviousClose) * 100;
-                    dataSource = 'Yahoo (Regular)';
+                    dataSource = marketStatus === 'regular' ? 'regular hours (Yahoo)' : 'market close (Yahoo)';
                 }
                 
                 const quoteData = {
@@ -1508,7 +1545,7 @@
                     open: quote.regularMarketOpen || null,
                     timestamp: Math.floor(Date.now() / 1000),
                     dataSource: dataSource,
-                    isPremarket: marketStatus === 'premarket' && quote.preMarketPrice !== null
+                    marketStatusAtCollection: marketStatus
                 };
                 
                 log(`✓ Yahoo: ${ticker} = ${currentPrice.toFixed(2)} (${priceChangePercent >= 0 ? '+' : ''}${priceChangePercent.toFixed(2)}%) [${dataSource}]`, 'success');
@@ -1654,12 +1691,34 @@
                 const patternData = analyzePatternData(historicalData);
                 const gapAnalysis = analyzeGaps(historicalData, currentPrice);
                 
-                let gapInfo = {
-                    current_gap_percent: priceChangePercent.toFixed(2),
-                    gap_type: priceChangePercent > 0 ? 'gap_up' : priceChangePercent < 0 ? 'gap_down' : 'none',
-                    gap_size_dollars: priceChange.toFixed(2),
-                    recent_gaps: gapAnalysis
-                };
+                // *** FIX: Properly calculate gap based on market status ***
+                let gapInfo;
+                
+                if (marketStatus === 'premarket' || marketStatus === 'afterhours') {
+                    // During pre/after market, gap is current price vs yesterday's close
+                    const yesterdayClose = historicalData[historicalData.length - 1].close;
+                    const gapSize = currentPrice - yesterdayClose;
+                    const gapPercent = (gapSize / yesterdayClose) * 100;
+                    
+                    gapInfo = {
+                        current_gap_percent: gapPercent.toFixed(2),
+                        gap_type: gapPercent > 0 ? 'gap_up' : gapPercent < 0 ? 'gap_down' : 'none',
+                        gap_size_dollars: gapSize.toFixed(2),
+                        gap_vs_close: yesterdayClose.toFixed(2),
+                        recent_gaps: gapAnalysis
+                    };
+                    
+                    log(`*** GAP DETECTED: ${ticker} current ${currentPrice.toFixed(2)} vs yesterday close ${yesterdayClose.toFixed(2)} = ${gapPercent >= 0 ? '+' : ''}${gapPercent.toFixed(2)}%`, gapPercent !== 0 ? 'warning' : 'info');
+                } else {
+                    // During regular hours or at close, use the quote's change
+                    gapInfo = {
+                        current_gap_percent: priceChangePercent.toFixed(2),
+                        gap_type: priceChangePercent > 0 ? 'gap_up' : priceChangePercent < 0 ? 'gap_down' : 'none',
+                        gap_size_dollars: priceChange.toFixed(2),
+                        gap_vs_close: quoteData.previousClose.toFixed(2),
+                        recent_gaps: gapAnalysis
+                    };
+                }
                 
                 const avgVolume5d = volumes.slice(-5).reduce((a, b) => a + b, 0) / 5;
                 const avgVolume10d = volumes.slice(-10).reduce((a, b) => a + b, 0) / 10;
